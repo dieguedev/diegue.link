@@ -4,37 +4,37 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(95.08% 0.0481 184.07);
+  --background: oklch(93.37% 0.0339 12.05);
   --secondary-background: oklch(100% 0 0);
   --foreground: oklch(0% 0 0);
   --main-foreground: oklch(0% 0 0);
-  --main: oklch(78.57% 0.1422 180.36);
+  --main: oklch(70.79% 0.1862 16.25);
   --border: oklch(0% 0 0);
   --ring: oklch(0% 0 0);
   --overlay: oklch(0% 0 0 / 0.8);
   --shadow: 4px 4px 0px 0px var(--border);
-  --chart-1: #00D6BD;
-  --chart-2: #0099FF;
-  --chart-3: #7A83FF;
-  --chart-4: #FF4D50;
-  --chart-5: #FACC00;
+  --chart-1: #FF6678;
+  --chart-2: #7A83FF;
+  --chart-3: #FACC00;
+  --chart-4: #00D696;
+  --chart-5: #5294FF;
   --chart-active-dot: #000;
 }
 
 .dark {
-  --background: oklch(22.65% 0.0236 198.49);
+  --background: oklch(25.15% 0.0495 7.54);
   --secondary-background: oklch(23.93% 0 0);
   --foreground: oklch(92.49% 0 0);
   --main-foreground: oklch(0% 0 0);
-  --main: oklch(71.47% 0.129261 180.4742);
+  --main: oklch(67.58% 0.2135 18.63);
   --border: oklch(0% 0 0);
   --ring: oklch(100% 0 0);
   --shadow: 4px 4px 0px 0px var(--border);
-  --chart-1: #00BDA7;
-  --chart-2: #008AE5;
-  --chart-3: #7A83FF;
-  --chart-4: #FF6669;
-  --chart-5: #E0B700;
+  --chart-1: #FF4D61;
+  --chart-2: #7A83FF;
+  --chart-3: #E0B700;
+  --chart-4: #00BD84;
+  --chart-5: #5294FF;
   --chart-active-dot: #fff;
 }
 
@@ -61,14 +61,38 @@
   --shadow-shadow: var(--shadow);
   --font-weight-base: 500;
   --font-weight-heading: 700;
+  --animate-marquee: marquee 15s linear infinite;
+  --animate-marquee2: marquee2 15s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes marquee2 {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
 }
   
 @layer base {
   body {
     @apply text-foreground font-base bg-background;
+    font-family: var(--font-dm-sans), 'sans-serif';
+    letter-spacing: -0.03em;
   }
 
   h1, h2, h3, h4, h5, h6{
     @apply font-heading;
   }
 }
+
