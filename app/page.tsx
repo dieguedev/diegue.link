@@ -50,6 +50,18 @@ export default function Home() {
             <StarWithStroke starNumber={16} size={40} />,
             'Guárdalos',
             <StarWithStroke starNumber={27} size={40} />,
+            'Acorta tus enlaces',
+            <StarWithStroke starNumber={27} size={40} />,
+            'Compártelos',
+            <StarWithStroke starNumber={16} size={40} />,
+            'Guárdalos',
+            <StarWithStroke starNumber={27} size={40} />,
+            'Acorta tus enlaces',
+            <StarWithStroke starNumber={27} size={40} />,
+            'Compártelos',
+            <StarWithStroke starNumber={16} size={40} />,
+            'Guárdalos',
+            <StarWithStroke starNumber={27} size={40} />,
           ]}
         />
       </main>
