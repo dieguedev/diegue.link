@@ -5,6 +5,7 @@ import { Navbar } from '@/components/ui/navbar';
 import StarWithStroke from '@/components/ui/starWithStroke';
 
 import { Github } from 'lucide-react';
+import { Link } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -27,12 +28,14 @@ export default function Home() {
             <p className="text-center mb-4 md:mb-6 p-2">
               ¿Has encontrado un enlace que quieres{' '}
               <span className="font-bold">compartir</span> pero no quieres usar
-              el enlace original porque es muy largo? ¿Quizás no quieres usar
-              simplemente una aplicación de notas para{' '}
+              el enlace original porque es muy largo? ¿Quizás simplemente no
+              quieres usar una aplicación de notas para{' '}
               <span className="font-bold">almacenarlo</span>?
             </p>
             <div className="flex justify-center">
-              <Button>Acortar</Button>
+              <Button>
+                Acortar <Link />
+              </Button>
             </div>
           </div>
         </div>
