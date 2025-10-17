@@ -4,17 +4,24 @@ import Marquee from '@/components/ui/marquee';
 import { Navbar } from '@/components/ui/navbar';
 import StarWithStroke from '@/components/ui/starWithStroke';
 
-import { Github } from 'lucide-react';
-import { Link } from 'lucide-react';
+import { Link, LogIn, Star } from 'lucide-react';
+import { shortNumberFormat } from './utils/numberFormat';
+
+const starAmount = 1300;
 
 export default function Home() {
   return (
     <>
       <header className="sticky top-0 z-20">
         <Navbar>
-          <Button variant="neutral" size="icon">
-            <Github />
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="neutral">
+              {shortNumberFormat(starAmount)} <Star />
+            </Button>
+            <Button>
+              Log in <LogIn />
+            </Button>
+          </div>
         </Navbar>
       </header>
       <main>
