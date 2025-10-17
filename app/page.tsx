@@ -35,21 +35,24 @@ export default function Home() {
       <main>
         <div className="flex flex-col gap-4 min-h-[75dvh] justify-center items-center bg-[linear-gradient(to_right,#8080804D_1px,transparent_1px),linear-gradient(to_bottom,#80808090_1px,transparent_1px)] bg-[size:70px_70px] py-5">
           <div className="flex flex-col justify-center max-w-[66dvw]">
-            <h1 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 p-2">
+            <h1 className="text-center text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 p-2">
               Empieza a <HighlightedText>acortar</HighlightedText> los enlaces
               que <br className="hidden lg:block" />
               necesites guardar o compartir
             </h1>
-            <p className="text-center mb-4 md:mb-6 p-2">
-              ¿Has encontrado un enlace que quieres{' '}
-              <span className="font-bold">compartir</span> pero no quieres usar
-              el enlace original porque es muy largo? ¿Quizás simplemente no
-              quieres usar una aplicación de notas para{' '}
+            <p className="text-xl sm:text-xl md:text-2xl lg:text-2xl xl:text-2xl 2xl:text-3xl text-center mb-4 md:mb-6 p-2">
+              ¿Quieres <span className="font-bold">compartir</span> un enlace
+              pero es muy largo? ¿No quieres usar una aplicación de notas para{' '}
               <span className="font-bold">almacenarlo</span>?
             </p>
             <div className="flex justify-center">
-              <Button>
-                Acortar <Link />
+              <Button size="hero">
+                <div className="flex flex-row justify-center items-center gap-2">
+                  <p className="text-lg sm:text-lg md:text-xl lg:text-xl xl:text-xl 2xl:text-2xl">
+                    Acortar
+                  </p>
+                  <Link />
+                </div>
               </Button>
             </div>
           </div>
