@@ -1,6 +1,6 @@
 export default function Marquee({ items }: { items: React.ReactNode[] }) {
   return (
-    <div className="relative h-[15dvh] flex w-full overflow-x-hidden border-b-2 border-t-2 border-border bg-secondary-background text-foreground font-base">
+    <div className="relative h-[15dvh] flex w-full overflow-x-hidden overflow-y-hidden border-b-2 border-t-2 border-border bg-secondary-background text-foreground font-base">
       <div className="h-[15dvh] animate-marquee whitespace-nowrap flex items-center">
         {items.map((item, _index) => {
           return (
