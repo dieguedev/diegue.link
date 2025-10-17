@@ -14,13 +14,21 @@ export default function Home() {
     <>
       <header className="sticky top-0 z-20">
         <Navbar>
-          <div className="flex gap-2">
-            <Button variant="neutral">
-              {shortNumberFormat(starAmount)} <Star />
-            </Button>
-            <Button>
-              Log in <LogIn />
-            </Button>
+          <div className="flex flex-1 justify-between">
+            <div className="flex items-center">
+              <span className="text-center text-xl font-bold p-2">
+                diegue.link
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              <Button variant="neutral">
+                {shortNumberFormat(starAmount)} <Star />
+              </Button>
+              <Button>
+                Log in <LogIn />
+              </Button>
+            </div>
           </div>
         </Navbar>
       </header>
