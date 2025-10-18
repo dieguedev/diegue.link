@@ -17,6 +17,7 @@
     "lucide-react": "^0.545.0",
     "next": "15.5.5",
     "numeral": "^2.0.6",
+    "octokit": "^5.0.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1"
