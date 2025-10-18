@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { HighlightedText } from '@/components/ui/highlightedText';
 import Marquee from '@/components/ui/marquee';
@@ -8,21 +6,12 @@ import StarWithStroke from '@/components/ui/starWithStroke';
 
 import { Link, LogIn, Star } from 'lucide-react';
 import { shortNumberFormat } from './utils/numberFormat';
-import { useEffect, useState } from 'react';
 import { getStargazers } from './domain/services/getStargazers';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
 
-export default function Home() {
-  const [starAmount, setStarAmount] = useState<number>(0);
-
-  useEffect(() => {
-    const onLoad = async () => {
-      const starAmount = await getStargazers();
-      setStarAmount(starAmount);
-    };
-    onLoad();
-  }, []);
+export default async function Home() {
+  const starAmount = await getStargazers();
 
   return (
     <>
