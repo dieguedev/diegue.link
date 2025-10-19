@@ -7,6 +7,7 @@ import StarWithStroke from '@/components/ui/starWithStroke';
 import { Link, LogIn, Star } from 'lucide-react';
 import { shortNumberFormat } from './utils/numberFormat';
 import { getStargazers } from './domain/services/getStargazers';
+import { AuthModal } from '@/components/ui/authModal';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
 
@@ -33,9 +34,7 @@ export default async function Home() {
               >
                 {shortNumberFormat(starAmount)} <Star />
               </Button>
-              <Button>
-                Log in <LogIn />
-              </Button>
+              <AuthModal />
             </div>
           </div>
         </Navbar>
@@ -94,7 +93,6 @@ export default async function Home() {
           ]}
         />
       </main>
-      <div className="min-h-[100dvh]"></div>
     </>
   );
 }
