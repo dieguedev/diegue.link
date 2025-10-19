@@ -4,7 +4,7 @@ import Marquee from '@/components/ui/marquee';
 import { Navbar } from '@/components/ui/navbar';
 import StarWithStroke from '@/components/ui/starWithStroke';
 
-import { Link, LogIn, Star } from 'lucide-react';
+import { Link, Star } from 'lucide-react';
 import { shortNumberFormat } from './utils/numberFormat';
 import { getStargazers } from './domain/services/getStargazers';
 import { AuthModal } from '@/components/ui/authModal';

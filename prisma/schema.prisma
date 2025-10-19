@@ -1,0 +1,33 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+model User {
+    id       Int    @id @default(autoincrement())
+    username String @unique
+    email    String @unique
+    password String
+    urls     Url[]
+}
+
+model Url {
+    id        Int      @id @default(autoincrement())
+    slug      String   @db.VarChar(30)
+    fullUrl   String   @db.VarChar(2048)
+    user      User     @relation(fields: [userId], references: [id])
+    clicks    Int      @default(0)
+    userId    Int
+    createdAt DateTime @default(now())
+
+    @@unique([userId, slug])
+    // Índice para agilizar busquedas de las URL de los usuarios
+    @@index([userId])
+    // Índice para agilizar las búsquedas de URL más recientes de los usuarios
+    @@index([userId, createdAt])
+}
