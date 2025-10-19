@@ -18,7 +18,7 @@ model User {
 
 model Url {
     id        Int      @id @default(autoincrement())
-    slug      String   @db.VarChar(30)
+    slug      String   @db.VarChar(50)
     fullUrl   String   @db.VarChar(2048)
     user      User     @relation(fields: [userId], references: [id])
     clicks    Int      @default(0)
