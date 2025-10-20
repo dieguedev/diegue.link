@@ -1,33 +1,76 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL")
-    directUrl = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-    id       Int    @id @default(autoincrement())
-    username String @unique
-    email    String @unique
-    password String
-    urls     Url[]
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  username      String    @unique
+  accounts      Account[]
+  sessions      Session[]
+  urls          Url[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Url {
-    id        Int      @id @default(autoincrement())
-    slug      String   @db.VarChar(50)
-    fullUrl   String   @db.VarChar(2048)
-    user      User     @relation(fields: [userId], references: [id])
-    clicks    Int      @default(0)
-    userId    Int
-    createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  slug      String   @db.VarChar(50)
+  fullUrl   String   @db.VarChar(2048)
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, slug])
-    // Índice para agilizar busquedas de las URL de los usuarios
-    @@index([userId])
-    // Índice para agilizar las búsquedas de URL más recientes de los usuarios
-    @@index([userId, createdAt])
+  @@unique([userId, slug])
+  @@index([userId])
+  @@index([userId, createdAt])
 }

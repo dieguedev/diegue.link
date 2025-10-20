@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Url" ALTER COLUMN "slug" SET DATA TYPE VARCHAR(50);

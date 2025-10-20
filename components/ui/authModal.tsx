@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from './card';
@@ -14,8 +13,41 @@ import { LogIn } from 'lucide-react';
 import { Input } from './input';
 import { Label } from './label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
+import { authClient } from '@/lib/auth-client';
 
 export function AuthModal() {
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const { data, error } = await authClient.signUp.email({
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      username: formData.get('username') as string,
+      password: formData.get('password') as string,
+      callbackURL: 'http://localhost:3000',
+    });
+
+    console.log('Data', data);
+    console.log('Error', error);
+  };
+
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const { data, error } = await authClient.signIn.email({
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+      callbackURL: 'http://localhost:3000',
+    });
+
+    console.log('Data', data);
+    console.log('Error', error);
+  };
+
   return (
     <>
       <GenericModal
@@ -40,12 +72,13 @@ export function AuthModal() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form>
+                <form onSubmit={handleLoginSubmit}>
                   <div className="flex flex-col gap-6">
                     <div className="grid gap-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="email@example.com"
                         required
@@ -61,16 +94,19 @@ export function AuthModal() {
                           ¿Olvidaste tu contraseña?
                         </a>
                       </div>
-                      <Input id="password" type="password" required />
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                      />
                     </div>
+                    <Button type="submit" className="w-full">
+                      Iniciar sesión
+                    </Button>
                   </div>
                 </form>
               </CardContent>
-              <CardFooter className="flex-col gap-2">
-                <Button type="submit" className="w-full">
-                  Iniciar sesión
-                </Button>
-              </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="register">
@@ -82,12 +118,23 @@ export function AuthModal() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form>
+                <form onSubmit={handleRegisterSubmit}>
                   <div className="flex flex-col gap-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor="name">Nombre</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="John Doe"
+                        required
+                      />
+                    </div>
                     <div className="grid gap-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="email@example.com"
                         required
@@ -95,20 +142,28 @@ export function AuthModal() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="username">Nombre de usuario</Label>
-                      <Input id="username" type="text" required />
+                      <Input
+                        id="username"
+                        name="username"
+                        type="text"
+                        required
+                      />
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="password">Contraseña</Label>
-                      <Input id="password" type="password" required />
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                      />
                     </div>
+                    <Button type="submit" className="w-full">
+                      Crear cuenta
+                    </Button>
                   </div>
                 </form>
               </CardContent>
-              <CardFooter className="flex-col gap-2">
-                <Button type="submit" className="w-full">
-                  Crear cuenta
-                </Button>
-              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>

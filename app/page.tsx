@@ -8,11 +8,16 @@ import { Link, Star } from 'lucide-react';
 import { shortNumberFormat } from './utils/numberFormat';
 import { getStargazers } from './domain/services/getStargazers';
 import { AuthModal } from '@/components/ui/authModal';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
 
 export default async function Home() {
   const starAmount = await getStargazers();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   return (
     <>
@@ -34,7 +39,11 @@ export default async function Home() {
               >
                 {shortNumberFormat(starAmount)} <Star />
               </Button>
-              <AuthModal />
+              {!session ? (
+                <AuthModal />
+              ) : (
+                <Button>{session.user.username}</Button>
+              )}
             </div>
           </div>
         </Navbar>
