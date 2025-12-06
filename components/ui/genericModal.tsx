@@ -10,7 +10,7 @@ interface GenericModalProps {
 
 export function GenericModal({ title, trigger, children }: GenericModalProps) {
   return (
-    <DialogPrimitive.Root>
+    <DialogPrimitive.Root modal={false}>
       <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
 
       <DialogPrimitive.Portal>
