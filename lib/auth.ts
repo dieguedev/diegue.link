@@ -22,4 +22,8 @@ export const auth = betterAuth({
       },
     },
   },
+  trustedOrigins: 
+    process.env.NODE_ENV === 'production'
+      ? [process.env.PRODUCTION_URL] as string[]
+      : ['http://localhost:3000', 'http://192.168.*.*:3000', 'http://127.0.0.1:3000'],
 });

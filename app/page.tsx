@@ -4,12 +4,16 @@ import Marquee from '@/components/ui/marquee';
 import { Navbar } from '@/components/ui/navbar';
 import StarWithStroke from '@/components/ui/starWithStroke';
 
-import { Link, Star } from 'lucide-react';
+import {
+  Link,
+  Star,
+} from 'lucide-react';
 import { shortNumberFormat } from './utils/numberFormat';
 import { getStargazers } from './domain/services/getStargazers';
 import { AuthModal } from '@/components/ui/authModal';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
+import { UserDropdown } from '@/components/ui/userDropdown';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
 
@@ -25,12 +29,12 @@ export default async function Home() {
         <Navbar>
           <div className="flex flex-1 justify-between">
             <div className="flex items-center">
-              <span className="text-center text-xl font-bold p-2">
+              <span className="text-center text-lg lg:text-xl font-bold p-2">
                 diegue.link
               </span>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-3 items-center">
               <Button
                 link
                 href={GITHUB_REPO_URL}
@@ -42,7 +46,7 @@ export default async function Home() {
               {!session ? (
                 <AuthModal />
               ) : (
-                <Button>{session.user.username}</Button>
+                <UserDropdown username={session.user.username} />
               )}
             </div>
           </div>

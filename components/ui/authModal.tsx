@@ -26,7 +26,7 @@ export function AuthModal() {
       email: formData.get('email') as string,
       username: formData.get('username') as string,
       password: formData.get('password') as string,
-      callbackURL: 'http://localhost:3000',
+      callbackURL: window.location.origin,
     });
 
     console.log('Data', data);
@@ -41,7 +41,7 @@ export function AuthModal() {
     const { data, error } = await authClient.signIn.email({
       email: formData.get('email') as string,
       password: formData.get('password') as string,
-      callbackURL: 'http://localhost:3000',
+      callbackURL: window.location.origin,
     });
 
     console.log('Data', data);
@@ -53,7 +53,7 @@ export function AuthModal() {
       <GenericModal
         title="Modal de inicio de sesión"
         trigger={
-          <Button>
+          <Button className="mr-5">
             Log in <LogIn />
           </Button>
         }
