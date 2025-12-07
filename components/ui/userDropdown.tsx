@@ -1,16 +1,15 @@
 'use client';
 
-import { ChevronsUpDown, Github, HomeIcon, LifeBuoy, LogOut, Settings } from 'lucide-react';
+import { ChevronsUpDown, HomeIcon, LogOut, Settings } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from './dropdown-menu';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth/auth-client';
 
 interface Props {
   username: string;

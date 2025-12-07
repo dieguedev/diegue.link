@@ -8,11 +8,11 @@ import {
   Link,
   Star,
 } from 'lucide-react';
-import { shortNumberFormat } from './utils/numberFormat';
-import { getStargazers } from './domain/services/getStargazers';
+import { shortNumberFormat } from '../lib/utils/numberFormat';
+import { getStargazers } from '../domain/services/getStargazers';
 import { AuthModal } from '@/components/ui/authModal';
 import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth/auth';
 import { UserDropdown } from '@/components/ui/userDropdown';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';

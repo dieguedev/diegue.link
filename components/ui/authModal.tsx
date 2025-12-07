@@ -13,7 +13,7 @@ import { LogIn } from 'lucide-react';
 import { Input } from './input';
 import { Label } from './label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth/auth-client';
 
 export function AuthModal() {
   const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,16 +21,13 @@ export function AuthModal() {
 
     const formData = new FormData(e.currentTarget);
 
-    const { data, error } = await authClient.signUp.email({
+    await authClient.signUp.email({
       name: formData.get('name') as string,
       email: formData.get('email') as string,
       username: formData.get('username') as string,
       password: formData.get('password') as string,
       callbackURL: window.location.origin,
     });
-
-    console.log('Data', data);
-    console.log('Error', error);
   };
 
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,14 +35,11 @@ export function AuthModal() {
 
     const formData = new FormData(e.currentTarget);
 
-    const { data, error } = await authClient.signIn.email({
+    await authClient.signIn.email({
       email: formData.get('email') as string,
       password: formData.get('password') as string,
       callbackURL: window.location.origin,
     });
-
-    console.log('Data', data);
-    console.log('Error', error);
   };
 
   return (
