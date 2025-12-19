@@ -1,19 +1,19 @@
 import { Button } from '@/components/ui/button';
-import { HighlightedText } from '@/components/ui/highlightedText';
+import { HighlightedText } from '@/components/shared/highlighted-text/highlighted-text';
 import Marquee from '@/components/ui/marquee';
 import { Navbar } from '@/components/ui/navbar';
-import StarWithStroke from '@/components/ui/starWithStroke';
+import StarWithStroke from '@/components/shared/star-with-stroke/star-with-stroke';
 
 import {
   Link,
   Star,
 } from 'lucide-react';
-import { shortNumberFormat } from '../lib/utils/numberFormat';
-import { getStargazers } from '../domain/services/getStargazers';
-import { AuthModal } from '@/components/ui/authModal';
+import { shortNumberFormat } from '../lib/utils/number-format';
+import { getStargazers } from '../domain/services/get-stargazers';
+import { AuthModal } from '@/components/shared/auth-modal/auth-modal';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
-import { UserDropdown } from '@/components/ui/userDropdown';
+import { UserDropdown } from '@/components/shared/user-dropdown/user-dropdown';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
 

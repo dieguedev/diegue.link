@@ -1,4 +1,4 @@
-import { githubClient } from '@/lib/github/githubClient';
+import { githubClient } from '@/lib/github/github-client';
 
 export async function getStargazers() {
   const { data } = await githubClient.request('GET /repos/{owner}/{repo}', {
