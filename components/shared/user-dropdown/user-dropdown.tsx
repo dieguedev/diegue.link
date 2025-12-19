@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './dropdown-menu';
+} from '../../ui/dropdown-menu';
 import { authClient } from '@/lib/auth/auth-client';
 
 interface Props {

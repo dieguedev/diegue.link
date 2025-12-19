@@ -1,18 +1,18 @@
 'use client';
 
-import { GenericModal } from './genericModal';
+import { GenericModal } from '../generic-modal/generic-modal';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from './card';
+} from '../../ui/card';
 import { Button } from '@/components/ui/button';
 import { LogIn } from 'lucide-react';
-import { Input } from './input';
-import { Label } from './label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import { authClient } from '@/lib/auth/auth-client';
 
 export function AuthModal() {
