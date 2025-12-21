@@ -30,7 +30,7 @@ export function CopyUrlButton({ shortUrl }: CopyUrlButtonProps) {
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
         </Button>
         <Button size="icon" variant="neutral" asChild>
-          <a href={`https://${shortUrl}`} target="_blank" rel="noopener noreferrer">
+          <a href={`//${shortUrl}`} target="_blank" rel="noopener noreferrer">
             <LinkIcon className="h-4 w-4" />
           </a>
         </Button>
