@@ -4,121 +4,87 @@ import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { randomBytes } from "crypto";
 
-const SLUG_MAX_LENGTH = 50;
-const SLUG_PATTERN = /^[a-zA-Z0-9-_]+$/;
+const CONFIG = {
+  SLUG_MAX_LENGTH: 50,
+  SLUG_PATTERN: /^[a-zA-Z0-9-_]+$/,
+  SLUG_LENGTH: 6,
+  ALPHABET: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+  DEFAULT_HOST: 'diegue.link'
+};
 
-function generateSlug(length = 6): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let slug = '';
-  for (let i = 0; i < length; i++) {
-    slug += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return slug;
+const ERRORS = {
+  AUTH: 'No autorizado. Por favor inicia sesión.',
+  URL_REQ: 'La URL es obligatoria.',
+  URL_INV: 'La URL no es válida.',
+  SLUG_GEN: 'No se ha podido generar un alias único.',
+  SLUG_EMPTY: 'El alias no puede estar vacío.',
+  SLUG_LONG: `El alias no puede tener más de ${CONFIG.SLUG_MAX_LENGTH} caracteres.`,
+  SLUG_CHARS: 'El alias sólo puede contener letras, números y guiones.',
+  SLUG_EXISTS: 'Este alias ya existe.',
+  GENERIC: 'Error al crear la URL corta. Intenta de nuevo.'
+};
+
+function generateSlug(length = CONFIG.SLUG_LENGTH): string {
+  return Array.from(randomBytes(length))
+    .map(byte => CONFIG.ALPHABET[byte % CONFIG.ALPHABET.length])
+    .join('');
 }
 
-function sanitizeSlug(slug: string): string {
-  return slug.replace(/[^a-zA-Z0-9-_]/g, '');
+async function checkSlugExists(userId: string, slug: string) {
+  return await prisma.url.findUnique({
+    where: { userId_slug: { userId, slug } },
+    select: { id: true }
+  });
 }
 
 export async function shortenUrl(formData: FormData) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return { error: ERRORS.AUTH };
 
-  if (!session) {
-    return { error: 'No autorizado. Por favor inicia sesión.' };
-  }
+  const rawUrl = formData.get('url')?.toString().trim();
+  const rawSlug = formData.get('slug')?.toString().trim();
 
-  const url = formData.get('url') as string;
-  let slug = formData.get('slug') as string;
+  if (!rawUrl) return { error: ERRORS.URL_REQ };
+  try { new URL(rawUrl); } catch { return { error: ERRORS.URL_INV }; }
 
-  if (!url || url.trim() === '') {
-    return { error: 'La URL es obligatoria' };
-  }
+  let slug = rawSlug;
 
-  try {
-    new URL(url);
-  } catch (e) {
-    return { error: 'La URL no es válida' };
-  }
-
-  if (slug) {
-    slug = sanitizeSlug(slug.trim());
-
-    if (slug.length === 0) {
-      return { error: 'El alias no puede estar vacío' };
-    }
-
-    if (slug.length > SLUG_MAX_LENGTH) {
-      return { error: `El alias no puede tener más de ${SLUG_MAX_LENGTH} caracteres` };
-    }
-
-    if (!SLUG_PATTERN.test(slug)) {
-      return { error: 'El alias solo puede contener letras, números, guiones y guiones bajos' };
-    }
-
-    const existing = await prisma.url.findUnique({
-      where: {
-        userId_slug: {
-          userId: session.user.id,
-          slug: slug,
-        },
-      },
-    });
-
-    if (existing) {
-      return { error: 'Este alias ya existe' };
-    }
-  } else {
-    let isUnique = false;
+  if (!slug) {
     let attempts = 0;
-    const MAX_ATTEMPTS = 10;
-
-    while (!isUnique && attempts < MAX_ATTEMPTS) {
-      slug = generateSlug();
-      const existing = await prisma.url.findUnique({
-        where: {
-          userId_slug: {
-            userId: session.user.id,
-            slug: slug,
-          },
-        },
-      });
-      if (!existing) {
-        isUnique = true;
+    while (attempts < 3) {
+      const candidate = generateSlug();
+      if (!(await checkSlugExists(session.user.id, candidate))) {
+        slug = candidate;
+        break;
       }
       attempts++;
     }
-
-    if (!isUnique) {
-      return { error: 'No se pudo generar un alias único. Por favor intenta de nuevo.' };
-    }
+    if (!slug) return { error: ERRORS.SLUG_GEN };
+  } else {
+    if (slug.length > CONFIG.SLUG_MAX_LENGTH) return { error: ERRORS.SLUG_LONG };
+    if (!CONFIG.SLUG_PATTERN.test(slug)) return { error: ERRORS.SLUG_CHARS };
+    if (await checkSlugExists(session.user.id, slug)) return { error: ERRORS.SLUG_EXISTS };
   }
 
   try {
     const newUrl = await prisma.url.create({
-      data: {
-        fullUrl: url,
-        slug: slug,
-        userId: session.user.id,
-      },
+      data: { fullUrl: rawUrl, slug, userId: session.user.id },
     });
 
     revalidatePath('/dashboard');
-    
-    const headersList = await headers();
-    const host = headersList.get('host') || 'diegue.link';
-    
+    const host = (await headers()).get('host') || CONFIG.DEFAULT_HOST;
+
     return { 
-      success: true, 
-      slug: newUrl.slug, 
+      success: true,
+      slug: newUrl.slug,
       username: session.user.username,
-      isAdmin: session.user.isAdmin || false,
+      isAdmin: !!session.user.isAdmin,
       origin: host,
     };
   } catch (error) {
     console.error('Error creating URL:', error);
-    return { error: 'Error al crear la URL corta. Por favor intenta de nuevo.' };
+    return { error: ERRORS.GENERIC };
   }
 }
