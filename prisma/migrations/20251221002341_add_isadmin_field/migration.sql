@@ -1,0 +1,11 @@
+-- DropForeignKey
+ALTER TABLE "public"."Url" DROP CONSTRAINT "Url_userId_fkey";
+
+-- AlterTable
+ALTER TABLE "Url" ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "isAdmin" BOOLEAN NOT NULL DEFAULT false;
+
+-- AddForeignKey
+ALTER TABLE "Url" ADD CONSTRAINT "Url_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

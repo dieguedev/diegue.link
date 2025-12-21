@@ -1,8 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
@@ -19,6 +17,11 @@ export const auth = betterAuth({
       username: {
         type: 'string',
         required: true,
+      },
+      isAdmin: {
+        type: 'boolean',
+        required: false,
+        defaultValue: false,
       },
     },
   },
