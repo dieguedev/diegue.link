@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronsUpDown, HomeIcon, LogOut, Settings } from 'lucide-react';
+import Link from 'next/link';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,9 +32,11 @@ export function UserDropdown({ username }: Props) {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>{username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <HomeIcon />
-          <span>Dashboard</span>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard">
+            <HomeIcon />
+            <span>Dashboard</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings />
