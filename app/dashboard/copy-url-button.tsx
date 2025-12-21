@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Link as LinkIcon, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 
@@ -20,12 +21,16 @@ export function CopyUrlButton({ shortUrl }: CopyUrlButtonProps) {
   };
 
   return (
-    <div className="mt-6 p-4 bg-muted rounded-lg border flex flex-col gap-2">
+    <div className="mt-6 flex flex-col gap-2">
       <p className="text-sm font-medium text-muted-foreground">Tu enlace corto:</p>
       <div className="flex items-center gap-2">
-        <div className="flex-1 p-2 bg-background rounded border font-mono text-sm truncate">
-          {shortUrl}
-        </div>
+        <Input
+          id="shortUrl"
+          name="shortUrl"
+          value={shortUrl}
+          disabled
+          className="flex-1"
+        />
         <Button size="icon" variant="neutral" onClick={copyToClipboard}>
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
         </Button>
