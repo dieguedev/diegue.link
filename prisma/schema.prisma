@@ -17,6 +17,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
   username      String    @unique
+  isAdmin       Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
   urls          Url[]
