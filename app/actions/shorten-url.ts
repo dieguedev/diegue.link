@@ -70,7 +70,12 @@ export async function shortenUrl(formData: FormData) {
 
   try {
     const newUrl = await prisma.url.create({
-      data: { fullUrl: rawUrl, slug, userId: session.user.id },
+      data: { 
+        fullUrl: rawUrl, 
+        slug, 
+        userId: session.user.id,
+        isAdmin: !!session.user.isAdmin 
+      },
     });
 
     revalidatePath('/dashboard');

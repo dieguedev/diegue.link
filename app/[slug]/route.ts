@@ -15,9 +15,7 @@ export async function GET(
   const url = await prisma.url.findFirst({
     where: {
       slug: slug,
-      user: {
-        isAdmin: true,
-      },
+      isAdmin: true,
     },
     select: {
       id: true,

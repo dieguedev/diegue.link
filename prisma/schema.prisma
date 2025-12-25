@@ -70,9 +70,10 @@ model Url {
   updatedAt DateTime @default(now()) @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isAdmin   Boolean  @default(false)
 
   @@unique([userId, slug])
   @@index([userId])
   @@index([userId, createdAt])
-  @@index([slug])
+  @@index([slug, isAdmin])
 }
