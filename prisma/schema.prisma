@@ -74,4 +74,5 @@ model Url {
   @@unique([userId, slug])
   @@index([userId])
   @@index([userId, createdAt])
+  @@index([slug])
 }

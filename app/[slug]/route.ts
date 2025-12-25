@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
-import { NextRequest } from 'next/server';
+import { NextRequest, after } from 'next/server';
 
 export async function GET(
   request: NextRequest,
@@ -19,15 +19,21 @@ export async function GET(
         isAdmin: true,
       },
     },
+    select: {
+      id: true,
+      fullUrl: true,
+    }
   });
 
   if (!url) {
     return new Response('Not found', { status: 404 });
   }
 
-  await prisma.url.update({
-    where: { id: url.id },
-    data: { clicks: { increment: 1 } },
+  after(async () => {
+    await prisma.url.update({
+      where: { id: url.id },
+      data: { clicks: { increment: 1 } },
+    });
   });
 
   return redirect(url.fullUrl);
