@@ -1,10 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
-import { NextRequest } from 'next/server';
+import { after, NextRequest } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ username: string; slug: string }> }
+  { params }: { params: Promise<{ username: string; slug: string }> },
 ) {
   const { username, slug } = await params;
 
@@ -33,9 +33,11 @@ export async function GET(
     return new Response('URL not found', { status: 404 });
   }
 
-  await prisma.url.update({
-    where: { id: url.id },
-    data: { clicks: { increment: 1 } },
+  after(async () => {
+    await prisma.url.update({
+      where: { id: url.id },
+      data: { clicks: { increment: 1 } },
+    });
   });
 
   return redirect(url.fullUrl);
