@@ -1,44 +1,40 @@
 'use client';
 
 import { useActionState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { shortenUrl } from '@/app/actions/shorten-url';
+import { shortenUrl, type ShortenUrlResult } from '@/app/actions/shorten-url';
 import { CopyUrlButton } from './copy-url-button';
 
-type ActionState = {
-  error?: string;
-  success?: boolean;
-  slug?: string;
-  username?: string;
-  isAdmin?: boolean;
-  origin?: string;
-} | null;
-
 export function UrlForm() {
-  const [state, formAction, isPending] = useActionState<ActionState, FormData>(
+  const [state, formAction, isPending] = useActionState<
+    ShortenUrlResult,
+    FormData
+  >(
     async (_prevState, formData) => {
       return await shortenUrl(formData);
     },
-    null
+    { status: 'idle' },
   );
 
-  const shortUrl =
-    state?.success && state.slug && state.username && state.origin
-      ? state.isAdmin
-        ? `${state.origin}/${state.slug}`
-        : `${state.origin}/u/${state.username}/${state.slug}`
-      : null;
+  const shortUrl = state.status === 'success' ? state.shortUrl : null;
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Acorta una URL</CardTitle>
         <CardDescription>
-          Añade la URL a acortar para generar un enlace corto. Puedes añadir un alias personalizado
-          para que sea más descriptivo o más fácil de recordar.
+          Añade la URL a acortar para generar un enlace corto. Puedes añadir un
+          alias personalizado para que sea más descriptivo o más fácil de
+          recordar.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -67,7 +63,9 @@ export function UrlForm() {
             />
           </div>
 
-          {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
+          {state.status === 'error' && (
+            <p className="text-sm text-red-500">{state.error}</p>
+          )}
 
           <Button type="submit" disabled={isPending}>
             {isPending ? 'Acortando...' : 'Acortar URL'}
