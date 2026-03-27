@@ -12,21 +12,9 @@ export async function GET(
     return new Response('Missing parameters', { status: 400 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { username },
-  });
-
-  if (!user) {
-    return new Response('User not found', { status: 404 });
-  }
-
-  const url = await prisma.url.findUnique({
-    where: {
-      userId_slug: {
-        userId: user.id,
-        slug: slug,
-      },
-    },
+  const url = await prisma.url.findFirst({
+    where: { slug, user: { username } },
+    select: { id: true, fullUrl: true },
   });
 
   if (!url) {
