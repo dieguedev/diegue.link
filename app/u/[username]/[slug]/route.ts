@@ -1,9 +1,9 @@
-import { prisma } from '@/lib/prisma';
+import { findUserUrl, incrementClicks } from '@/domain/repositories/url-repository';
 import { redirect } from 'next/navigation';
 import { after, NextRequest } from 'next/server';
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ username: string; slug: string }> },
 ) {
   const { username, slug } = await params;
@@ -12,21 +12,13 @@ export async function GET(
     return new Response('Missing parameters', { status: 400 });
   }
 
-  const url = await prisma.url.findFirst({
-    where: { slug, user: { username } },
-    select: { id: true, fullUrl: true },
-  });
+  const url = await findUserUrl(username, slug);
 
   if (!url) {
     return new Response('URL not found', { status: 404 });
   }
 
-  after(async () => {
-    await prisma.url.update({
-      where: { id: url.id },
-      data: { clicks: { increment: 1 } },
-    });
-  });
+  after(() => incrementClicks(url.id));
 
   return redirect(url.fullUrl);
 }

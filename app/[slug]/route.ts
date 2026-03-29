@@ -1,9 +1,9 @@
-import { prisma } from '@/lib/prisma';
+import { findAdminUrl, incrementClicks } from '@/domain/repositories/url-repository';
 import { redirect } from 'next/navigation';
 import { NextRequest, after } from 'next/server';
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
@@ -12,27 +12,13 @@ export async function GET(
     return new Response('Missing slug', { status: 400 });
   }
 
-  const url = await prisma.url.findFirst({
-    where: {
-      slug: slug,
-      isAdmin: true,
-    },
-    select: {
-      id: true,
-      fullUrl: true,
-    }
-  });
+  const url = await findAdminUrl(slug);
 
   if (!url) {
     return new Response('Not found', { status: 404 });
   }
 
-  after(async () => {
-    await prisma.url.update({
-      where: { id: url.id },
-      data: { clicks: { increment: 1 } },
-    });
-  });
+  after(() => incrementClicks(url.id));
 
   return redirect(url.fullUrl);
 }
