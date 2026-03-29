@@ -19,9 +19,40 @@ const dmSans = DM_Sans({
   subsets: ['latin'],
 });
 
+const description =
+  'Acorta tus URLs de forma gratuita. Crea enlaces cortos personalizados y obtén estadísticas.';
+const title = 'diegue.link | Acortador de URLs';
+
 export const metadata: Metadata = {
-  title: 'Diegue.link - Acortador de URLs',
-  description: 'Acortador de URLs hecho por diegue.dev',
+  title: title,
+  description: description,
+  metadataBase: new URL('https://diegue.link'),
+  openGraph: {
+    type: 'website',
+    locale: 'es_ES',
+    url: 'https://diegue.link',
+    title: title,
+    description: description,
+    siteName: 'diegue.link',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1080,
+        height: 1080,
+        alt: '',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: title,
+    description: description,
+    images: ['/og-image.jpg'],
+    creator: '@dieguedev',
+  },
+  alternates: {
+    canonical: 'https://diegue.link',
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} antialiased relative`}
       >
