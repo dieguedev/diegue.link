@@ -25,8 +25,8 @@
     "numeral": "^2.0.6",
     "octokit": "^5.0.4",
     "prisma": "^6.17.1",
-    "react": "19.1.2",
-    "react-dom": "19.1.2",
+    "react": "19.1.5",
+    "react-dom": "19.1.5",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
