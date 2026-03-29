@@ -28,7 +28,7 @@ export function UrlForm() {
   const shortUrl = state.status === 'success' ? state.shortUrl : null;
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card variant="secondary" className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Acorta una URL</CardTitle>
         <CardDescription>
