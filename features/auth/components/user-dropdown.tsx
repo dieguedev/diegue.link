@@ -1,7 +1,14 @@
 'use client';
 
-import { ChevronsUpDown, HomeIcon, LogOut, Settings } from 'lucide-react';
+import {
+  ChevronsUpDown,
+  HomeIcon,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+} from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +24,9 @@ interface Props {
 }
 
 export function UserDropdown({ username }: Props) {
+  const pathname = usePathname();
+  const isInDashboard = pathname.startsWith('/dashboard');
+
   const handleLogOut = async () => {
     await authClient.signOut();
     window.location.reload();
@@ -25,27 +35,40 @@ export function UserDropdown({ username }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex gap-1 bg-main min-h-[10dvh] min-w-[20dvh] max-w-[20px] justify-center items-center border-l-1 lg:ml-2">
-          {username} <ChevronsUpDown size={16} />
+        <button
+          title={username}
+          className="flex gap-1 bg-main min-h-[10dvh] min-w-[20dvh] max-w-[40dvw] px-4 justify-center items-center border-l-1 lg:ml-2"
+        >
+          <span className="truncate">{username}</span>
+          <ChevronsUpDown size={16} className="shrink-0" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>{username}</DropdownMenuLabel>
+        <DropdownMenuLabel className="truncate" title={username}>
+          {username}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard">
-            <HomeIcon />
-            <span>Dashboard</span>
-          </Link>
+          {isInDashboard ? (
+            <Link href="/">
+              <HomeIcon />
+              <span>Inicio</span>
+            </Link>
+          ) : (
+            <Link href="/dashboard">
+              <LayoutDashboard />
+              <span>Dashboard</span>
+            </Link>
+          )}
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings />
-          <span>Settings</span>
+          <span>Ajustes</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogOut}>
           <LogOut />
-          <span>Log out</span>
+          <span>Cerrar sesión</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

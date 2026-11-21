@@ -1,5 +1,10 @@
 import { randomBytes } from 'crypto';
-import { createUrl } from '@/domain/repositories/url-repository';
+import {
+  createUrl,
+  deleteUrl,
+  findUrlsByUser,
+  updateUrl,
+} from '@/domain/repositories/url-repository';
 
 const CONFIG = {
   SLUG_MAX_LENGTH: 50,
@@ -15,9 +20,22 @@ const ERRORS = {
   SLUG_GEN: 'No se ha podido generar un alias único.',
   SLUG_LONG: `El alias no puede tener más de ${CONFIG.SLUG_MAX_LENGTH} caracteres.`,
   SLUG_CHARS: 'El alias sólo puede contener letras, números y guiones.',
+  SLUG_REQ: 'El alias es obligatorio.',
   SLUG_EXISTS: 'Este alias ya existe.',
   GENERIC: 'Error al crear la URL corta. Intenta de nuevo.',
+  NOT_FOUND: 'Este enlace ya no existe.',
+  UPDATE: 'No se han podido guardar los cambios. Intenta de nuevo.',
+  DELETE: 'No se ha podido eliminar el enlace. Intenta de nuevo.',
 };
+
+function validateUrl(rawUrl: string): string | null {
+  try {
+    new URL(rawUrl);
+  } catch {
+    return ERRORS.URL_INV;
+  }
+  return null;
+}
 
 function validateSlug(slug: string): string | null {
   if (slug.length > CONFIG.SLUG_MAX_LENGTH) return ERRORS.SLUG_LONG;
@@ -57,11 +75,8 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   const { rawUrl, rawSlug, userId, isAdmin, username, host } = params;
 
   if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
-  try {
-    new URL(rawUrl);
-  } catch {
-    return { status: 'error', error: ERRORS.URL_INV };
-  }
+  const urlError = validateUrl(rawUrl);
+  if (urlError) return { status: 'error', error: urlError };
 
   if (rawSlug) {
     const validationError = validateSlug(rawSlug);
@@ -90,4 +105,61 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   }
 
   return { status: 'error', error: ERRORS.SLUG_GEN };
+}
+
+export type LinkSummary = {
+  id: number;
+  slug: string;
+  fullUrl: string;
+  shortUrl: string;
+  clicks: number;
+  createdAt: Date;
+};
+
+export async function listLinks(params: {
+  userId: string;
+  username: string;
+  host: string;
+}): Promise<LinkSummary[]> {
+  const urls = await findUrlsByUser(params.userId);
+  return urls.map(({ isAdmin, ...url }) => ({
+    ...url,
+    shortUrl: buildShortUrl(url.slug, isAdmin, params.username, params.host),
+  }));
+}
+
+export type EditLinkParams = {
+  id: number;
+  userId: string;
+  rawUrl: string | undefined;
+  rawSlug: string | undefined;
+};
+
+export type MutationResult =
+  | { status: 'success' }
+  | { status: 'error'; error: string };
+
+export async function editLink(params: EditLinkParams): Promise<MutationResult> {
+  const { id, userId, rawUrl, rawSlug } = params;
+
+  if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
+  const urlError = validateUrl(rawUrl);
+  if (urlError) return { status: 'error', error: urlError };
+
+  if (!rawSlug) return { status: 'error', error: ERRORS.SLUG_REQ };
+  const slugError = validateSlug(rawSlug);
+  if (slugError) return { status: 'error', error: slugError };
+
+  const result = await updateUrl({ id, userId, slug: rawSlug, fullUrl: rawUrl });
+  if (result === 'collision') return { status: 'error', error: ERRORS.SLUG_EXISTS };
+  if (result === 'not_found') return { status: 'error', error: ERRORS.NOT_FOUND };
+  if (result === 'error') return { status: 'error', error: ERRORS.UPDATE };
+  return { status: 'success' };
+}
+
+export async function removeLink(id: number, userId: string): Promise<MutationResult> {
+  const result = await deleteUrl(id, userId);
+  if (result === 'not_found') return { status: 'error', error: ERRORS.NOT_FOUND };
+  if (result === 'error') return { status: 'error', error: ERRORS.DELETE };
+  return { status: 'success' };
 }

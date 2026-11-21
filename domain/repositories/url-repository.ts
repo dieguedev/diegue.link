@@ -46,3 +46,64 @@ export async function incrementClicks(id: number) {
     data: { clicks: { increment: 1 } },
   });
 }
+
+export async function findUrlsByUser(userId: string) {
+  return prisma.url.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      slug: true,
+      fullUrl: true,
+      clicks: true,
+      createdAt: true,
+      isAdmin: true,
+    },
+  });
+}
+
+export type UpdateUrlData = {
+  id: number;
+  userId: string;
+  slug: string;
+  fullUrl: string;
+};
+
+export type UrlUpdateResult = UrlPersistResult | 'not_found';
+
+export async function updateUrl({
+  id,
+  userId,
+  slug,
+  fullUrl,
+}: UpdateUrlData): Promise<UrlUpdateResult> {
+  try {
+    const { count } = await prisma.url.updateMany({
+      where: { id, userId },
+      data: { slug, fullUrl },
+    });
+    return count === 0 ? 'not_found' : 'success';
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return 'collision';
+    }
+    console.error('Error updating URL:', error);
+    return 'error';
+  }
+}
+
+export async function deleteUrl(
+  id: number,
+  userId: string,
+): Promise<'success' | 'not_found' | 'error'> {
+  try {
+    const { count } = await prisma.url.deleteMany({ where: { id, userId } });
+    return count === 0 ? 'not_found' : 'success';
+  } catch (error) {
+    console.error('Error deleting URL:', error);
+    return 'error';
+  }
+}
