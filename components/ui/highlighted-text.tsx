@@ -1,4 +1,4 @@
-import StarWithStroke from '../star-with-stroke/star-with-stroke';
+import StarWithStroke from '@/components/ui/star-with-stroke';
 
 interface HighlightedTextProps {
   svgSize?: number;

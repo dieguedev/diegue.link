@@ -1,7 +1,7 @@
-import { HighlightedText } from '@/components/shared/highlighted-text/highlighted-text';
-import { HeroCta } from '@/components/shared/hero-cta/hero-cta';
+import { HighlightedText } from '@/components/ui/highlighted-text';
+import { HeroCta } from '@/app/_components/hero-cta';
 import Marquee from '@/components/ui/marquee';
-import StarWithStroke from '@/components/shared/star-with-stroke/star-with-stroke';
+import StarWithStroke from '@/components/ui/star-with-stroke';
 
 export default function Home() {
   return (

@@ -1,17 +1,17 @@
 'use client';
 
-import { GenericModal } from '../generic-modal/generic-modal';
+import { Modal } from '@/components/ui/modal';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../ui/card';
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '../../ui/input';
-import { Label } from '../../ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { authClient } from '@/lib/auth/auth-client';
 
 interface AuthModalProps {
@@ -47,7 +47,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
 
   return (
     <>
-      <GenericModal
+      <Modal
         title="Modal de inicio de sesión"
         trigger={trigger}
       >
@@ -160,7 +160,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
             </Card>
           </TabsContent>
         </Tabs>
-      </GenericModal>
+      </Modal>
     </>
   );
 }

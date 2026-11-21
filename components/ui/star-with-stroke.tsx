@@ -1,4 +1,4 @@
-import { Star8, Star9, Star16, Star22, Star27 } from '../stars';
+import { Star8, Star9, Star16, Star22, Star27 } from '@/components/ui/stars';
 
 const STAR_COMPONENTS = {
   9: Star9,

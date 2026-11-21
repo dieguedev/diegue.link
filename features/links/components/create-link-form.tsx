@@ -11,16 +11,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { shortenUrl, type ShortenUrlResult } from '@/app/actions/shorten-url';
-import { CopyUrlButton } from './copy-url-button';
+import { createLink, type CreateLinkResult } from '@/features/links/actions/create-link';
+import { CopyUrlButton } from '@/features/links/components/copy-url-button';
 
-export function UrlForm() {
+export function CreateLinkForm() {
   const [state, formAction, isPending] = useActionState<
-    ShortenUrlResult,
+    CreateLinkResult,
     FormData
   >(
     async (_prevState, formData) => {
-      return await shortenUrl(formData);
+      return await createLink(formData);
     },
     { status: 'idle' },
   );
