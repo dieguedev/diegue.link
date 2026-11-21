@@ -10,7 +10,7 @@ function HighlightedText({
 }: React.ComponentProps<'span'> & HighlightedTextProps) {
   return (
     <span
-      className="relative px-2 sm:mr-2 mr-0 md:[&_svg]:size-[45px] sm:[&_svg]:size-[32px] bg-main/50 rounded-base border-2 border-border/40 dark:border-border/70"
+      className="relative px-2 sm:mr-2 mr-0 md:[&_svg]:size-[45px] sm:[&_svg]:size-[32px] bg-main/50 rounded-base border-2 border-border/40"
       {...props}
     >
       {props.children}
