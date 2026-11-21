@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 
-const TAB_CONTENT_CLASS = 'mt-0 flex min-w-[316px] max-w-[396px] flex-col gap-6';
+const TAB_CONTENT_CLASS = 'mt-0 flex py-6 min-w-[316px] max-w-[396px] flex-col gap-6';
 
 interface AuthModalProps {
   trigger: React.ReactNode;
@@ -42,7 +42,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
           <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
           <TabsTrigger value="register">Crear cuenta</TabsTrigger>
         </TabsList>
-        <Card className="mt-2">
+        <Card className="mt-2 py-0">
           <AnimateSize>
             <TabsContent value="login" className={TAB_CONTENT_CLASS}>
               <CardHeader>
