@@ -2,14 +2,24 @@ import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
-interface GenericModalProps {
+interface ModalProps {
   title: string;
   trigger: React.ReactNode;
   children: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function GenericModal({ title, trigger, children }: GenericModalProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
+export function Modal({
+  title,
+  trigger,
+  children,
+  open,
+  onOpenChange,
+}: ModalProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  const isOpen = open ?? internalOpen;
+  const setIsOpen = onOpenChange ?? setInternalOpen;
 
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={setIsOpen} modal={false}>

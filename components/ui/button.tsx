@@ -2,6 +2,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
+import { DotLoader } from '@/components/ui/dot-loader';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-white transition-all gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
@@ -37,7 +38,8 @@ type CommonProps = VariantProps<typeof buttonVariants> & {
 };
 
 function Button(
-  props: React.ComponentProps<'button'> & CommonProps & { link?: false },
+  props: React.ComponentProps<'button'> &
+    CommonProps & { link?: false; loading?: boolean },
 ): React.JSX.Element;
 
 function Button(
@@ -50,16 +52,43 @@ function Button({
   size,
   asChild = false,
   link,
+  loading = false,
+  disabled,
+  children,
   ...props
 }: any) {
   const Comp = asChild ? Slot : link ? 'a' : 'button';
+
+  if (loading && !asChild && !link) {
+    return (
+      <Comp
+        data-slot="button"
+        className={cn(
+          buttonVariants({ variant, size }),
+          'relative disabled:opacity-100',
+          className,
+        )}
+        disabled
+        aria-busy="true"
+        {...props}
+      >
+        <span className="invisible inline-flex items-center gap-2">
+          {children}
+        </span>
+        <DotLoader className="absolute inset-0 justify-center" />
+      </Comp>
+    );
+  }
 
   return (
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={disabled}
       {...props}
-    />
+    >
+      {children}
+    </Comp>
   );
 }
 

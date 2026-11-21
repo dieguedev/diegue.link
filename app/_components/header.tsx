@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/ui/navbar';
-import { Star } from 'lucide-react';
+import { LogIn, Star } from 'lucide-react';
 import { shortNumberFormat } from '@/lib/utils/number-format';
 import { getStargazers } from '@/domain/services/get-stargazers';
-import { AuthModal } from '@/components/shared/auth-modal/auth-modal';
+import { AuthModal } from '@/features/auth/components/auth-modal';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
-import { UserDropdown } from '@/components/shared/user-dropdown/user-dropdown';
+import { UserDropdown } from '@/features/auth/components/user-dropdown';
 
 const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
 
@@ -36,7 +36,13 @@ export async function Header() {
               {shortNumberFormat(starAmount)} <Star />
             </Button>
             {!session ? (
-              <AuthModal />
+              <AuthModal
+                trigger={
+                  <Button className="mr-5">
+                    Log in <LogIn />
+                  </Button>
+                }
+              />
             ) : (
               <UserDropdown username={session.user.username} />
             )}

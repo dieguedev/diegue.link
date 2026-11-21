@@ -7,9 +7,9 @@ import { shorten, type ShortenResult } from '@/domain/services/url-service';
 
 const AUTH_ERROR = 'No autorizado. Por favor inicia sesión.';
 
-export type ShortenUrlResult = { status: 'idle' } | ShortenResult;
+export type CreateLinkResult = { status: 'idle' } | ShortenResult;
 
-export async function shortenUrl(formData: FormData): Promise<ShortenUrlResult> {
+export async function createLink(formData: FormData): Promise<CreateLinkResult> {
   const headersList = await headers();
   const session = await auth.api.getSession({ headers: headersList });
   if (!session) return { status: 'error', error: AUTH_ERROR };
