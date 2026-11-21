@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/ui/navbar';
-import { Star } from 'lucide-react';
+import { LogIn, Star } from 'lucide-react';
 import { shortNumberFormat } from '@/lib/utils/number-format';
 import { getStargazers } from '@/domain/services/get-stargazers';
 import { AuthModal } from '@/components/shared/auth-modal/auth-modal';
@@ -36,7 +36,13 @@ export async function Header() {
               {shortNumberFormat(starAmount)} <Star />
             </Button>
             {!session ? (
-              <AuthModal />
+              <AuthModal
+                trigger={
+                  <Button className="mr-5">
+                    Log in <LogIn />
+                  </Button>
+                }
+              />
             ) : (
               <UserDropdown username={session.user.username} />
             )}

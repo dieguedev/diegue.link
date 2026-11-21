@@ -9,13 +9,16 @@ import {
   CardTitle,
 } from '../../ui/card';
 import { Button } from '@/components/ui/button';
-import { LogIn } from 'lucide-react';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import { authClient } from '@/lib/auth/auth-client';
 
-export function AuthModal() {
+interface AuthModalProps {
+  trigger: React.ReactNode;
+}
+
+export function AuthModal({ trigger }: AuthModalProps) {
   const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -46,11 +49,7 @@ export function AuthModal() {
     <>
       <GenericModal
         title="Modal de inicio de sesión"
-        trigger={
-          <Button className="mr-5">
-            Log in <LogIn />
-          </Button>
-        }
+        trigger={trigger}
       >
         <Tabs defaultValue="login" className="max-w-[400px]">
           <TabsList className="grid w-full grid-cols-2">
