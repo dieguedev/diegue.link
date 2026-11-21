@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/table';
 import { listLinks } from '@/domain/services/url-service';
 import { numberFormat } from '@/lib/utils/number-format';
+import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';
 import { DeleteLinkDialog } from '@/features/links/components/delete-link-dialog';
 
@@ -102,6 +103,10 @@ export async function LinksTable({ userId, username }: LinksTableProps) {
                   </TableCell>
                   <TableCell className="py-3">
                     <div className="flex justify-end gap-2">
+                      <CopyLinkButton
+                        shortUrl={link.shortUrl}
+                        className="size-9"
+                      />
                       <EditLinkDialog link={link} />
                       <DeleteLinkDialog link={link} />
                     </div>
