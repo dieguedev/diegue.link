@@ -1,5 +1,8 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { AnimateSize } from '@/components/ui/animate-size';
 import { Modal } from '@/components/ui/modal';
 import {
   Card,
@@ -8,56 +11,40 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { authClient } from '@/lib/auth/auth-client';
+import { LoginForm } from '@/features/auth/components/login-form';
+import { RegisterForm } from '@/features/auth/components/register-form';
+
+const TAB_CONTENT_CLASS = 'mt-0 flex min-w-[316px] max-w-[396px] flex-col gap-6';
 
 interface AuthModalProps {
   trigger: React.ReactNode;
 }
 
 export function AuthModal({ trigger }: AuthModalProps) {
-  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
 
-    const formData = new FormData(e.currentTarget);
-
-    await authClient.signUp.email({
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      username: formData.get('username') as string,
-      password: formData.get('password') as string,
-      callbackURL: window.location.origin,
-    });
-  };
-
-  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-
-    await authClient.signIn.email({
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-      callbackURL: window.location.origin,
-    });
+  const handleSuccess = () => {
+    setOpen(false);
+    router.refresh();
   };
 
   return (
-    <>
-      <Modal
-        title="Modal de inicio de sesión"
-        trigger={trigger}
-      >
-        <Tabs defaultValue="login" className="max-w-[400px]">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
-            <TabsTrigger value="register">Crear cuenta</TabsTrigger>
-          </TabsList>
-          <TabsContent value="login">
-            <Card className="w-full min-w-xs">
+    <Modal
+      title="Modal de inicio de sesión"
+      trigger={trigger}
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <Tabs defaultValue="login">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
+          <TabsTrigger value="register">Crear cuenta</TabsTrigger>
+        </TabsList>
+        <Card className="mt-2">
+          <AnimateSize>
+            <TabsContent value="login" className={TAB_CONTENT_CLASS}>
               <CardHeader>
                 <CardTitle>Iniciar sesión</CardTitle>
                 <CardDescription>
@@ -65,45 +52,10 @@ export function AuthModal({ trigger }: AuthModalProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleLoginSubmit}>
-                  <div className="flex flex-col gap-6">
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="email@example.com"
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <div className="flex items-center">
-                        <Label htmlFor="password">Contraseña</Label>
-                        <a
-                          href="#"
-                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                        >
-                          ¿Olvidaste tu contraseña?
-                        </a>
-                      </div>
-                      <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full">
-                      Iniciar sesión
-                    </Button>
-                  </div>
-                </form>
+                <LoginForm onSuccess={handleSuccess} />
               </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="register">
-            <Card className="w-full min-w-xs">
+            </TabsContent>
+            <TabsContent value="register" className={TAB_CONTENT_CLASS}>
               <CardHeader>
                 <CardTitle>¡Regístrate!</CardTitle>
                 <CardDescription>
@@ -111,56 +63,12 @@ export function AuthModal({ trigger }: AuthModalProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleRegisterSubmit}>
-                  <div className="flex flex-col gap-6">
-                    <div className="grid gap-2">
-                      <Label htmlFor="name">Nombre</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        placeholder="John Doe"
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="email@example.com"
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="username">Nombre de usuario</Label>
-                      <Input
-                        id="username"
-                        name="username"
-                        type="text"
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="password">Contraseña</Label>
-                      <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full">
-                      Crear cuenta
-                    </Button>
-                  </div>
-                </form>
+                <RegisterForm onSuccess={handleSuccess} />
               </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </Modal>
-    </>
+            </TabsContent>
+          </AnimateSize>
+        </Card>
+      </Tabs>
+    </Modal>
   );
 }
