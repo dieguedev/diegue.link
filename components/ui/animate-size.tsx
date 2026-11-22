@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/cn';
 interface AnimateSizeProps {
   children: React.ReactNode;
   className?: string;
+  axis?: 'both' | 'width' | 'height';
 }
 
 interface Size {
@@ -13,7 +14,11 @@ interface Size {
   height: number;
 }
 
-function AnimateSize({ children, className }: AnimateSizeProps) {
+function AnimateSize({
+  children,
+  className,
+  axis = 'both',
+}: AnimateSizeProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<Size>();
 
@@ -36,9 +41,12 @@ function AnimateSize({ children, className }: AnimateSizeProps) {
         'overflow-hidden transition-[width,height] duration-300 ease-ui motion-reduce:transition-none',
         className,
       )}
-      style={size}
+      style={{
+        width: axis === 'height' ? undefined : size?.width,
+        height: axis === 'width' ? undefined : size?.height,
+      }}
     >
-      <div ref={contentRef} className="w-max">
+      <div ref={contentRef} className={axis === 'height' ? 'w-full' : 'w-max'}>
         {children}
       </div>
     </div>

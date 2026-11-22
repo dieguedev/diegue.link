@@ -50,7 +50,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
             <TabsTrigger value="register">Crear cuenta</TabsTrigger>
           </TabsList>
           <Card className="mt-2 py-0">
-            <AnimateSize>
+            <AnimateSize axis="height">
               <TabsContent value="login" className={TAB_CONTENT_CLASS}>
                 <CardHeader>
                   <CardTitle>Iniciar sesión</CardTitle>
