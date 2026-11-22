@@ -31,7 +31,7 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
             target="_blank"
             rel="noopener noreferrer"
             title={link.shortUrl}
-            className="truncate hover:underline"
+            className="truncate link-underline"
           >
             {link.shortUrl}
           </a>
@@ -44,7 +44,7 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
             target="_blank"
             rel="noopener noreferrer"
             title={link.fullUrl}
-            className="truncate underline-offset-4 hover:text-foreground hover:underline"
+            className="truncate link-underline hover:text-foreground"
           >
             {link.fullUrl}
           </a>

@@ -47,7 +47,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   return (
     <form
       ref={formRef}
-      onSubmit={handleSubmit(onValid, (invalid) =>
+      onSubmit={handleSubmit(onValid, invalid =>
         shakeFields(formRef.current, Object.keys(invalid)),
       )}
       noValidate
@@ -64,16 +64,16 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
             aria-describedby="login-email-message"
             {...field('email')}
           />
-          <FieldMessage id="login-email-message" error={errors.email?.message} />
+          <FieldMessage
+            id="login-email-message"
+            error={errors.email?.message}
+          />
         </div>
 
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="login-password">Contraseña</Label>
-            <a
-              href="#"
-              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-            >
+            <a href="#" className="ml-auto inline-block text-sm link-underline">
               ¿Olvidaste tu contraseña?
             </a>
           </div>

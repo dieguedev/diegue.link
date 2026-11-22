@@ -122,7 +122,7 @@ export async function LinksTable({
                         target="_blank"
                         rel="noopener noreferrer"
                         title={link.shortUrl}
-                        className="block max-w-[14rem] truncate font-heading underline-offset-4 hover:underline lg:max-w-xs"
+                        className="inline-block max-w-[14rem] truncate align-bottom font-heading link-underline lg:max-w-xs"
                       >
                         {link.shortUrl}
                       </a>
@@ -133,7 +133,7 @@ export async function LinksTable({
                         target="_blank"
                         rel="noopener noreferrer"
                         title={link.fullUrl}
-                        className="block max-w-[14rem] truncate text-foreground/70 underline-offset-4 hover:text-foreground hover:underline lg:max-w-sm"
+                        className="inline-block max-w-[14rem] truncate align-bottom text-foreground/70 link-underline hover:text-foreground lg:max-w-sm"
                       >
                         {link.fullUrl}
                       </a>

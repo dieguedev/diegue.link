@@ -97,9 +97,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
         <label htmlFor="hero-url" className="sr-only">
           Enlace a acortar
         </label>
-        <InputGroup
-          className="max-sm:h-auto max-sm:flex-col sm:h-14"
-        >
+        <InputGroup className="max-sm:h-auto max-sm:flex-col sm:h-14">
           <InputGroupInput
             ref={inputRef}
             id="hero-url"
@@ -163,11 +161,14 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
             href={`//${shortUrl}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="min-w-0 flex-1 truncate font-heading underline-offset-4 hover:underline"
+            className="min-w-0 truncate font-heading link-underline"
           >
             {shortUrl}
           </a>
-          <CopyLinkButton shortUrl={shortUrl} className="size-9 shrink-0" />
+          <CopyLinkButton
+            shortUrl={shortUrl}
+            className="ml-auto size-9 shrink-0"
+          />
         </div>
       )}
 

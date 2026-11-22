@@ -105,7 +105,31 @@
 
 }
   
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 300ms var(--ease-ui);
+
+  &:hover,
+  &:focus-visible,
+  :is(a, button):is(:hover, :focus-visible) > & {
+    background-size: 100% 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
 @layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   body {
     @apply text-foreground font-base bg-background;
     font-family: var(--font-dm-sans), 'sans-serif';

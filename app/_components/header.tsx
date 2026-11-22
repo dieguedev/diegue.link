@@ -7,8 +7,7 @@ import { AuthModal } from '@/features/auth/components/auth-modal';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
 import { UserDropdown } from '@/features/auth/components/user-dropdown';
-
-const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
+import { GITHUB_REPO_URL } from '@/lib/site';
 
 export async function Header() {
   const starAmount = await getStargazers();
