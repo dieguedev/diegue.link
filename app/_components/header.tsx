@@ -19,7 +19,7 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-20">
       <Navbar>
-        <div className="flex flex-1 justify-between">
+        <div className="flex flex-1 self-stretch justify-between">
           <div className="flex items-center">
             <span className="text-center text-lg lg:text-xl font-bold p-2">
               diegue.link
@@ -38,7 +38,7 @@ export async function Header() {
             {!session ? (
               <AuthModal
                 trigger={
-                  <Button className="mr-5">
+                  <Button className="mr-4 md:mr-6">
                     Log in <LogIn />
                   </Button>
                 }

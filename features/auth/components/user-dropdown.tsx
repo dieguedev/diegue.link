@@ -37,7 +37,7 @@ export function UserDropdown({ username }: Props) {
       <DropdownMenuTrigger asChild>
         <button
           title={username}
-          className="flex gap-1 bg-main min-h-[10dvh] min-w-[20dvh] max-w-[40dvw] px-4 justify-center items-center border-l-1 lg:ml-2"
+          className="flex gap-1 self-stretch bg-main min-w-28 max-w-40 sm:min-w-40 sm:max-w-64 px-4 justify-center items-center border-l-1 lg:ml-2"
         >
           <span className="truncate">{username}</span>
           <ChevronsUpDown size={16} className="shrink-0" />

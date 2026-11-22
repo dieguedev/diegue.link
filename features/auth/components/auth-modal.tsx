@@ -21,7 +21,7 @@ import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 
 const TAB_CONTENT_CLASS =
-  'mt-0 flex py-6 min-w-[316px] max-w-[396px] flex-col gap-6 transition-opacity duration-150 ease-ui starting:opacity-0';
+  'mt-0 flex py-6 flex-col gap-6 transition-opacity duration-150 ease-ui starting:opacity-0';
 
 interface AuthModalProps {
   trigger: React.ReactElement;
@@ -41,7 +41,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
       <DialogTrigger render={trigger} />
       <DialogContent
         showCloseButton={false}
-        className="block w-auto gap-0 border-0 bg-transparent p-0 shadow-none sm:max-w-none"
+        className="block w-full max-w-[min(396px,calc(100%-2rem))] gap-0 border-0 bg-transparent p-0 shadow-none sm:max-w-[396px]"
       >
         <DialogTitle className="sr-only">Modal de inicio de sesión</DialogTitle>
         <Tabs defaultValue="login">

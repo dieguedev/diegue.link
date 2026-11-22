@@ -5,9 +5,9 @@ import StarWithStroke from '@/components/ui/star-with-stroke';
 
 export default function Home() {
   return (
-    <main>
-      <div className="flex flex-col gap-4 min-h-[75dvh] justify-center items-center bg-[linear-gradient(to_right,#8080804D_1px,transparent_1px),linear-gradient(to_bottom,#80808090_1px,transparent_1px)] bg-[size:70px_70px] py-5">
-        <div className="flex flex-col justify-center max-w-[66dvw]">
+    <main className="flex min-h-[calc(100svh-4rem)] flex-col">
+      <div className="flex flex-1 flex-col gap-4 justify-center items-center bg-[linear-gradient(to_right,#8080804D_1px,transparent_1px),linear-gradient(to_bottom,#80808090_1px,transparent_1px)] bg-[size:70px_70px] py-16 md:py-24 lg:py-32">
+        <div className="flex flex-col justify-center w-full max-w-4xl px-4">
           <h1 className="text-center text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 p-2">
             Empieza a <HighlightedText>acortar</HighlightedText> los enlaces que{' '}
             <br className="hidden lg:block" />

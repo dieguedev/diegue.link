@@ -1,20 +1,23 @@
+const ITEM_CLASS =
+  'mx-3 text-2xl md:mx-4 md:text-4xl [&_svg]:size-7 md:[&_svg]:size-10';
+
 export default function Marquee({ items }: { items: React.ReactNode[] }) {
   return (
-    <div className="relative h-[15dvh] flex w-full overflow-x-hidden overflow-y-hidden border-b-2 border-t-2 border-border bg-secondary-background text-foreground font-base">
-      <div className="h-[15dvh] animate-marquee whitespace-nowrap flex items-center">
+    <div className="relative flex w-full overflow-hidden border-b-2 border-t-2 border-border bg-secondary-background text-foreground font-base">
+      <div className="animate-marquee whitespace-nowrap flex items-center py-4 md:py-6">
         {items.map((item, _index) => {
           return (
-            <span key={_index} className="mx-4 text-4xl">
+            <span key={_index} className={ITEM_CLASS}>
               {item}
             </span>
           );
         })}
       </div>
 
-      <div className="absolute h-[15dvh] top-0 animate-marquee2 whitespace-nowrap flex items-center">
+      <div className="absolute inset-y-0 animate-marquee2 whitespace-nowrap flex items-center">
         {items.map((item, _index) => {
           return (
-            <span key={_index} className="mx-4 text-4xl">
+            <span key={_index} className={ITEM_CLASS}>
               {item}
             </span>
           );
