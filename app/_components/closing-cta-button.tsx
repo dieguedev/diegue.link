@@ -28,7 +28,10 @@ export function ClosingCtaButton({ isLoggedIn }: ClosingCtaButtonProps) {
 
   return (
     <AuthModal
-      onSuccess={() => router.push('/dashboard')}
+      onSuccess={() => {
+        router.push('/dashboard');
+        router.refresh();
+      }}
       trigger={
         <Button variant="neutral" size="hero" className={BUTTON_CLASS}>
           Empezar gratis
