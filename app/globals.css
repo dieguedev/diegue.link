@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant short (@media (max-height: 680px));
+
 :root {
   --background: oklch(93.37% 0.0339 12.05);
   --secondary-background: oklch(100% 0 0);

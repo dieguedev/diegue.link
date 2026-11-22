@@ -1,9 +1,8 @@
 'use client';
 
-import NextLink from 'next/link';
 import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Link as LinkIcon } from 'lucide-react';
+import { Link as LinkIcon } from 'lucide-react';
 import { DotLoader } from '@/components/ui/dot-loader';
 import {
   InputGroup,
@@ -99,7 +98,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
           Enlace a acortar
         </label>
         <InputGroup
-          className={`max-sm:h-auto max-sm:flex-col sm:h-14 ${isLoggedIn ? 'shadow-shadow' : ''}`}
+          className="max-sm:h-auto max-sm:flex-col sm:h-14"
         >
           <InputGroupInput
             ref={inputRef}
@@ -116,7 +115,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
             aria-describedby={error ? 'hero-url-error' : undefined}
             onChange={() => error && setError(null)}
             disabled={isPending}
-            className="h-14 px-4 text-base max-sm:flex-none sm:h-full md:text-lg"
+            className="h-14 px-4 text-base max-sm:flex-none max-sm:short:h-12 sm:h-full md:text-lg"
           />
           <InputGroupAddon
             align="inline-end"
@@ -127,7 +126,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
               variant="default"
               disabled={isPending}
               aria-busy={isPending || undefined}
-              className="relative gap-2 px-5! text-base max-sm:h-12! max-sm:w-full max-sm:rounded-none! max-sm:border-t-2! max-sm:border-l-0! md:text-lg"
+              className="relative gap-2 px-5! text-base max-sm:h-12! max-sm:short:h-11! max-sm:w-full max-sm:rounded-none! max-sm:border-t-2! max-sm:border-l-0! md:text-lg"
             >
               <span
                 className={`inline-flex items-center gap-2 ${isPending ? 'invisible' : ''}`}
@@ -170,16 +169,6 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
           </a>
           <CopyLinkButton shortUrl={shortUrl} className="size-9 shrink-0" />
         </div>
-      )}
-
-      {isLoggedIn && (
-        <NextLink
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 self-center text-sm font-heading underline-offset-4 hover:underline"
-        >
-          Ver todos tus enlaces
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </NextLink>
       )}
 
       <AuthModal
