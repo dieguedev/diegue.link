@@ -20,7 +20,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 
-const TAB_CONTENT_CLASS = 'mt-0 flex py-6 min-w-[316px] max-w-[396px] flex-col gap-6';
+const TAB_CONTENT_CLASS =
+  'mt-0 flex py-6 min-w-[316px] max-w-[396px] flex-col gap-6 transition-opacity duration-150 ease-ui starting:opacity-0';
 
 interface AuthModalProps {
   trigger: React.ReactElement;
