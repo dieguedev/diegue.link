@@ -5,7 +5,6 @@ import StarWithStroke from '@/components/ui/star-with-stroke';
 
 const MARQUEE_PHRASES = ['Acorta tus enlaces', 'Compártelos', 'Guárdalos'];
 
-// Solo gira la estrella redonda (16), alternando sentido; la estrecha (27) se queda quieta.
 const MARQUEE_ITEMS = Array.from({ length: 4 }).flatMap((_, round) =>
   MARQUEE_PHRASES.flatMap((phrase, i) => {
     const n = round * MARQUEE_PHRASES.length + i;

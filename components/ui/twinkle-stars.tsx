@@ -3,28 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import StarWithStroke from '@/components/ui/star-with-stroke';
 
-/*
- * Estrellas que nacen y mueren alrededor de su contenedor, como en un cielo.
- * Cada poco tiempo (a intervalos aleatorios) nace una nueva; vive un instante,
- * crece girando y se encoge, y desaparece. Nadie va a compás.
- *
- * Nacen sobre el borde de arriba o el de abajo (los laterales chocarían con las
- * palabras vecinas). Cada nueva se coloca mirando solo las que están vivas:
- *   - en la fila con menos estrellas,
- *   - separada de las de su fila,
- *   - sin que el conjunto quede cargado hacia un lado,
- *   - sin que estén todas en las esquinas (queda demasiado perfecto).
- * Si no hay hueco válido, no nace y se vuelve a intentar en el siguiente intervalo.
- */
-
 type Row = 'top' | 'bottom';
 
 interface Sparkle {
   id: number;
   row: Row;
-  // Posición horizontal del centro de la estrella, en % del contenedor (0-100).
   x: number;
-  // Desplazamiento vertical hacia dentro, en % del contenedor.
   inset: number;
   scale: number;
   rotate: number;
@@ -32,20 +16,13 @@ interface Sparkle {
   duration: number;
 }
 
-// Cada cuánto nace una estrella nueva. Junto con DURATION_MS da unas 5 vivas de media.
 const INTERVAL_MS: [number, number] = [150, 450];
-// Cuánto vive cada estrella.
-const DURATION_MS: [number, number] = [1300, 1900];
-// Cuándo empieza a nacer la primera tras cargar.
+const DURATION_MS: [number, number] = [1333, 1933];
 const FIRST_SPAWN_MS = 600;
-// Máximo de estrellas vivas a la vez.
 const MAX_ALIVE = 6;
 
-// Distancia mínima con las estrellas vivas de la misma fila.
 const MIN_ROW_GAP = 28;
-// Con dos o más vivas, su media horizontal debe quedar en esta franja.
 const BALANCE: [number, number] = [25, 75];
-// Por debajo o por encima de esto se considera esquina.
 const CORNER = 20;
 
 const random = (min: number, max: number) => min + Math.random() * (max - min);
@@ -81,10 +58,7 @@ function createSparkle(alive: Sparkle[], id: number): Sparkle | null {
       id,
       row,
       x,
-      // En las esquinas pueden entrar un poco; las del centro, sobre el borde,
-      // para no tapar las letras.
       inset: isCorner(x) ? random(0, 8) : 0,
-      // Las del centro, algo más pequeñas: tienen menos aire alrededor.
       scale: random(0.7, 1.05) * (isCorner(x) ? 1 : 0.85),
       rotate: random(-30, 30),
       delay: 0,
@@ -94,8 +68,6 @@ function createSparkle(alive: Sparkle[], id: number): Sparkle | null {
   return null;
 }
 
-// Las primeras, fijas para que servidor y cliente pinten lo mismo. Con movimiento
-// reducido son las únicas y se quedan quietas.
 const INITIAL: Sparkle[] = (
   [
     ['top', 82, 100, 1700],
@@ -115,10 +87,15 @@ const INITIAL: Sparkle[] = (
 
 interface TwinkleStarsProps {
   size?: number;
+  color?: string;
   className?: string;
 }
 
-function TwinkleStars({ size = 45, className }: TwinkleStarsProps) {
+function TwinkleStars({
+  size = 45,
+  color = 'var(--main)',
+  className,
+}: TwinkleStarsProps) {
   const [sparkles, setSparkles] = useState<Sparkle[]>(INITIAL);
   const nextId = useRef(INITIAL.length);
 
@@ -148,8 +125,8 @@ function TwinkleStars({ size = 45, className }: TwinkleStarsProps) {
       key={sparkle.id}
       starNumber={9}
       size={size}
+      color={color}
       aria-hidden
-      // Las dos animaciones acaban a la vez; quitarla dos veces no hace nada.
       onAnimationEnd={() => remove(sparkle.id)}
       className={`absolute pointer-events-none [translate:-50%_-50%] transition-[scale] duration-300 ease-ui group-hover:scale-125 [will-change:transform,rotate] motion-safe:animate-[star-grow_1600ms_ease-in-out_both,star-turn_1600ms_linear_both] ${className ?? ''}`}
       style={

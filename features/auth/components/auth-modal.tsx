@@ -24,21 +24,36 @@ const TAB_CONTENT_CLASS =
   'mt-0 flex py-6 flex-col gap-6 transition-opacity duration-150 ease-ui starting:opacity-0';
 
 interface AuthModalProps {
-  trigger: React.ReactElement;
+  trigger?: React.ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
-export function AuthModal({ trigger }: AuthModalProps) {
+export function AuthModal({
+  trigger,
+  open: controlledOpen,
+  onOpenChange,
+  onSuccess,
+}: AuthModalProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+
+  const setOpen = (next: boolean) => {
+    if (controlledOpen === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
 
   const handleSuccess = () => {
     setOpen(false);
-    router.refresh();
+    if (onSuccess) onSuccess();
+    else router.refresh();
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger} />
+      {trigger && <DialogTrigger render={trigger} />}
       <DialogContent
         showCloseButton={false}
         className="block w-full max-w-[min(396px,calc(100%-2rem))] gap-0 border-0 bg-transparent p-0 shadow-none! sm:max-w-[396px]"

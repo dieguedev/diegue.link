@@ -48,11 +48,6 @@
   --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
   --animate-star-spin: star-spin 12s linear infinite;
 
-  /* Vida de una estrella, en dos animaciones de la misma duración para que el giro
-     no frene: star-grow lleva el tamaño (crece y se encoge con ease-in-out) y
-     star-turn el giro (a velocidad constante, con linear). Van en propiedades
-     distintas (transform y rotate) para no pisarse. --star-scale y --star-rotate
-     los fija cada estrella. */
   @keyframes star-grow {
     0%,
     100% {
