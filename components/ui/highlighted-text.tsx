@@ -10,7 +10,7 @@ function HighlightedText({
 }: React.ComponentProps<'span'> & HighlightedTextProps) {
   return (
     <span
-      className="group relative inline-block -rotate-2 px-3 sm:mr-2 mr-0 [&_svg]:size-6 sm:[&_svg]:size-[32px] md:[&_svg]:size-[45px] bg-main rounded-base border-2 border-border shadow-shadow"
+      className="group relative inline-block -rotate-2 px-3 sm:mr-2 mr-0 [&_svg]:size-[0.7em] bg-main rounded-base border-2 border-border shadow-shadow"
       {...props}
     >
       {props.children}
