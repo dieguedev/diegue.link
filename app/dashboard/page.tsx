@@ -5,7 +5,12 @@ import { redirect } from 'next/navigation';
 import { CreateLinkForm } from '@/features/links/components/create-link-form';
 import { LinksTable } from '@/features/links/components/links-table';
 
-export default async function Dashboard() {
+interface DashboardProps {
+  searchParams: Promise<{ q?: string; page?: string }>;
+}
+
+export default async function Dashboard({ searchParams }: DashboardProps) {
+  const { q, page } = await searchParams;
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect('/');
 
@@ -18,6 +23,8 @@ export default async function Dashboard() {
         <LinksTable
           userId={session.user.id}
           username={session.user.username}
+          query={q}
+          page={page ? Number(page) : undefined}
         />
       </div>
     </div>

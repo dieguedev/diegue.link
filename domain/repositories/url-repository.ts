@@ -10,7 +10,9 @@ export type CreateUrlData = {
 
 export type UrlPersistResult = 'success' | 'collision' | 'error';
 
-export async function createUrl(data: CreateUrlData): Promise<UrlPersistResult> {
+export async function createUrl(
+  data: CreateUrlData,
+): Promise<UrlPersistResult> {
   try {
     await prisma.url.create({ data });
     return 'success';
@@ -47,10 +49,34 @@ export async function incrementClicks(id: number) {
   });
 }
 
-export async function findUrlsByUser(userId: string) {
+export type FindUrlsByUserParams = {
+  userId: string;
+  query?: string;
+};
+
+function userUrlsWhere({ userId, query }: FindUrlsByUserParams) {
+  if (!query) return { userId };
+  return {
+    userId,
+    OR: [
+      { slug: { contains: query, mode: 'insensitive' as const } },
+      { fullUrl: { contains: query, mode: 'insensitive' as const } },
+    ],
+  };
+}
+
+export async function countUrlsByUser(params: FindUrlsByUserParams) {
+  return prisma.url.count({ where: userUrlsWhere(params) });
+}
+
+export async function findUrlsByUser(
+  params: FindUrlsByUserParams & { skip: number; take: number },
+) {
   return prisma.url.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
+    where: userUrlsWhere(params),
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    skip: params.skip,
+    take: params.take,
     select: {
       id: true,
       slug: true,

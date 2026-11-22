@@ -21,7 +21,10 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group';
 import { Label } from '@/components/ui/label';
-import { updateLink, type UpdateLinkResult } from '@/features/links/actions/update-link';
+import {
+  updateLink,
+  type UpdateLinkResult,
+} from '@/features/links/actions/update-link';
 import type { LinkSummary } from '@/domain/services/url-service';
 
 type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'shortUrl'>;
@@ -66,7 +69,10 @@ function EditLinkForm({
   link: EditableLink;
   onSuccess: () => void;
 }) {
-  const [state, formAction, isPending] = useActionState<UpdateLinkResult, FormData>(
+  const [state, formAction, isPending] = useActionState<
+    UpdateLinkResult,
+    FormData
+  >(
     async (_prevState, formData) => {
       const result = await updateLink(formData);
       if (result.status === 'success') onSuccess();
@@ -121,7 +127,9 @@ function EditLinkForm({
 
       <DialogFooter className="mt-2">
         <DialogClose
-          render={<Button type="button" variant="neutral" disabled={isPending} />}
+          render={
+            <Button type="button" variant="neutral" disabled={isPending} />
+          }
         >
           Cancelar
         </DialogClose>

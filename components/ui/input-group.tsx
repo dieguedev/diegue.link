@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import * as React from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils/cn"
@@ -89,9 +89,10 @@ function InputGroupButton({
   variant,
   size = "xs",
   ...props
-}: Omit<React.ComponentProps<typeof Button>, "size" | "type"> &
+}: Omit<React.ComponentProps<"button">, "type"> &
   VariantProps<typeof inputGroupButtonVariants> & {
     type?: "button" | "submit" | "reset"
+    variant?: VariantProps<typeof buttonVariants>["variant"]
   }) {
   // Without an explicit variant the button is "ghost": no border, no
   // background, sitting flat inside the group. With a variant it is "solid"

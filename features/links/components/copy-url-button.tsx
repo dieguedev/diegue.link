@@ -12,7 +12,9 @@ interface CopyUrlButtonProps {
 export function CopyUrlButton({ shortUrl }: CopyUrlButtonProps) {
   return (
     <div className="mt-6 flex flex-col gap-2">
-      <p className="text-sm font-medium text-muted-foreground">Tu enlace corto:</p>
+      <p className="text-sm font-medium text-muted-foreground">
+        Tu enlace corto:
+      </p>
       <div className="flex items-center gap-2">
         <Input
           id="shortUrl"

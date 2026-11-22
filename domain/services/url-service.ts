@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto';
 import {
+  countUrlsByUser,
   createUrl,
   deleteUrl,
   findUrlsByUser,
@@ -12,6 +13,7 @@ const CONFIG = {
   SLUG_LENGTH: 6,
   ALPHABET: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
   MAX_ATTEMPTS: 3,
+  PAGE_SIZE: 20,
 };
 
 const ERRORS = {
@@ -82,8 +84,14 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
     const validationError = validateSlug(rawSlug);
     if (validationError) return { status: 'error', error: validationError };
 
-    const result = await createUrl({ slug: rawSlug, fullUrl: rawUrl, userId, isAdmin });
-    if (result === 'collision') return { status: 'error', error: ERRORS.SLUG_EXISTS };
+    const result = await createUrl({
+      slug: rawSlug,
+      fullUrl: rawUrl,
+      userId,
+      isAdmin,
+    });
+    if (result === 'collision')
+      return { status: 'error', error: ERRORS.SLUG_EXISTS };
     if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
 
     return {
@@ -116,16 +124,45 @@ export type LinkSummary = {
   createdAt: Date;
 };
 
+export type LinksPage = {
+  links: LinkSummary[];
+  total: number;
+  page: number;
+  pageCount: number;
+};
+
 export async function listLinks(params: {
   userId: string;
   username: string;
   host: string;
-}): Promise<LinkSummary[]> {
-  const urls = await findUrlsByUser(params.userId);
-  return urls.map(({ isAdmin, ...url }) => ({
-    ...url,
-    shortUrl: buildShortUrl(url.slug, isAdmin, params.username, params.host),
-  }));
+  query?: string;
+  page?: number;
+}): Promise<LinksPage> {
+  const { userId, username, host } = params;
+  const query = params.query?.trim() || undefined;
+
+  const total = await countUrlsByUser({ userId, query });
+  const pageCount = Math.max(1, Math.ceil(total / CONFIG.PAGE_SIZE));
+  // Una página fuera de rango (p. ej. al borrar el último Enlace de la última) cae en la más cercana
+  const requested = Number.isInteger(params.page) ? params.page! : 1;
+  const page = Math.min(Math.max(requested, 1), pageCount);
+
+  const urls = await findUrlsByUser({
+    userId,
+    query,
+    skip: (page - 1) * CONFIG.PAGE_SIZE,
+    take: CONFIG.PAGE_SIZE,
+  });
+
+  return {
+    links: urls.map(({ isAdmin, ...url }) => ({
+      ...url,
+      shortUrl: buildShortUrl(url.slug, isAdmin, username, host),
+    })),
+    total,
+    page,
+    pageCount,
+  };
 }
 
 export type EditLinkParams = {
@@ -139,7 +176,9 @@ export type MutationResult =
   | { status: 'success' }
   | { status: 'error'; error: string };
 
-export async function editLink(params: EditLinkParams): Promise<MutationResult> {
+export async function editLink(
+  params: EditLinkParams,
+): Promise<MutationResult> {
   const { id, userId, rawUrl, rawSlug } = params;
 
   if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
@@ -150,16 +189,27 @@ export async function editLink(params: EditLinkParams): Promise<MutationResult> 
   const slugError = validateSlug(rawSlug);
   if (slugError) return { status: 'error', error: slugError };
 
-  const result = await updateUrl({ id, userId, slug: rawSlug, fullUrl: rawUrl });
-  if (result === 'collision') return { status: 'error', error: ERRORS.SLUG_EXISTS };
-  if (result === 'not_found') return { status: 'error', error: ERRORS.NOT_FOUND };
+  const result = await updateUrl({
+    id,
+    userId,
+    slug: rawSlug,
+    fullUrl: rawUrl,
+  });
+  if (result === 'collision')
+    return { status: 'error', error: ERRORS.SLUG_EXISTS };
+  if (result === 'not_found')
+    return { status: 'error', error: ERRORS.NOT_FOUND };
   if (result === 'error') return { status: 'error', error: ERRORS.UPDATE };
   return { status: 'success' };
 }
 
-export async function removeLink(id: number, userId: string): Promise<MutationResult> {
+export async function removeLink(
+  id: number,
+  userId: string,
+): Promise<MutationResult> {
   const result = await deleteUrl(id, userId);
-  if (result === 'not_found') return { status: 'error', error: ERRORS.NOT_FOUND };
+  if (result === 'not_found')
+    return { status: 'error', error: ERRORS.NOT_FOUND };
   if (result === 'error') return { status: 'error', error: ERRORS.DELETE };
   return { status: 'success' };
 }

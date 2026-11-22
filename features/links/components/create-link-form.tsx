@@ -11,7 +11,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { createLink, type CreateLinkResult } from '@/features/links/actions/create-link';
+import {
+  createLink,
+  type CreateLinkResult,
+} from '@/features/links/actions/create-link';
 import { CopyUrlButton } from '@/features/links/components/copy-url-button';
 
 export function CreateLinkForm() {
