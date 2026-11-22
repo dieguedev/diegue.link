@@ -42,10 +42,24 @@ export async function findUserUrl(username: string, slug: string) {
   });
 }
 
-export async function incrementClicks(id: number) {
-  await prisma.url.update({
-    where: { id },
-    data: { clicks: { increment: 1 } },
+export async function findUrlByIdForUser(id: number, userId: string) {
+  return prisma.url.findFirst({
+    where: { id, userId },
+    select: {
+      id: true,
+      slug: true,
+      fullUrl: true,
+      clicks: true,
+      createdAt: true,
+      isAdmin: true,
+    },
+  });
+}
+
+export async function findUrlsByIds(ids: number[], userId: string) {
+  return prisma.url.findMany({
+    where: { id: { in: ids }, userId },
+    select: { id: true, slug: true, fullUrl: true, isAdmin: true },
   });
 }
 

@@ -12,6 +12,7 @@ import { numberFormat } from '@/lib/utils/number-format';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';
 import { DeleteLinkDialog } from '@/features/links/components/delete-link-dialog';
+import { LinkStatsButton } from '@/features/links/components/link-stats-button';
 
 interface LinkItemProps {
   link: LinkSummary;
@@ -67,6 +68,7 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
           </span>
         </div>
         <div className="flex shrink-0 gap-2">
+          <LinkStatsButton link={link} />
           <EditLinkDialog link={link} />
           <DeleteLinkDialog link={link} />
         </div>

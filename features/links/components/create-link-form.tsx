@@ -31,7 +31,7 @@ export function CreateLinkForm() {
   const shortUrl = state.status === 'success' ? state.shortUrl : null;
 
   return (
-    <Card variant="secondary" className="w-full max-w-md mx-auto">
+    <Card variant="secondary" className="w-full">
       <CardHeader>
         <CardTitle>Acorta una URL</CardTitle>
         <CardDescription>

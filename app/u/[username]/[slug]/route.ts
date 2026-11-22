@@ -1,9 +1,11 @@
-import { findUserUrl, incrementClicks } from '@/domain/repositories/url-repository';
+import { findUserUrl } from '@/domain/repositories/url-repository';
+import { recordClick } from '@/domain/repositories/click-repository';
+import { getClickMetadata } from '@/lib/analytics/click-metadata';
 import { redirect } from 'next/navigation';
 import { after, NextRequest } from 'next/server';
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ username: string; slug: string }> },
 ) {
   const { username, slug } = await params;
@@ -18,7 +20,9 @@ export async function GET(
     return new Response('URL not found', { status: 404 });
   }
 
-  after(() => incrementClicks(url.id));
+  // Los headers se leen ahora: dentro de `after()` el request ya no está disponible
+  const metadata = getClickMetadata(request);
+  after(() => recordClick(url.id, metadata));
 
   return redirect(url.fullUrl);
 }

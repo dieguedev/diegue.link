@@ -66,3 +66,8 @@ export type Verification = Prisma.VerificationModel
  * 
  */
 export type Url = Prisma.UrlModel
+/**
+ * Model Click
+ * 
+ */
+export type Click = Prisma.ClickModel

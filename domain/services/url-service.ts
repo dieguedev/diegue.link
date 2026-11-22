@@ -51,7 +51,7 @@ function generateSlug(length = CONFIG.SLUG_LENGTH): string {
     .join('');
 }
 
-function buildShortUrl(
+export function buildShortUrl(
   slug: string,
   isAdmin: boolean,
   username: string,

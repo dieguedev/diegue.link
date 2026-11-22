@@ -61,18 +61,36 @@ model Verification {
 }
 
 model Url {
-  id        Int      @id @default(autoincrement())
-  slug      String   @db.VarChar(50)
-  fullUrl   String   @db.VarChar(2048)
-  clicks    Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isAdmin   Boolean  @default(false)
+  id          Int      @id @default(autoincrement())
+  slug        String   @db.VarChar(50)
+  fullUrl     String   @db.VarChar(2048)
+  clicks      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isAdmin     Boolean  @default(false)
+  // `clicks` es el total precalculado (solo personas); cada Clic con su detalle vive en `Click`
+  clickEvents Click[]
 
   @@unique([userId, slug])
   @@index([userId])
   @@index([userId, createdAt])
   @@index([slug, isAdmin])
+}
+
+model Click {
+  id        BigInt   @id @default(autoincrement())
+  urlId     Int
+  url       Url      @relation(fields: [urlId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  country   String?  @db.VarChar(2)
+  city      String?  @db.VarChar(100)
+  referrer  String?  @db.VarChar(255)
+  device    String?  @db.VarChar(20)
+  browser   String?  @db.VarChar(50)
+  os        String?  @db.VarChar(50)
+  isBot     Boolean  @default(false)
+
+  @@index([urlId, createdAt])
 }

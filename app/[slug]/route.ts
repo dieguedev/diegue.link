@@ -1,9 +1,11 @@
-import { findAdminUrl, incrementClicks } from '@/domain/repositories/url-repository';
+import { findAdminUrl } from '@/domain/repositories/url-repository';
+import { recordClick } from '@/domain/repositories/click-repository';
+import { getClickMetadata } from '@/lib/analytics/click-metadata';
 import { redirect } from 'next/navigation';
 import { NextRequest, after } from 'next/server';
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
@@ -18,7 +20,9 @@ export async function GET(
     return new Response('Not found', { status: 404 });
   }
 
-  after(() => incrementClicks(url.id));
+  // Los headers se leen ahora: dentro de `after()` el request ya no está disponible
+  const metadata = getClickMetadata(request);
+  after(() => recordClick(url.id, metadata));
 
   return redirect(url.fullUrl);
 }

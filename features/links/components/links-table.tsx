@@ -21,6 +21,7 @@ import { numberFormat } from '@/lib/utils/number-format';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';
 import { DeleteLinkDialog } from '@/features/links/components/delete-link-dialog';
+import { LinkStatsButton } from '@/features/links/components/link-stats-button';
 import { LinkItem } from '@/features/links/components/link-item';
 import { LinksPagination } from '@/features/links/components/links-pagination';
 import { LinksSearch } from '@/features/links/components/links-search';
@@ -150,6 +151,7 @@ export async function LinksTable({
                           shortUrl={link.shortUrl}
                           className="size-9"
                         />
+                        <LinkStatsButton link={link} />
                         <EditLinkDialog link={link} />
                         <DeleteLinkDialog link={link} />
                       </div>
