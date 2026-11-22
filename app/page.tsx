@@ -3,6 +3,27 @@ import { HeroCta } from '@/app/_components/hero-cta';
 import Marquee from '@/components/ui/marquee';
 import StarWithStroke from '@/components/ui/star-with-stroke';
 
+const MARQUEE_PHRASES = ['Acorta tus enlaces', 'Compártelos', 'Guárdalos'];
+
+// Solo gira la estrella redonda (16), alternando sentido; la estrecha (27) se queda quieta.
+const MARQUEE_ITEMS = Array.from({ length: 4 }).flatMap((_, round) =>
+  MARQUEE_PHRASES.flatMap((phrase, i) => {
+    const n = round * MARQUEE_PHRASES.length + i;
+    const isRound = n % 2 === 0;
+    const spin = n % 4 === 0 ? '' : '[animation-direction:reverse]';
+    return [
+      phrase,
+      <StarWithStroke
+        key={`star-${n}`}
+        starNumber={isRound ? 16 : 27}
+        size={40}
+        aria-hidden
+        className={isRound ? `motion-safe:animate-star-spin ${spin}` : undefined}
+      />,
+    ];
+  }),
+);
+
 export default function Home() {
   return (
     <main className="flex min-h-[calc(100svh-4rem)] flex-col">
@@ -24,34 +45,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <Marquee
-        items={[
-          'Acorta tus enlaces',
-          <StarWithStroke starNumber={16} size={40} />,
-          'Compártelos',
-          <StarWithStroke starNumber={27} size={40} />,
-          'Guárdalos',
-          <StarWithStroke starNumber={16} size={40} />,
-          'Acorta tus enlaces',
-          <StarWithStroke starNumber={27} size={40} />,
-          'Compártelos',
-          <StarWithStroke starNumber={16} size={40} />,
-          'Guárdalos',
-          <StarWithStroke starNumber={27} size={40} />,
-          'Acorta tus enlaces',
-          <StarWithStroke starNumber={27} size={40} />,
-          'Compártelos',
-          <StarWithStroke starNumber={16} size={40} />,
-          'Guárdalos',
-          <StarWithStroke starNumber={27} size={40} />,
-          'Acorta tus enlaces',
-          <StarWithStroke starNumber={27} size={40} />,
-          'Compártelos',
-          <StarWithStroke starNumber={16} size={40} />,
-          'Guárdalos',
-          <StarWithStroke starNumber={27} size={40} />,
-        ]}
-      />
+      <Marquee items={MARQUEE_ITEMS} />
     </main>
   );
 }

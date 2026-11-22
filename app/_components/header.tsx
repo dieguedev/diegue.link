@@ -32,8 +32,10 @@ export async function Header() {
               href={GITHUB_REPO_URL}
               variant="neutral"
               target="_blank"
+              className="group"
             >
-              {shortNumberFormat(starAmount)} <Star />
+              {shortNumberFormat(starAmount)}{' '}
+              <Star className="transition-[rotate,fill] duration-500 ease-ui group-hover:rotate-[72deg] group-hover:fill-main" />
             </Button>
             {!session ? (
               <AuthModal

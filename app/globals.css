@@ -46,6 +46,37 @@
   --animate-marquee2: marquee2 21s linear infinite;
   --animate-dot-pulse: dot-pulse 900ms linear infinite;
   --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
+  --animate-star-spin: star-spin 12s linear infinite;
+
+  /* Vida de una estrella, en dos animaciones de la misma duración para que el giro
+     no frene: star-grow lleva el tamaño (crece y se encoge con ease-in-out) y
+     star-turn el giro (a velocidad constante, con linear). Van en propiedades
+     distintas (transform y rotate) para no pisarse. --star-scale y --star-rotate
+     los fija cada estrella. */
+  @keyframes star-grow {
+    0%,
+    100% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(var(--star-scale, 1));
+    }
+  }
+
+  @keyframes star-turn {
+    from {
+      rotate: calc(var(--star-rotate, 0deg) - 60deg);
+    }
+    to {
+      rotate: calc(var(--star-rotate, 0deg) + 90deg);
+    }
+  }
+
+  @keyframes star-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   @keyframes dot-pulse {
     0%,
