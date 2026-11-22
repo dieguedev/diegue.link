@@ -124,7 +124,7 @@ function ToastClose({
     <Button
       variant="neutral"
       size="icon"
-      className="size-7 border-0 bg-transparent shadow-none! hover:translate-x-0! hover:translate-y-0!"
+      className="size-7 border-0 bg-transparent shadow-none! hover:translate-x-0! hover:translate-y-0! active:translate-x-0! active:translate-y-0!"
     />
   ),
   ...props
