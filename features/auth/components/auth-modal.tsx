@@ -41,7 +41,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
       <DialogTrigger render={trigger} />
       <DialogContent
         showCloseButton={false}
-        className="block w-full max-w-[min(396px,calc(100%-2rem))] gap-0 border-0 bg-transparent p-0 shadow-none sm:max-w-[396px]"
+        className="block w-full max-w-[min(396px,calc(100%-2rem))] gap-0 border-0 bg-transparent p-0 shadow-none! sm:max-w-[396px]"
       >
         <DialogTitle className="sr-only">Modal de inicio de sesión</DialogTitle>
         <Tabs defaultValue="login">
