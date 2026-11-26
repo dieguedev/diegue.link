@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { headers } from 'next/headers';
+import { SITE_HOST } from '@/lib/site';
 import { ChevronRight } from 'lucide-react';
 import {
   getClicksOverview,
@@ -16,11 +16,10 @@ interface ClicksOverviewProps {
 }
 
 export async function ClicksOverview({ userId, username }: ClicksOverviewProps) {
-  const host = (await headers()).get('host') || 'diegue.link';
   const { series, total, previousTotal, topLinks } = await getClicksOverview({
     userId,
     username,
-    host,
+    host: SITE_HOST,
   });
 
   // Sin Clics en ningún periodo el bloque no aporta nada

@@ -1,4 +1,4 @@
-import { headers } from 'next/headers';
+import { SITE_HOST } from '@/lib/site';
 import { Link2, SearchX } from 'lucide-react';
 import {
   Empty,
@@ -41,11 +41,10 @@ export async function LinksTable({
   query,
   page: requestedPage,
 }: LinksTableProps) {
-  const host = (await headers()).get('host') || 'diegue.link';
   const { links, total, page, pageCount } = await listLinks({
     userId,
     username,
-    host,
+    host: SITE_HOST,
     query,
     page: requestedPage,
   });
