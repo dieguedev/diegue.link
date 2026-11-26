@@ -1,1 +1,7 @@
-export const GITHUB_REPO_URL = 'https://github.com/dieguedev/diegue.link';
+export const SITE_NAME = 'diegue.link';
+export const SITE_HOST = process.env.SITE_HOST ?? 'localhost:3000';
+export const SITE_ORIGIN = `${process.env.SITE_HOST ? 'https' : 'http'}://${SITE_HOST}`;
+
+export const GITHUB_OWNER = 'dieguedev';
+export const GITHUB_REPO = 'diegue.link';
+export const GITHUB_REPO_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`;
