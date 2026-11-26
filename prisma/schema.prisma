@@ -20,6 +20,19 @@ model User {
   accounts      Account[]
   sessions      Session[]
   urls          Url[]
+  domains       Domain[]
+}
+
+model Domain {
+  id         Int       @id @default(autoincrement())
+  host       String    @unique @db.VarChar(253)
+  ownerId    String?
+  owner      User?     @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+  urls       Url[]
+
+  @@index([ownerId])
 }
 
 model Session {
@@ -62,7 +75,7 @@ model Verification {
 
 model Url {
   id          Int      @id @default(autoincrement())
-  slug        String   @db.VarChar(50)
+  slug        String   @db.VarChar(255)
   fullUrl     String   @db.VarChar(2048)
   clicks      Int      @default(0)
   createdAt   DateTime @default(now())
@@ -70,6 +83,8 @@ model Url {
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   isAdmin     Boolean  @default(false)
+  domainId    Int?
+  domain      Domain?  @relation(fields: [domainId], references: [id], onDelete: Restrict)
   // `clicks` es el total precalculado (solo personas); cada Clic con su detalle vive en `Click`
   clickEvents Click[]
 

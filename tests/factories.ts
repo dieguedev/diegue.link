@@ -19,6 +19,24 @@ export async function createUser({
   });
 }
 
+export async function createDomain({
+  host = 'diegue.link',
+  owner,
+  verified = true,
+}: {
+  host?: string;
+  owner?: { id: string };
+  verified?: boolean;
+} = {}) {
+  return prisma.domain.create({
+    data: {
+      host,
+      ownerId: owner?.id,
+      verifiedAt: verified ? new Date() : null,
+    },
+  });
+}
+
 export async function createLink(
   user: { id: string; isAdmin: boolean },
   { slug, fullUrl = `https://example.com/${slug}` }: { slug: string; fullUrl?: string },

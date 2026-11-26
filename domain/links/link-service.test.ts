@@ -13,7 +13,7 @@ import {
   resolveLink,
   shorten,
 } from '@/domain/links/link-service';
-import { createLink, createUser } from '@/tests/factories';
+import { createDomain, createLink, createUser } from '@/tests/factories';
 
 const VISIT: ClickMetadata = {
   isBot: false,
@@ -67,6 +67,28 @@ describe('En link service', () => {
       await createLink(ana, { slug: 'cv' });
 
       expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
+    });
+
+    it('se guarda en el dominio principal', async () => {
+      const diegueLink = await createDomain({ host: 'diegue.link' });
+      const ana = await createUser({ username: 'ana' });
+
+      await shorten({
+        rawUrl: 'https://ana.dev/portfolio',
+        rawSlug: 'portfolio',
+        userId: ana.id,
+      });
+      await shorten({
+        rawUrl: 'https://ana.dev/blog',
+        rawSlug: undefined,
+        userId: ana.id,
+      });
+
+      const links = await prisma.url.findMany({ where: { userId: ana.id } });
+      expect(links.map(link => link.domainId)).toEqual([
+        diegueLink.id,
+        diegueLink.id,
+      ]);
     });
 
     it('es la misma en la lista y en las estadísticas', async () => {

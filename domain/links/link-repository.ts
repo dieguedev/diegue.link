@@ -20,6 +20,7 @@ export type CreateUrlData = {
   fullUrl: string;
   userId: string;
   isAdmin: boolean;
+  domainId?: number;
 };
 
 export type UrlPersistResult = 'success' | 'collision' | 'error';
