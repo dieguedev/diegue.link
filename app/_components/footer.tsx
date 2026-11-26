@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { GITHUB_REPO_URL } from '@/lib/site';
+import { GITHUB_REPO_URL, SITE_NAME } from '@/lib/site';
 
 const LINK_CLASS = 'inline-flex min-h-11 items-center';
 
@@ -16,7 +16,7 @@ export function Footer() {
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
           <div className="flex flex-col gap-1">
             <span className="flex min-h-11 items-center text-xl font-bold">
-              diegue.link
+              {SITE_NAME}
             </span>
             <p className="max-w-xs text-base">
               Acortador de enlaces gratuito y de código abierto.
@@ -54,7 +54,7 @@ export function Footer() {
           </nav>
         </div>
         <p className="border-t-2 border-border pt-6 text-sm">
-          © {new Date().getFullYear()} diegue.link
+          © {new Date().getFullYear()} {SITE_NAME}
         </p>
       </div>
     </footer>

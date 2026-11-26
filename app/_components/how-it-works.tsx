@@ -1,6 +1,7 @@
 import { Copy, Link as LinkIcon, MousePointerClick } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { HighlightedText } from '@/components/ui/highlighted-text';
+import { SITE_NAME } from '@/lib/site';
 
 const FRAGMENT_CLASS =
   'flex min-h-14 items-center gap-2 rounded-base border-2 border-border bg-secondary-background px-3 py-2 font-mono text-sm';
@@ -25,7 +26,10 @@ const STEPS = [
     text: 'Escribe la palabra que quieras al final o deja que generemos un identificador único por ti. Tu alias nunca estará pillado, cada uno es único por usuario.',
     fragment: (
       <div className={FRAGMENT_CLASS}>
-        <span className="truncate">{USERNAME}diegue.link/</span>
+        <span className="truncate">
+          {USERNAME}
+          {SITE_NAME}/
+        </span>
         <span className="shrink-0 border-2 border-border bg-main px-1.5 py-0.5 font-bold">
           encuesta
         </span>
@@ -37,7 +41,10 @@ const STEPS = [
     text: 'Cópialo y pégalo donde quieras. En tu panel ves cuántas veces lo han abierto y puedes cambiar el destino en cualquier momento.',
     fragment: (
       <div className={`${FRAGMENT_CLASS} justify-between`}>
-        <span className="truncate">{USERNAME}diegue.link/encuesta</span>
+        <span className="truncate">
+          {USERNAME}
+          {SITE_NAME}/encuesta
+        </span>
         <span className="flex shrink-0 items-center gap-2">
           <span className="flex h-8 items-center gap-1 border-2 border-border bg-secondary-background px-2 font-sans font-bold">
             <MousePointerClick className="size-4" />
