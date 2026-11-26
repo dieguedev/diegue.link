@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "vercel-build": "(test \"$VERCEL_ENV\" != production || prisma migrate deploy) && next build --turbopack",
     "start": "next start",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
