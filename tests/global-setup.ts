@@ -10,11 +10,8 @@ export default async function setup() {
   const client = new Client({ connectionString: url.toString() });
   await client.connect();
   try {
-    const { rowCount } = await client.query(
-      'SELECT 1 FROM pg_database WHERE datname = $1',
-      [database],
-    );
-    if (!rowCount) await client.query(`CREATE DATABASE "${database}"`);
+    await client.query(`DROP DATABASE IF EXISTS "${database}" WITH (FORCE)`);
+    await client.query(`CREATE DATABASE "${database}"`);
   } finally {
     await client.end();
   }
