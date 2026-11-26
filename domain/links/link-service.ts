@@ -3,8 +3,6 @@ import {
   countUrlsByUser,
   createUrl,
   deleteUrl,
-  existsUnprefixedUrl,
-  findUnprefixedUrl,
   findUrlByAddress,
   findUrlByIdForUser,
   findUrlsByIds,
@@ -54,8 +52,8 @@ function generateSlug(length = CONFIG.SLUG_LENGTH): string {
 
 type AddressableLink = {
   slug: string;
-  isAdmin: boolean;
-  domain: { host: string };
+  userId: string;
+  domain: { host: string; ownerId: string | null };
   user: { username: string };
 };
 
@@ -63,52 +61,36 @@ function userPrefix(username: string): string {
   return `u/${username}/`;
 }
 
-function prefixOf({ isAdmin, user }: AddressableLink): string {
-  return isAdmin ? '' : userPrefix(user.username);
+function prefixOf({ userId, domain, user }: AddressableLink): string {
+  return domain.ownerId === userId ? '' : userPrefix(user.username);
 }
 
 function aliasOf(link: AddressableLink): string {
-  const prefix = prefixOf(link);
-  return link.slug.startsWith(prefix)
-    ? link.slug.slice(prefix.length)
-    : link.slug;
+  return link.slug.slice(prefixOf(link).length);
 }
 
 function toAddress(link: AddressableLink): string {
-  const path = prefixOf(link) + aliasOf(link);
-  return `${publicHostOf(link.domain.host)}/${path}`;
+  return `${publicHostOf(link.domain.host)}/${link.slug}`;
 }
 
 function toSummary(
   link: AddressableLink & Omit<LinkSummary, 'address'>,
 ): LinkSummary {
-  const { isAdmin, domain, user, ...summary } = link;
+  const { userId, domain, user, ...summary } = link;
   return { ...summary, slug: aliasOf(link), address: toAddress(link) };
 }
 
-type LinkTarget = { domainId: number; isAdmin: boolean; prefix: string };
+type LinkTarget = { domainId: number; prefix: string };
 
 async function targetFor(userId: string): Promise<LinkTarget | null> {
   const ownDomain = await findVerifiedDomainOwnedBy(userId);
-  if (ownDomain) return { domainId: ownDomain.id, isAdmin: true, prefix: '' };
+  if (ownDomain) return { domainId: ownDomain.id, prefix: '' };
 
   const primaryDomain = await findDomainByHost(PRIMARY_DOMAIN_HOST);
   if (!primaryDomain) return null;
 
   const username = await findUsername(userId);
-  return {
-    domainId: primaryDomain.id,
-    isAdmin: false,
-    prefix: userPrefix(username),
-  };
-}
-
-async function isTakenUnprefixed(
-  { userId, isAdmin }: { userId: string; isAdmin: boolean },
-  slug: string,
-  exceptId?: number,
-): Promise<boolean> {
-  return !isAdmin && existsUnprefixedUrl({ userId, slug, exceptId });
+  return { domainId: primaryDomain.id, prefix: userPrefix(username) };
 }
 
 export type LinkSummary = {
@@ -145,17 +127,13 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
 
   const target = await targetFor(userId);
   if (!target) return { status: 'error', error: ERRORS.GENERIC };
-  const { domainId, isAdmin, prefix } = target;
+  const { domainId, prefix } = target;
 
   if (rawSlug) {
-    if (await isTakenUnprefixed({ userId, isAdmin }, rawSlug))
-      return { status: 'error', error: ERRORS.SLUG_EXISTS };
-
     const result = await createUrl({
       slug: prefix + rawSlug,
       fullUrl,
       userId,
-      isAdmin,
       domainId,
     });
     if (result === 'collision')
@@ -167,13 +145,10 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
 
   for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
     const slug = generateSlug();
-    if (await isTakenUnprefixed({ userId, isAdmin }, slug)) continue;
-
     const result = await createUrl({
       slug: prefix + slug,
       fullUrl,
       userId,
-      isAdmin,
       domainId,
     });
     if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
@@ -248,9 +223,6 @@ export async function editLink(
   const link = await findUrlByIdForUser(id, userId);
   if (!link) return { status: 'error', error: ERRORS.NOT_FOUND };
 
-  if (await isTakenUnprefixed({ userId, isAdmin: link.isAdmin }, rawSlug, id))
-    return { status: 'error', error: ERRORS.SLUG_EXISTS };
-
   const result = await updateUrl({
     id,
     userId,
@@ -276,8 +248,6 @@ export async function removeLink(
   return { status: 'success' };
 }
 
-const USER_PATH = /^u\/([^/]+)\/([^/]+)$/;
-
 export async function resolveLink({
   host,
   slug,
@@ -285,15 +255,7 @@ export async function resolveLink({
   host: string;
   slug: string;
 }): Promise<{ id: number; fullUrl: string } | null> {
-  const domainHost = domainHostOf(host);
-  const link = await findUrlByAddress({ host: domainHost, slug });
-  if (link) return link;
-
-  const userPath = USER_PATH.exec(slug);
-  if (!userPath) return null;
-
-  const [, username, alias] = userPath;
-  return findUnprefixedUrl({ host: domainHost, username, slug: alias });
+  return findUrlByAddress({ host: domainHostOf(host), slug });
 }
 
 export async function findLinkForUser(

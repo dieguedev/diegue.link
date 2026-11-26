@@ -16,7 +16,6 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
   username      String    @unique
-  isAdmin       Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
   urls          Url[]
@@ -82,16 +81,14 @@ model Url {
   updatedAt   DateTime @default(now()) @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isAdmin     Boolean  @default(false)
   domainId    Int
   domain      Domain   @relation(fields: [domainId], references: [id], onDelete: Restrict)
   // `clicks` es el total precalculado (solo personas); cada Clic con su detalle vive en `Click`
   clickEvents Click[]
 
-  @@unique([userId, slug])
+  @@unique([domainId, slug])
   @@index([userId])
   @@index([userId, createdAt])
-  @@index([slug, isAdmin])
 }
 
 model Click {

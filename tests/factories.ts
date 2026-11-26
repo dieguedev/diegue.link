@@ -1,20 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 
-export async function createUser({
-  username,
-  isAdmin = false,
-}: {
-  username: string;
-  isAdmin?: boolean;
-}) {
+export async function createUser({ username }: { username: string }) {
   return prisma.user.create({
     data: {
       id: randomUUID(),
       name: username,
       email: `${username}@example.com`,
       username,
-      isAdmin,
     },
   });
 }
@@ -38,7 +31,7 @@ export async function createDomain({
 }
 
 export async function createLink(
-  user: { id: string; isAdmin: boolean },
+  user: { id: string },
   domain: { id: number },
   {
     slug,
@@ -50,7 +43,6 @@ export async function createLink(
       slug,
       fullUrl,
       userId: user.id,
-      isAdmin: user.isAdmin,
       domainId: domain.id,
     },
   });
