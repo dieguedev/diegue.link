@@ -28,7 +28,7 @@ export function CreateLinkForm() {
     { status: 'idle' },
   );
 
-  const shortUrl = state.status === 'success' ? state.shortUrl : null;
+  const shortUrl = state.status === 'success' ? state.link.shortUrl : null;
 
   return (
     <Card variant="secondary" className="w-full">

@@ -5,8 +5,10 @@ import {
   deleteUrl,
   findUrlByAddress,
   findUrlsByUser,
+  findUserIsAdmin,
   updateUrl,
 } from '@/domain/links/link-repository';
+import { SITE_HOST } from '@/lib/site';
 
 const CONFIG = {
   SLUG_MAX_LENGTH: 50,
@@ -52,6 +54,26 @@ function generateSlug(length = CONFIG.SLUG_LENGTH): string {
     .join('');
 }
 
+type AddressableLink = {
+  slug: string;
+  isAdmin: boolean;
+  user: { username: string };
+};
+
+/** Único sitio que conoce la forma de la Dirección de un Enlace */
+function toAddress({ slug, isAdmin, user }: AddressableLink): string {
+  return isAdmin
+    ? `${SITE_HOST}/${slug}`
+    : `${SITE_HOST}/u/${user.username}/${slug}`;
+}
+
+function toSummary(
+  link: AddressableLink & Omit<LinkSummary, 'shortUrl'>,
+): LinkSummary {
+  const { isAdmin, user, ...summary } = link;
+  return { ...summary, shortUrl: toAddress(link) };
+}
+
 export function buildShortUrl(
   slug: string,
   isAdmin: boolean,
@@ -59,61 +81,6 @@ export function buildShortUrl(
   host: string,
 ): string {
   return isAdmin ? `${host}/${slug}` : `${host}/u/${username}/${slug}`;
-}
-
-export type ShortenParams = {
-  rawUrl: string | undefined;
-  rawSlug: string | undefined;
-  userId: string;
-  isAdmin: boolean;
-  username: string;
-  host: string;
-};
-
-export type ShortenResult =
-  | { status: 'success'; shortUrl: string }
-  | { status: 'error'; error: string };
-
-export async function shorten(params: ShortenParams): Promise<ShortenResult> {
-  const { rawUrl, rawSlug, userId, isAdmin, username, host } = params;
-
-  if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
-  const urlError = validateUrl(rawUrl);
-  if (urlError) return { status: 'error', error: urlError };
-
-  if (rawSlug) {
-    const validationError = validateSlug(rawSlug);
-    if (validationError) return { status: 'error', error: validationError };
-
-    const result = await createUrl({
-      slug: rawSlug,
-      fullUrl: rawUrl,
-      userId,
-      isAdmin,
-    });
-    if (result === 'collision')
-      return { status: 'error', error: ERRORS.SLUG_EXISTS };
-    if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
-
-    return {
-      status: 'success',
-      shortUrl: buildShortUrl(rawSlug, isAdmin, username, host),
-    };
-  }
-
-  for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
-    const slug = generateSlug();
-    const result = await createUrl({ slug, fullUrl: rawUrl, userId, isAdmin });
-    if (result === 'success') {
-      return {
-        status: 'success',
-        shortUrl: buildShortUrl(slug, isAdmin, username, host),
-      };
-    }
-    if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
-  }
-
-  return { status: 'error', error: ERRORS.SLUG_GEN };
 }
 
 export type LinkSummary = {
@@ -125,6 +92,56 @@ export type LinkSummary = {
   createdAt: Date;
 };
 
+export type ShortenParams = {
+  rawUrl: string | undefined;
+  rawSlug: string | undefined;
+  userId: string;
+};
+
+export type ShortenResult =
+  | { status: 'success'; link: LinkSummary }
+  | { status: 'error'; error: string };
+
+export async function shorten(params: ShortenParams): Promise<ShortenResult> {
+  const { rawUrl, rawSlug, userId } = params;
+
+  if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
+  const urlError = validateUrl(rawUrl);
+  if (urlError) return { status: 'error', error: urlError };
+
+  if (rawSlug) {
+    const validationError = validateSlug(rawSlug);
+    if (validationError) return { status: 'error', error: validationError };
+  }
+
+  // Se guarda en el Enlace para resolver las Direcciones del admin sin tocar `User`
+  const isAdmin = await findUserIsAdmin(userId);
+
+  if (rawSlug) {
+    const result = await createUrl({
+      slug: rawSlug,
+      fullUrl: rawUrl,
+      userId,
+      isAdmin,
+    });
+    if (result === 'collision')
+      return { status: 'error', error: ERRORS.SLUG_EXISTS };
+    if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
+
+    return { status: 'success', link: toSummary(result) };
+  }
+
+  for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
+    const slug = generateSlug();
+    const result = await createUrl({ slug, fullUrl: rawUrl, userId, isAdmin });
+    if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
+    if (result !== 'collision')
+      return { status: 'success', link: toSummary(result) };
+  }
+
+  return { status: 'error', error: ERRORS.SLUG_GEN };
+}
+
 export type LinksPage = {
   links: LinkSummary[];
   total: number;
@@ -134,12 +151,10 @@ export type LinksPage = {
 
 export async function listLinks(params: {
   userId: string;
-  username: string;
-  host: string;
   query?: string;
   page?: number;
 }): Promise<LinksPage> {
-  const { userId, username, host } = params;
+  const { userId } = params;
   const query = params.query?.trim() || undefined;
 
   const total = await countUrlsByUser({ userId, query });
@@ -156,10 +171,7 @@ export async function listLinks(params: {
   });
 
   return {
-    links: urls.map(({ isAdmin, ...url }) => ({
-      ...url,
-      shortUrl: buildShortUrl(url.slug, isAdmin, username, host),
-    })),
+    links: urls.map(toSummary),
     total,
     page,
     pageCount,

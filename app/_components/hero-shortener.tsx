@@ -67,7 +67,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
     startTransition(async () => {
       const result = await createLink(formData);
       if (result.status === 'success') {
-        setShortUrl(result.shortUrl);
+        setShortUrl(result.link.shortUrl);
         setError(null);
         if (inputRef.current) inputRef.current.value = '';
       } else if (result.status === 'error') {

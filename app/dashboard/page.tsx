@@ -31,7 +31,6 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
       <div className="mx-auto w-full max-w-5xl">
         <LinksTable
           userId={session.user.id}
-          username={session.user.username}
           query={q}
           page={page ? Number(page) : undefined}
         />

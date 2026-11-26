@@ -1,4 +1,3 @@
-import { SITE_HOST } from '@/lib/site';
 import { Link2, SearchX } from 'lucide-react';
 import {
   Empty,
@@ -30,21 +29,17 @@ const dateFormat = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
 
 interface LinksTableProps {
   userId: string;
-  username: string;
   query?: string;
   page?: number;
 }
 
 export async function LinksTable({
   userId,
-  username,
   query,
   page: requestedPage,
 }: LinksTableProps) {
   const { links, total, page, pageCount } = await listLinks({
     userId,
-    username,
-    host: SITE_HOST,
     query,
     page: requestedPage,
   });
