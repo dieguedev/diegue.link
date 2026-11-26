@@ -365,9 +365,9 @@ export type DomainSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
-export type DomainNullableScalarRelationFilter = {
-  is?: Prisma.DomainWhereInput | null
-  isNot?: Prisma.DomainWhereInput | null
+export type DomainScalarRelationFilter = {
+  is?: Prisma.DomainWhereInput
+  isNot?: Prisma.DomainWhereInput
 }
 
 export type DomainCreateNestedManyWithoutOwnerInput = {
@@ -430,12 +430,10 @@ export type DomainCreateNestedOneWithoutUrlsInput = {
   connect?: Prisma.DomainWhereUniqueInput
 }
 
-export type DomainUpdateOneWithoutUrlsNestedInput = {
+export type DomainUpdateOneRequiredWithoutUrlsNestedInput = {
   create?: Prisma.XOR<Prisma.DomainCreateWithoutUrlsInput, Prisma.DomainUncheckedCreateWithoutUrlsInput>
   connectOrCreate?: Prisma.DomainCreateOrConnectWithoutUrlsInput
   upsert?: Prisma.DomainUpsertWithoutUrlsInput
-  disconnect?: Prisma.DomainWhereInput | boolean
-  delete?: Prisma.DomainWhereInput | boolean
   connect?: Prisma.DomainWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.DomainUpdateToOneWithWhereWithoutUrlsInput, Prisma.DomainUpdateWithoutUrlsInput>, Prisma.DomainUncheckedUpdateWithoutUrlsInput>
 }

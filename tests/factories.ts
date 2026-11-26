@@ -39,9 +39,19 @@ export async function createDomain({
 
 export async function createLink(
   user: { id: string; isAdmin: boolean },
-  { slug, fullUrl = `https://example.com/${slug}` }: { slug: string; fullUrl?: string },
+  domain: { id: number },
+  {
+    slug,
+    fullUrl = `https://example.com/${slug}`,
+  }: { slug: string; fullUrl?: string },
 ) {
   return prisma.url.create({
-    data: { slug, fullUrl, userId: user.id, isAdmin: user.isAdmin },
+    data: {
+      slug,
+      fullUrl,
+      userId: user.id,
+      isAdmin: user.isAdmin,
+      domainId: domain.id,
+    },
   });
 }

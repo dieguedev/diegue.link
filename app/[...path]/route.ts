@@ -6,21 +6,21 @@ import { NextRequest, after } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ path: string[] }> },
 ) {
-  const { slug } = await params;
+  const { path } = await params;
+  const host = request.headers.get('host');
 
-  if (!slug) {
-    return new Response('Missing slug', { status: 400 });
+  if (!host) {
+    return new Response('Missing host', { status: 400 });
   }
 
-  const url = await resolveLink({ slug });
+  const url = await resolveLink({ host, slug: path.join('/') });
 
   if (!url) {
     return new Response('Not found', { status: 404 });
   }
 
-  // Los headers se leen ahora: dentro de `after()` el request ya no está disponible
   const metadata = getClickMetadata(request);
   after(() => recordClick(url.id, metadata));
 

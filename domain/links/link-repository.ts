@@ -4,6 +4,7 @@ import { Prisma } from '@/generated/prisma/client';
 const ADDRESS_SELECT = {
   slug: true,
   isAdmin: true,
+  domain: { select: { host: true } },
   user: { select: { username: true } },
 } as const;
 
@@ -20,17 +21,17 @@ export type CreateUrlData = {
   fullUrl: string;
   userId: string;
   isAdmin: boolean;
-  domainId?: number;
+  domainId: number;
 };
 
 export type UrlPersistResult = 'success' | 'collision' | 'error';
 
-export async function findUserIsAdmin(userId: string) {
+export async function findUsername(userId: string) {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { isAdmin: true },
+    select: { username: true },
   });
-  return user.isAdmin;
+  return user.username;
 }
 
 export async function createUrl(data: CreateUrlData) {
@@ -48,17 +49,53 @@ export async function createUrl(data: CreateUrlData) {
   }
 }
 
+const RESOLVED_SELECT = { id: true, fullUrl: true } as const;
+
 export async function findUrlByAddress({
+  host,
   slug,
-  username,
 }: {
+  host: string;
   slug: string;
-  username?: string;
 }) {
   return prisma.url.findFirst({
-    where: username ? { slug, user: { username } } : { slug, isAdmin: true },
-    select: { id: true, fullUrl: true },
+    where: {
+      slug,
+      domain: { host },
+      OR: [{ isAdmin: true }, { slug: { contains: '/' } }],
+    },
+    select: RESOLVED_SELECT,
   });
+}
+
+export async function findUnprefixedUrl({
+  host,
+  username,
+  slug,
+}: {
+  host: string;
+  username: string;
+  slug: string;
+}) {
+  return prisma.url.findFirst({
+    where: { slug, isAdmin: false, user: { username }, domain: { host } },
+    select: RESOLVED_SELECT,
+  });
+}
+
+export async function existsUnprefixedUrl({
+  userId,
+  slug,
+  exceptId,
+}: {
+  userId: string;
+  slug: string;
+  exceptId?: number;
+}) {
+  const count = await prisma.url.count({
+    where: { userId, slug, isAdmin: false, id: { not: exceptId } },
+  });
+  return count > 0;
 }
 
 export async function findUrlByIdForUser(id: number, userId: string) {

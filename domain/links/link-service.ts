@@ -3,16 +3,21 @@ import {
   countUrlsByUser,
   createUrl,
   deleteUrl,
+  existsUnprefixedUrl,
+  findUnprefixedUrl,
   findUrlByAddress,
   findUrlByIdForUser,
   findUrlsByIds,
   findUrlsByUser,
-  findUserIsAdmin,
+  findUsername,
   updateUrl,
 } from '@/domain/links/link-repository';
 import { parseDestination } from '@/domain/links/destination';
-import { findDomainByHost } from '@/domain/domains/domain-repository';
-import { PRIMARY_DOMAIN_HOST, SITE_HOST } from '@/lib/site';
+import {
+  findDomainByHost,
+  findVerifiedDomainOwnedBy,
+} from '@/domain/domains/domain-repository';
+import { PRIMARY_DOMAIN_HOST, domainHostOf, publicHostOf } from '@/lib/site';
 
 const CONFIG = {
   SLUG_MAX_LENGTH: 50,
@@ -50,20 +55,60 @@ function generateSlug(length = CONFIG.SLUG_LENGTH): string {
 type AddressableLink = {
   slug: string;
   isAdmin: boolean;
+  domain: { host: string };
   user: { username: string };
 };
 
-function toAddress({ slug, isAdmin, user }: AddressableLink): string {
-  return isAdmin
-    ? `${SITE_HOST}/${slug}`
-    : `${SITE_HOST}/u/${user.username}/${slug}`;
+function userPrefix(username: string): string {
+  return `u/${username}/`;
+}
+
+function prefixOf({ isAdmin, user }: AddressableLink): string {
+  return isAdmin ? '' : userPrefix(user.username);
+}
+
+function aliasOf(link: AddressableLink): string {
+  const prefix = prefixOf(link);
+  return link.slug.startsWith(prefix)
+    ? link.slug.slice(prefix.length)
+    : link.slug;
+}
+
+function toAddress(link: AddressableLink): string {
+  const path = prefixOf(link) + aliasOf(link);
+  return `${publicHostOf(link.domain.host)}/${path}`;
 }
 
 function toSummary(
   link: AddressableLink & Omit<LinkSummary, 'address'>,
 ): LinkSummary {
-  const { isAdmin, user, ...summary } = link;
-  return { ...summary, address: toAddress(link) };
+  const { isAdmin, domain, user, ...summary } = link;
+  return { ...summary, slug: aliasOf(link), address: toAddress(link) };
+}
+
+type LinkTarget = { domainId: number; isAdmin: boolean; prefix: string };
+
+async function targetFor(userId: string): Promise<LinkTarget | null> {
+  const ownDomain = await findVerifiedDomainOwnedBy(userId);
+  if (ownDomain) return { domainId: ownDomain.id, isAdmin: true, prefix: '' };
+
+  const primaryDomain = await findDomainByHost(PRIMARY_DOMAIN_HOST);
+  if (!primaryDomain) return null;
+
+  const username = await findUsername(userId);
+  return {
+    domainId: primaryDomain.id,
+    isAdmin: false,
+    prefix: userPrefix(username),
+  };
+}
+
+async function isTakenUnprefixed(
+  { userId, isAdmin }: { userId: string; isAdmin: boolean },
+  slug: string,
+  exceptId?: number,
+): Promise<boolean> {
+  return !isAdmin && existsUnprefixedUrl({ userId, slug, exceptId });
 }
 
 export type LinkSummary = {
@@ -98,12 +143,16 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
     if (validationError) return { status: 'error', error: validationError };
   }
 
-  const isAdmin = await findUserIsAdmin(userId);
-  const domainId = (await findDomainByHost(PRIMARY_DOMAIN_HOST))?.id;
+  const target = await targetFor(userId);
+  if (!target) return { status: 'error', error: ERRORS.GENERIC };
+  const { domainId, isAdmin, prefix } = target;
 
   if (rawSlug) {
+    if (await isTakenUnprefixed({ userId, isAdmin }, rawSlug))
+      return { status: 'error', error: ERRORS.SLUG_EXISTS };
+
     const result = await createUrl({
-      slug: rawSlug,
+      slug: prefix + rawSlug,
       fullUrl,
       userId,
       isAdmin,
@@ -118,8 +167,10 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
 
   for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
     const slug = generateSlug();
+    if (await isTakenUnprefixed({ userId, isAdmin }, slug)) continue;
+
     const result = await createUrl({
-      slug,
+      slug: prefix + slug,
       fullUrl,
       userId,
       isAdmin,
@@ -194,10 +245,16 @@ export async function editLink(
   const slugError = validateSlug(rawSlug);
   if (slugError) return { status: 'error', error: slugError };
 
+  const link = await findUrlByIdForUser(id, userId);
+  if (!link) return { status: 'error', error: ERRORS.NOT_FOUND };
+
+  if (await isTakenUnprefixed({ userId, isAdmin: link.isAdmin }, rawSlug, id))
+    return { status: 'error', error: ERRORS.SLUG_EXISTS };
+
   const result = await updateUrl({
     id,
     userId,
-    slug: rawSlug,
+    slug: prefixOf(link) + rawSlug,
     fullUrl,
   });
   if (result === 'collision')
@@ -219,11 +276,24 @@ export async function removeLink(
   return { status: 'success' };
 }
 
-export async function resolveLink(params: {
+const USER_PATH = /^u\/([^/]+)\/([^/]+)$/;
+
+export async function resolveLink({
+  host,
+  slug,
+}: {
+  host: string;
   slug: string;
-  username?: string;
 }): Promise<{ id: number; fullUrl: string } | null> {
-  return findUrlByAddress(params);
+  const domainHost = domainHostOf(host);
+  const link = await findUrlByAddress({ host: domainHost, slug });
+  if (link) return link;
+
+  const userPath = USER_PATH.exec(slug);
+  if (!userPath) return null;
+
+  const [, username, alias] = userPath;
+  return findUnprefixedUrl({ host: domainHost, username, slug: alias });
 }
 
 export async function findLinkForUser(
