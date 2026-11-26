@@ -20,6 +20,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - `SITE_HOST`: canonical host of the site (e.g. `diegue.link`). Used for short URLs, metadata and auth trusted origins (served over `https`). Optional in local development, where it defaults to `localhost:3000` (served over `http`).
 
+## Tests
+
+The tests run against a real Postgres: the `test` database of the local Supabase. Start it before running them:
+
+```bash
+supabase start
+yarn test
+```
+
+The first run creates the `test` database and applies the migrations. Each test starts from empty tables, so your development data is never touched.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
