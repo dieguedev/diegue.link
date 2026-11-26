@@ -91,6 +91,110 @@ describe('En link service', () => {
     });
   });
 
+  describe('el destino de un enlace', () => {
+    let ana: User;
+    const invalid = { status: 'error', error: 'La URL no es válida.' };
+    const required = { status: 'error', error: 'La URL es obligatoria.' };
+
+    async function destinationsOf(user: User) {
+      const { links } = await listLinks({ userId: user.id });
+      return links.map(link => link.fullUrl);
+    }
+
+    beforeEach(async () => {
+      ana = await createUser({ username: 'ana' });
+    });
+
+    it('se completa con https si le falta el protocolo', async () => {
+      await shorten({
+        rawUrl: 'ejemplo.com/articulo',
+        rawSlug: 'articulo',
+        userId: ana.id,
+      });
+      await shorten({
+        rawUrl: 'ejemplo.com',
+        rawSlug: 'inicio',
+        userId: ana.id,
+      });
+
+      expect((await destinationsOf(ana)).sort()).toEqual([
+        'https://ejemplo.com/',
+        'https://ejemplo.com/articulo',
+      ]);
+    });
+
+    it('conserva el protocolo http', async () => {
+      await shorten({
+        rawUrl: 'http://ejemplo.com',
+        rawSlug: undefined,
+        userId: ana.id,
+      });
+
+      expect(await destinationsOf(ana)).toEqual(['http://ejemplo.com/']);
+    });
+
+    it('se rechaza si no es http ni https', async () => {
+      for (const rawUrl of [
+        'javascript:alert(1)',
+        'javascript://%0aalert(1)',
+        'ftp://ejemplo.com/archivo',
+      ]) {
+        expect(
+          await shorten({ rawUrl, rawSlug: undefined, userId: ana.id }),
+        ).toEqual(invalid);
+      }
+      expect(await destinationsOf(ana)).toEqual([]);
+    });
+
+    it('se rechaza si su dominio no tiene punto', async () => {
+      for (const rawUrl of ['localhost:3000', 'intranet', 'notaurl']) {
+        expect(
+          await shorten({ rawUrl, rawSlug: undefined, userId: ana.id }),
+        ).toEqual(invalid);
+      }
+      expect(await destinationsOf(ana)).toEqual([]);
+    });
+
+    it('es obligatorio', async () => {
+      for (const rawUrl of [undefined, '', '   ']) {
+        expect(
+          await shorten({ rawUrl, rawSlug: undefined, userId: ana.id }),
+        ).toEqual(required);
+      }
+      expect(await destinationsOf(ana)).toEqual([]);
+    });
+
+    it('al editarlo con uno inválido se conserva el anterior', async () => {
+      const cv = await createLink(ana, {
+        slug: 'cv',
+        fullUrl: 'https://ana.dev/cv.pdf',
+      });
+
+      expect(
+        await editLink({
+          id: cv.id,
+          userId: ana.id,
+          rawUrl: 'javascript:void(0)',
+          rawSlug: 'cv',
+        }),
+      ).toEqual(invalid);
+      expect(await destinationsOf(ana)).toEqual(['https://ana.dev/cv.pdf']);
+    });
+
+    it('al editarlo se completa con https si le falta el protocolo', async () => {
+      const cv = await createLink(ana, { slug: 'cv' });
+
+      await editLink({
+        id: cv.id,
+        userId: ana.id,
+        rawUrl: '  ana.dev/cv  ',
+        rawSlug: 'cv',
+      });
+
+      expect(await destinationsOf(ana)).toEqual(['https://ana.dev/cv']);
+    });
+  });
+
   describe('al visitar una dirección', () => {
     let admin: User;
     let ana: User;
