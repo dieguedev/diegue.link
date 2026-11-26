@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { FieldMessage } from '@/components/ui/field-message';
 import { deleteLink } from '@/features/links/actions/delete-link';
-import type { LinkSummary } from '@/domain/services/url-service';
+import type { LinkSummary } from '@/domain/links/link-service';
 
 type DeletableLink = Pick<LinkSummary, 'id' | 'shortUrl'>;
 

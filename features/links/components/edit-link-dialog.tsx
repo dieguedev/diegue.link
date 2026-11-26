@@ -25,7 +25,7 @@ import {
   updateLink,
   type UpdateLinkResult,
 } from '@/features/links/actions/update-link';
-import type { LinkSummary } from '@/domain/services/url-service';
+import type { LinkSummary } from '@/domain/links/link-service';
 
 type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'shortUrl'>;
 

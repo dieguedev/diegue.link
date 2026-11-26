@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ChartColumn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { LinkSummary } from '@/domain/services/url-service';
+import type { LinkSummary } from '@/domain/links/link-service';
 
 interface LinkStatsButtonProps {
   link: Pick<LinkSummary, 'id' | 'shortUrl'>;

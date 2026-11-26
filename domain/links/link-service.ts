@@ -5,7 +5,7 @@ import {
   deleteUrl,
   findUrlsByUser,
   updateUrl,
-} from '@/domain/repositories/url-repository';
+} from '@/domain/links/link-repository';
 
 const CONFIG = {
   SLUG_MAX_LENGTH: 50,

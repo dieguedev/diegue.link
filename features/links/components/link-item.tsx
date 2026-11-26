@@ -7,7 +7,7 @@ import {
   ItemFooter,
   ItemTitle,
 } from '@/components/ui/item';
-import type { LinkSummary } from '@/domain/services/url-service';
+import type { LinkSummary } from '@/domain/links/link-service';
 import { numberFormat } from '@/lib/utils/number-format';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';

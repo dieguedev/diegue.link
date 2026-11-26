@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { shorten, type ShortenResult } from '@/domain/services/url-service';
+import { shorten, type ShortenResult } from '@/domain/links/link-service';
 import { SITE_HOST } from '@/lib/site';
 
 const AUTH_ERROR = 'No autorizado. Por favor inicia sesión.';

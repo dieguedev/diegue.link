@@ -1,4 +1,4 @@
-import { findAdminUrl } from '@/domain/repositories/url-repository';
+import { findAdminUrl } from '@/domain/links/link-repository';
 import { recordClick } from '@/domain/repositories/click-repository';
 import { getClickMetadata } from '@/lib/analytics/click-metadata';
 import { redirect } from 'next/navigation';

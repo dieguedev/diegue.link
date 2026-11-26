@@ -8,8 +8,8 @@ import {
 import {
   findUrlByIdForUser,
   findUrlsByIds,
-} from '@/domain/repositories/url-repository';
-import { buildShortUrl } from '@/domain/services/url-service';
+} from '@/domain/links/link-repository';
+import { buildShortUrl } from '@/domain/links/link-service';
 
 export const STATS_RANGE_DAYS = 30;
 const TOP_LIMIT = 5;

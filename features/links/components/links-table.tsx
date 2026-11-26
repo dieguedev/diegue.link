@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { listLinks } from '@/domain/services/url-service';
+import { listLinks } from '@/domain/links/link-service';
 import { numberFormat } from '@/lib/utils/number-format';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';
