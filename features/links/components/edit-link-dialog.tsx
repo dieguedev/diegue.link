@@ -56,7 +56,6 @@ export function EditLinkDialog({ link }: { link: EditableLink }) {
             anterior dejará de funcionar.
           </DialogDescription>
         </DialogHeader>
-        {/* Se monta en cada apertura, así los errores no sobreviven al cierre */}
         <EditLinkForm link={link} onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
