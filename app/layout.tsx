@@ -4,6 +4,7 @@ import './globals.css';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Header } from '@/app/_components/header';
 import { Toaster } from '@/components/ui/toast';
+import { SITE_NAME, SITE_ORIGIN } from '@/lib/site';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -22,19 +23,19 @@ const dmSans = DM_Sans({
 
 const description =
   'Acorta tus URLs de forma gratuita. Crea enlaces cortos personalizados y obtén estadísticas.';
-const title = 'diegue.link | Acortador de URLs';
+const title = `${SITE_NAME} | Acortador de URLs`;
 
 export const metadata: Metadata = {
   title: title,
   description: description,
-  metadataBase: new URL('https://diegue.link'),
+  metadataBase: new URL(SITE_ORIGIN),
   openGraph: {
     type: 'website',
     locale: 'es_ES',
-    url: 'https://diegue.link',
+    url: SITE_ORIGIN,
     title: title,
     description: description,
-    siteName: 'diegue.link',
+    siteName: SITE_NAME,
     images: [
       {
         url: '/og-image.jpg',
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
     creator: '@dieguedev',
   },
   alternates: {
-    canonical: 'https://diegue.link',
+    canonical: SITE_ORIGIN,
   },
 };
 
