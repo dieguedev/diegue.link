@@ -1,4 +1,4 @@
-import { findUserUrl } from '@/domain/links/link-repository';
+import { resolveLink } from '@/domain/links/link-service';
 import { recordClick } from '@/domain/repositories/click-repository';
 import { getClickMetadata } from '@/lib/analytics/click-metadata';
 import { redirect } from 'next/navigation';
@@ -14,7 +14,7 @@ export async function GET(
     return new Response('Missing parameters', { status: 400 });
   }
 
-  const url = await findUserUrl(username, slug);
+  const url = await resolveLink({ username, slug });
 
   if (!url) {
     return new Response('URL not found', { status: 404 });

@@ -3,6 +3,7 @@ import {
   countUrlsByUser,
   createUrl,
   deleteUrl,
+  findUrlByAddress,
   findUrlsByUser,
   updateUrl,
 } from '@/domain/links/link-repository';
@@ -212,4 +213,15 @@ export async function removeLink(
     return { status: 'error', error: ERRORS.NOT_FOUND };
   if (result === 'error') return { status: 'error', error: ERRORS.DELETE };
   return { status: 'success' };
+}
+
+/**
+ * Busca el Enlace al que apunta una Dirección. Sin `username` es una
+ * Dirección del admin (`host/slug`); con él, la de un Usuario (`host/u/username/slug`).
+ */
+export async function resolveLink(params: {
+  slug: string;
+  username?: string;
+}): Promise<{ id: number; fullUrl: string } | null> {
+  return findUrlByAddress(params);
 }

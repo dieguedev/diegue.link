@@ -28,16 +28,16 @@ export async function createUrl(
   }
 }
 
-export async function findAdminUrl(slug: string) {
+/** Sin `username`, busca entre los Enlaces del admin, que cuelgan de la raíz */
+export async function findUrlByAddress({
+  slug,
+  username,
+}: {
+  slug: string;
+  username?: string;
+}) {
   return prisma.url.findFirst({
-    where: { slug, isAdmin: true },
-    select: { id: true, fullUrl: true },
-  });
-}
-
-export async function findUserUrl(username: string, slug: string) {
-  return prisma.url.findFirst({
-    where: { slug, user: { username } },
+    where: username ? { slug, user: { username } } : { slug, isAdmin: true },
     select: { id: true, fullUrl: true },
   });
 }
