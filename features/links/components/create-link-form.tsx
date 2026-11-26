@@ -16,6 +16,7 @@ import {
   type CreateLinkResult,
 } from '@/features/links/actions/create-link';
 import { CopyUrlButton } from '@/features/links/components/copy-url-button';
+import { parseDestination } from '@/domain/links/destination';
 
 export function CreateLinkForm() {
   const [state, formAction, isPending] = useActionState<
@@ -23,6 +24,9 @@ export function CreateLinkForm() {
     FormData
   >(
     async (_prevState, formData) => {
+      const destination = parseDestination(formData.get('url'));
+      if (destination.status === 'invalid')
+        return { status: 'error', error: destination.error };
       return await createLink(formData);
     },
     { status: 'idle' },
@@ -48,8 +52,12 @@ export function CreateLinkForm() {
               id="url"
               name="url"
               placeholder="https://example.com/very/long/url"
-              required
-              type="url"
+              type="text"
+              inputMode="url"
+              autoComplete="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               disabled={isPending}
             />
           </div>
