@@ -8,3 +8,11 @@ export async function findDomainByHost(host: string) {
     select: DOMAIN_SELECT,
   });
 }
+
+export async function findVerifiedDomainOwnedBy(userId: string) {
+  return prisma.domain.findFirst({
+    where: { ownerId: userId, verifiedAt: { not: null } },
+    orderBy: { createdAt: 'asc' },
+    select: DOMAIN_SELECT,
+  });
+}

@@ -26,6 +26,7 @@ const VISIT: ClickMetadata = {
 };
 
 type User = Awaited<ReturnType<typeof createUser>>;
+type Domain = Awaited<ReturnType<typeof createDomain>>;
 
 async function addressesOf(user: User) {
   const { links } = await listLinks({ userId: user.id });
@@ -38,10 +39,18 @@ async function totalClicks(user: User, id: number) {
 }
 
 describe('En link service', () => {
+  let diegue: User;
+  let ana: User;
+  let diegueLink: Domain;
+
+  beforeEach(async () => {
+    diegue = await createUser({ username: 'diegue', isAdmin: true });
+    ana = await createUser({ username: 'ana' });
+    diegueLink = await createDomain({ host: 'diegue.link', owner: diegue });
+  });
+
   describe('la dirección de un enlace', () => {
     it('se devuelve al crearlo', async () => {
-      const ana = await createUser({ username: 'ana' });
-
       const result = await shorten({
         rawUrl: 'https://ana.dev/portfolio',
         rawSlug: 'portfolio',
@@ -55,52 +64,70 @@ describe('En link service', () => {
       expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/portfolio']);
     });
 
-    it('cuelga de la raíz si el enlace es del admin', async () => {
-      const admin = await createUser({ username: 'diegue', isAdmin: true });
-      await createLink(admin, { slug: 'encuesta' });
+    it('cuelga de la raíz si el usuario es dueño del dominio', async () => {
+      const result = await shorten({
+        rawUrl: 'https://charlas.example.com/charla',
+        rawSlug: 'charla',
+        userId: diegue.id,
+      });
 
-      expect(await addressesOf(admin)).toEqual(['diegue.link/encuesta']);
+      expect(result).toMatchObject({
+        status: 'success',
+        link: { slug: 'charla', address: 'diegue.link/charla' },
+      });
     });
 
     it('lleva el nombre de su usuario si no lo es', async () => {
-      const ana = await createUser({ username: 'ana' });
-      await createLink(ana, { slug: 'cv' });
-
-      expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
-    });
-
-    it('se guarda en el dominio principal', async () => {
-      const diegueLink = await createDomain({ host: 'diegue.link' });
-      const ana = await createUser({ username: 'ana' });
-
-      await shorten({
-        rawUrl: 'https://ana.dev/portfolio',
-        rawSlug: 'portfolio',
+      const result = await shorten({
+        rawUrl: 'https://ana.dev/blog',
+        rawSlug: 'blog',
         userId: ana.id,
       });
-      await shorten({
+
+      expect(result).toMatchObject({
+        status: 'success',
+        link: { slug: 'blog', address: 'diegue.link/u/ana/blog' },
+      });
+    });
+
+    it('lleva el nombre de su usuario si su dominio no está verificado', async () => {
+      await createDomain({ host: 'ana.dev', owner: ana, verified: false });
+
+      const result = await shorten({
+        rawUrl: 'https://ana.dev/blog',
+        rawSlug: 'blog',
+        userId: ana.id,
+      });
+
+      expect(result).toMatchObject({
+        status: 'success',
+        link: { address: 'diegue.link/u/ana/blog' },
+      });
+    });
+
+    it('lleva el nombre de su usuario también con un alias generado', async () => {
+      const result = await shorten({
         rawUrl: 'https://ana.dev/blog',
         rawSlug: undefined,
         userId: ana.id,
       });
 
-      const links = await prisma.url.findMany({ where: { userId: ana.id } });
-      expect(links.map(link => link.domainId)).toEqual([
-        diegueLink.id,
-        diegueLink.id,
+      expect(result.status).toBe('success');
+      expect(await addressesOf(ana)).toEqual([
+        expect.stringMatching(/^diegue\.link\/u\/ana\/[a-zA-Z0-9]{6}$/),
       ]);
     });
 
     it('es la misma en la lista y en las estadísticas', async () => {
-      const admin = await createUser({ username: 'diegue', isAdmin: true });
-      const ana = await createUser({ username: 'ana' });
-      const encuesta = await createLink(admin, { slug: 'encuesta' });
-      const cv = await createLink(ana, { slug: 'cv' });
+      const encuesta = await createLink(diegue, diegueLink, {
+        slug: 'encuesta',
+      });
+      const cv = await createLink(ana, diegueLink, { slug: 'cv' });
       await recordClick(encuesta.id, VISIT);
       await recordClick(cv.id, VISIT);
 
       for (const [user, link] of [
-        [admin, encuesta],
+        [diegue, encuesta],
         [ana, cv],
       ] as const) {
         const [address] = await addressesOf(user);
@@ -111,10 +138,72 @@ describe('En link service', () => {
         expect(stats?.link.address).toBe(address);
       }
     });
+
+    it('se conserva al editar el alias', async () => {
+      await shorten({
+        rawUrl: 'https://ana.dev/cv.pdf',
+        rawSlug: 'cv',
+        userId: ana.id,
+      });
+      const [cv] = (await listLinks({ userId: ana.id })).links;
+
+      await editLink({
+        id: cv.id,
+        userId: ana.id,
+        rawUrl: cv.fullUrl,
+        rawSlug: 'curriculum',
+      });
+
+      expect((await listLinks({ userId: ana.id })).links).toMatchObject([
+        { slug: 'curriculum', address: 'diegue.link/u/ana/curriculum' },
+      ]);
+    });
+  });
+
+  describe('un enlace guardado sin el nombre de su usuario', () => {
+    let cv: Awaited<ReturnType<typeof createLink>>;
+
+    beforeEach(async () => {
+      await createLink(diegue, diegueLink, {
+        slug: 'encuesta',
+        fullUrl: 'https://forms.example.com/encuesta',
+      });
+      cv = await createLink(ana, diegueLink, {
+        slug: 'cv',
+        fullUrl: 'https://ana.dev/cv.pdf',
+      });
+    });
+
+    it('se ve en el dashboard igual que antes', async () => {
+      expect(await addressesOf(diegue)).toEqual(['diegue.link/encuesta']);
+      expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
+    });
+
+    it('sigue llevando a su destino', async () => {
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'encuesta' }),
+      ).toMatchObject({ fullUrl: 'https://forms.example.com/encuesta' });
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'u/ana/cv' }),
+      ).toMatchObject({ fullUrl: 'https://ana.dev/cv.pdf' });
+    });
+
+    it('conserva su dirección al editar el alias', async () => {
+      await editLink({
+        id: cv.id,
+        userId: ana.id,
+        rawUrl: cv.fullUrl,
+        rawSlug: 'curriculum',
+      });
+
+      expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/curriculum']);
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'u/ana/curriculum' }),
+      ).toMatchObject({ id: cv.id });
+    });
   });
 
   describe('el destino de un enlace', () => {
-    let ana: User;
     const invalid = { status: 'error', error: 'La URL no es válida.' };
     const required = { status: 'error', error: 'La URL es obligatoria.' };
 
@@ -122,10 +211,6 @@ describe('En link service', () => {
       const { links } = await listLinks({ userId: user.id });
       return links.map(link => link.fullUrl);
     }
-
-    beforeEach(async () => {
-      ana = await createUser({ username: 'ana' });
-    });
 
     it('se completa con https si le falta el protocolo', async () => {
       await shorten({
@@ -187,7 +272,7 @@ describe('En link service', () => {
     });
 
     it('al editarlo con uno inválido se conserva el anterior', async () => {
-      const cv = await createLink(ana, {
+      const cv = await createLink(ana, diegueLink, {
         slug: 'cv',
         fullUrl: 'https://ana.dev/cv.pdf',
       });
@@ -204,7 +289,7 @@ describe('En link service', () => {
     });
 
     it('al editarlo se completa con https si le falta el protocolo', async () => {
-      const cv = await createLink(ana, { slug: 'cv' });
+      const cv = await createLink(ana, diegueLink, { slug: 'cv' });
 
       await editLink({
         id: cv.id,
@@ -218,21 +303,13 @@ describe('En link service', () => {
   });
 
   describe('al visitar una dirección', () => {
-    let admin: User;
-    let ana: User;
-
-    beforeEach(async () => {
-      admin = await createUser({ username: 'diegue', isAdmin: true });
-      ana = await createUser({ username: 'ana' });
-    });
-
     it('se obtiene su destino y el clic de una persona suma al total', async () => {
-      const cv = await createLink(ana, {
-        slug: 'cv',
+      const cv = await createLink(ana, diegueLink, {
+        slug: 'u/ana/cv',
         fullUrl: 'https://ana.dev/cv.pdf',
       });
 
-      const link = await resolveLink({ username: 'ana', slug: 'cv' });
+      const link = await resolveLink({ host: 'diegue.link', slug: 'u/ana/cv' });
       expect(link).toEqual({ id: cv.id, fullUrl: 'https://ana.dev/cv.pdf' });
 
       await recordClick(link!.id, { ...VISIT, device: 'mobile' });
@@ -243,12 +320,12 @@ describe('En link service', () => {
     });
 
     it('el clic de un bot se guarda pero no suma', async () => {
-      const encuesta = await createLink(admin, {
+      const encuesta = await createLink(diegue, diegueLink, {
         slug: 'encuesta',
         fullUrl: 'https://forms.example.com/encuesta',
       });
 
-      const link = await resolveLink({ slug: 'encuesta' });
+      const link = await resolveLink({ host: 'diegue.link', slug: 'encuesta' });
       expect(link).toEqual({
         id: encuesta.id,
         fullUrl: 'https://forms.example.com/encuesta',
@@ -260,49 +337,125 @@ describe('En link service', () => {
         where: { urlId: encuesta.id },
       });
       expect(clicks).toMatchObject([{ isBot: true }]);
-      expect(await totalClicks(admin, encuesta.id)).toBe(0);
+      expect(await totalClicks(diegue, encuesta.id)).toBe(0);
+    });
+  });
+
+  describe('un alias', () => {
+    it('no se repite dentro de un dominio', async () => {
+      const charla = {
+        rawUrl: 'https://charlas.example.com/charla',
+        rawSlug: 'charla',
+        userId: diegue.id,
+      };
+      await shorten(charla);
+
+      expect(await shorten(charla)).toEqual({
+        status: 'error',
+        error: 'Este alias ya existe.',
+      });
+    });
+
+    it('no se repite aunque el otro enlace esté guardado sin el nombre de su usuario', async () => {
+      const cv = await createLink(ana, diegueLink, { slug: 'cv' });
+      const blog = await createLink(ana, diegueLink, { slug: 'u/ana/blog' });
+      const exists = { status: 'error', error: 'Este alias ya existe.' };
+
+      expect(
+        await shorten({
+          rawUrl: 'https://ana.dev/cv.pdf',
+          rawSlug: 'cv',
+          userId: ana.id,
+        }),
+      ).toEqual(exists);
+      expect(
+        await editLink({
+          id: blog.id,
+          userId: ana.id,
+          rawUrl: blog.fullUrl,
+          rawSlug: 'cv',
+        }),
+      ).toEqual(exists);
+      expect(
+        await editLink({
+          id: cv.id,
+          userId: ana.id,
+          rawUrl: 'https://ana.dev/cv-nuevo.pdf',
+          rawSlug: 'cv',
+        }),
+      ).toEqual({ status: 'success' });
+    });
+
+    it('se puede repetir en distintos usuarios', async () => {
+      const luis = await createUser({ username: 'luis' });
+
+      for (const user of [ana, luis]) {
+        await shorten({
+          rawUrl: 'https://example.com/cv.pdf',
+          rawSlug: 'cv',
+          userId: user.id,
+        });
+      }
+
+      expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
+      expect(await addressesOf(luis)).toEqual(['diegue.link/u/luis/cv']);
     });
   });
 
   describe('una dirección no lleva a ningún destino', () => {
     beforeEach(async () => {
-      const admin = await createUser({ username: 'diegue', isAdmin: true });
-      const ana = await createUser({ username: 'ana' });
       await createUser({ username: 'luis' });
-      await createLink(admin, { slug: 'encuesta' });
-      await createLink(ana, { slug: 'cv' });
+      await createLink(diegue, diegueLink, { slug: 'encuesta' });
+      await createLink(ana, diegueLink, { slug: 'cv' });
+      await createLink(ana, diegueLink, { slug: 'u/ana/blog' });
     });
 
     it('si el alias no existe', async () => {
-      expect(await resolveLink({ slug: 'noexiste' })).toBeNull();
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'noexiste' }),
+      ).toBeNull();
     });
 
     it('si el alias es de un usuario y se visita desde la raíz', async () => {
-      expect(await resolveLink({ slug: 'cv' })).toBeNull();
+      expect(await resolveLink({ host: 'diegue.link', slug: 'cv' })).toBeNull();
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'blog' }),
+      ).toBeNull();
     });
 
     it('si el usuario no existe', async () => {
-      expect(await resolveLink({ username: 'nadie', slug: 'cv' })).toBeNull();
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'u/nadie/cv' }),
+      ).toBeNull();
     });
 
     it('si el alias es de otro usuario', async () => {
-      expect(await resolveLink({ username: 'luis', slug: 'cv' })).toBeNull();
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'u/luis/cv' }),
+      ).toBeNull();
+      expect(
+        await resolveLink({ host: 'diegue.link', slug: 'u/luis/blog' }),
+      ).toBeNull();
+    });
+
+    it('si el dominio no existe', async () => {
+      expect(
+        await resolveLink({ host: 'otro.example.com', slug: 'encuesta' }),
+      ).toBeNull();
     });
   });
 
   describe('un usuario', () => {
-    let ana: User;
     let luis: User;
 
     beforeEach(async () => {
-      ana = await createUser({ username: 'ana' });
       luis = await createUser({ username: 'luis' });
     });
 
     it('solo ve sus propios enlaces', async () => {
-      await createLink(ana, { slug: 'cv' });
-      await createLink(ana, { slug: 'blog' });
-      await createLink(luis, { slug: 'fotos' });
+      await createLink(ana, diegueLink, { slug: 'cv' });
+      await createLink(ana, diegueLink, { slug: 'u/ana/blog' });
+      await createLink(luis, diegueLink, { slug: 'fotos' });
 
       expect((await addressesOf(ana)).sort()).toEqual([
         'diegue.link/u/ana/blog',
@@ -311,7 +464,7 @@ describe('En link service', () => {
     });
 
     it('no puede editar ni borrar los enlaces de otro', async () => {
-      const fotos = await createLink(luis, {
+      const fotos = await createLink(luis, diegueLink, {
         slug: 'fotos',
         fullUrl: 'https://luis.dev/fotos',
       });
@@ -339,7 +492,7 @@ describe('En link service', () => {
     });
 
     it('no puede ver las estadísticas de los enlaces de otro', async () => {
-      const fotos = await createLink(luis, { slug: 'fotos' });
+      const fotos = await createLink(luis, diegueLink, { slug: 'fotos' });
       await recordClick(fotos.id, VISIT);
 
       expect(await getLinkStats({ id: fotos.id, userId: ana.id })).toBeNull();
