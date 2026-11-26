@@ -21,11 +21,6 @@ export const auth = betterAuth({
         type: 'string',
         required: true,
       },
-      isAdmin: {
-        type: 'boolean',
-        required: false,
-        defaultValue: false,
-      },
     },
   },
   trustedOrigins:

@@ -11,7 +11,8 @@ import {
   updateUrl,
 } from '@/domain/links/link-repository';
 import { parseDestination } from '@/domain/links/destination';
-import { SITE_HOST } from '@/lib/site';
+import { findDomainByHost } from '@/domain/domains/domain-repository';
+import { PRIMARY_DOMAIN_HOST, SITE_HOST } from '@/lib/site';
 
 const CONFIG = {
   SLUG_MAX_LENGTH: 50,
@@ -98,6 +99,7 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   }
 
   const isAdmin = await findUserIsAdmin(userId);
+  const domainId = (await findDomainByHost(PRIMARY_DOMAIN_HOST))?.id;
 
   if (rawSlug) {
     const result = await createUrl({
@@ -105,6 +107,7 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
       fullUrl,
       userId,
       isAdmin,
+      domainId,
     });
     if (result === 'collision')
       return { status: 'error', error: ERRORS.SLUG_EXISTS };
@@ -115,7 +118,13 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
 
   for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
     const slug = generateSlug();
-    const result = await createUrl({ slug, fullUrl, userId, isAdmin });
+    const result = await createUrl({
+      slug,
+      fullUrl,
+      userId,
+      isAdmin,
+      domainId,
+    });
     if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
     if (result !== 'collision')
       return { status: 'success', link: toSummary(result) };
