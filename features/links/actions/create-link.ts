@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { shorten, type ShortenResult } from '@/domain/services/url-service';
+import { SITE_HOST } from '@/lib/site';
 
 const AUTH_ERROR = 'No autorizado. Por favor inicia sesión.';
 
@@ -20,7 +21,7 @@ export async function createLink(formData: FormData): Promise<CreateLinkResult> 
     userId: session.user.id,
     isAdmin: !!session.user.isAdmin,
     username: session.user.username,
-    host: headersList.get('host') || 'diegue.link',
+    host: SITE_HOST,
   });
 
   if (result.status === 'success') revalidatePath('/dashboard');

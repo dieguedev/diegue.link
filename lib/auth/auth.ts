@@ -1,6 +1,9 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from '@/lib/prisma';
+import { SITE_ORIGIN } from '@/lib/site';
+
+const DEV_EXTRA_ORIGINS = ['http://127.0.0.1:3000', 'http://192.168.*.*:3000'];
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
@@ -25,8 +28,8 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: 
+  trustedOrigins:
     process.env.NODE_ENV === 'production'
-      ? [process.env.PRODUCTION_URL] as string[]
-      : ['http://localhost:3000', 'http://192.168.*.*:3000', 'http://127.0.0.1:3000'],
+      ? [SITE_ORIGIN]
+      : [SITE_ORIGIN, ...DEV_EXTRA_ORIGINS],
 });

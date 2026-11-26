@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { headers } from 'next/headers';
+import { SITE_HOST } from '@/lib/site';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, CornerDownRight } from 'lucide-react';
 import {
@@ -24,8 +24,7 @@ interface LinkStatsProps {
 }
 
 export async function LinkStats({ id, userId, username }: LinkStatsProps) {
-  const host = (await headers()).get('host') || 'diegue.link';
-  const stats = await getLinkStats({ id, userId, username, host });
+  const stats = await getLinkStats({ id, userId, username, host: SITE_HOST });
   if (!stats) notFound();
 
   const { link, series, total, previousTotal } = stats;

@@ -7,7 +7,7 @@ import { AuthModal } from '@/features/auth/components/auth-modal';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
 import { UserDropdown } from '@/features/auth/components/user-dropdown';
-import { GITHUB_REPO_URL } from '@/lib/site';
+import { GITHUB_REPO_URL, SITE_NAME } from '@/lib/site';
 
 export async function Header() {
   const starAmount = await getStargazers();
@@ -21,7 +21,7 @@ export async function Header() {
         <div className="flex flex-1 self-stretch justify-between">
           <div className="flex items-center">
             <span className="text-center text-lg lg:text-xl font-bold p-2">
-              diegue.link
+              {SITE_NAME}
             </span>
           </div>
 

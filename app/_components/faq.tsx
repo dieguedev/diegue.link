@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { HighlightedText } from '@/components/ui/highlighted-text';
-import { GITHUB_REPO_URL } from '@/lib/site';
+import { GITHUB_REPO_URL, SITE_NAME } from '@/lib/site';
 
 const LINK_CLASS = 'font-heading link-underline';
 
@@ -31,8 +31,7 @@ const QUESTIONS = [
   },
   {
     question: '¿Qué caracteres admite un alias?',
-    answer:
-      'Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Cada usuario tiene su propia dirección, como ana.diegue.link, así que tu alias no choca con el de nadie.',
+    answer: `Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Cada usuario tiene su propia dirección, como ana.${SITE_NAME}, así que tu alias no choca con el de nadie.`,
   },
   {
     question: '¿Cómo se cuentan los clics?',
