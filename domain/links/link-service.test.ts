@@ -211,5 +211,12 @@ describe('En link service', () => {
         },
       ]);
     });
+
+    it('no puede ver las estadísticas de los enlaces de otro', async () => {
+      const fotos = await createLink(luis, { slug: 'fotos' });
+      await recordClick(fotos.id, VISIT);
+
+      expect(await getLinkStats({ id: fotos.id, userId: ana.id })).toBeNull();
+    });
   });
 });
