@@ -41,7 +41,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [shortUrl, setShortUrl] = useState<string | null>(null);
+  const [address, setAddress] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const fail = (message: string) => {
@@ -67,7 +67,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
     startTransition(async () => {
       const result = await createLink(formData);
       if (result.status === 'success') {
-        setShortUrl(result.shortUrl);
+        setAddress(result.link.address);
         setError(null);
         if (inputRef.current) inputRef.current.value = '';
       } else if (result.status === 'error') {
@@ -152,21 +152,21 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
         )}
       </form>
 
-      {shortUrl && (
+      {address && (
         <div
           role="status"
           className="flex items-center gap-3 rounded-base border-2 border-border bg-secondary-background py-2 pr-2 pl-4 text-left"
         >
           <a
-            href={`//${shortUrl}`}
+            href={`//${address}`}
             target="_blank"
             rel="noopener noreferrer"
             className="min-w-0 truncate font-heading link-underline"
           >
-            {shortUrl}
+            {address}
           </a>
           <CopyLinkButton
-            shortUrl={shortUrl}
+            address={address}
             className="ml-auto size-9 shrink-0"
           />
         </div>

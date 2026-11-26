@@ -1,6 +1,20 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma/client';
 
+const ADDRESS_SELECT = {
+  slug: true,
+  isAdmin: true,
+  user: { select: { username: true } },
+} as const;
+
+const LINK_SELECT = {
+  ...ADDRESS_SELECT,
+  id: true,
+  fullUrl: true,
+  clicks: true,
+  createdAt: true,
+} as const;
+
 export type CreateUrlData = {
   slug: string;
   fullUrl: string;
@@ -10,34 +24,38 @@ export type CreateUrlData = {
 
 export type UrlPersistResult = 'success' | 'collision' | 'error';
 
-export async function createUrl(
-  data: CreateUrlData,
-): Promise<UrlPersistResult> {
+export async function findUserIsAdmin(userId: string) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: userId },
+    select: { isAdmin: true },
+  });
+  return user.isAdmin;
+}
+
+export async function createUrl(data: CreateUrlData) {
   try {
-    await prisma.url.create({ data });
-    return 'success';
+    return await prisma.url.create({ data, select: LINK_SELECT });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      return 'collision';
+      return 'collision' as const;
     }
     console.error('Error creating URL:', error);
-    return 'error';
+    return 'error' as const;
   }
 }
 
-export async function findAdminUrl(slug: string) {
+export async function findUrlByAddress({
+  slug,
+  username,
+}: {
+  slug: string;
+  username?: string;
+}) {
   return prisma.url.findFirst({
-    where: { slug, isAdmin: true },
-    select: { id: true, fullUrl: true },
-  });
-}
-
-export async function findUserUrl(username: string, slug: string) {
-  return prisma.url.findFirst({
-    where: { slug, user: { username } },
+    where: username ? { slug, user: { username } } : { slug, isAdmin: true },
     select: { id: true, fullUrl: true },
   });
 }
@@ -45,21 +63,14 @@ export async function findUserUrl(username: string, slug: string) {
 export async function findUrlByIdForUser(id: number, userId: string) {
   return prisma.url.findFirst({
     where: { id, userId },
-    select: {
-      id: true,
-      slug: true,
-      fullUrl: true,
-      clicks: true,
-      createdAt: true,
-      isAdmin: true,
-    },
+    select: LINK_SELECT,
   });
 }
 
 export async function findUrlsByIds(ids: number[], userId: string) {
   return prisma.url.findMany({
     where: { id: { in: ids }, userId },
-    select: { id: true, slug: true, fullUrl: true, isAdmin: true },
+    select: LINK_SELECT,
   });
 }
 
@@ -91,14 +102,7 @@ export async function findUrlsByUser(
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     skip: params.skip,
     take: params.take,
-    select: {
-      id: true,
-      slug: true,
-      fullUrl: true,
-      clicks: true,
-      createdAt: true,
-      isAdmin: true,
-    },
+    select: LINK_SELECT,
   });
 }
 

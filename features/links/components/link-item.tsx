@@ -7,7 +7,7 @@ import {
   ItemFooter,
   ItemTitle,
 } from '@/components/ui/item';
-import type { LinkSummary } from '@/domain/services/url-service';
+import type { LinkSummary } from '@/domain/links/link-service';
 import { numberFormat } from '@/lib/utils/number-format';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';
@@ -28,13 +28,13 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
       <ItemContent className="min-w-0">
         <ItemTitle className="line-clamp-none w-full min-w-0 font-heading text-base">
           <a
-            href={`//${link.shortUrl}`}
+            href={`//${link.address}`}
             target="_blank"
             rel="noopener noreferrer"
-            title={link.shortUrl}
+            title={link.address}
             className="truncate link-underline"
           >
-            {link.shortUrl}
+            {link.address}
           </a>
         </ItemTitle>
         <ItemDescription className="line-clamp-none flex min-w-0 items-center gap-1.5 text-foreground/70">
@@ -53,7 +53,7 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
       </ItemContent>
 
       <ItemActions>
-        <CopyLinkButton shortUrl={link.shortUrl} className="size-9" />
+        <CopyLinkButton address={link.address} className="size-9" />
       </ItemActions>
 
       <ItemFooter className="border-t-2 border-border pt-3">

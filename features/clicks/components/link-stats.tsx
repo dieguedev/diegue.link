@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { SITE_HOST } from '@/lib/site';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, CornerDownRight } from 'lucide-react';
 import {
@@ -20,11 +19,10 @@ const RANGE = `Últimos ${STATS_RANGE_DAYS} días`;
 interface LinkStatsProps {
   id: number;
   userId: string;
-  username: string;
 }
 
-export async function LinkStats({ id, userId, username }: LinkStatsProps) {
-  const stats = await getLinkStats({ id, userId, username, host: SITE_HOST });
+export async function LinkStats({ id, userId }: LinkStatsProps) {
+  const stats = await getLinkStats({ id, userId });
   if (!stats) notFound();
 
   const { link, series, total, previousTotal } = stats;
@@ -49,13 +47,13 @@ export async function LinkStats({ id, userId, username }: LinkStatsProps) {
         </Link>
         <h1 className="min-w-0 truncate font-heading text-2xl sm:text-3xl">
           <a
-            href={`//${link.shortUrl}`}
+            href={`//${link.address}`}
             target="_blank"
             rel="noopener noreferrer"
-            title={link.shortUrl}
+            title={link.address}
             className="link-underline"
           >
-            {link.shortUrl}
+            {link.address}
           </a>
         </h1>
         <p className="flex min-w-0 items-center gap-1.5 text-foreground/70">

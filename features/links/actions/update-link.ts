@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { editLink, type MutationResult } from '@/domain/services/url-service';
+import { editLink, type MutationResult } from '@/domain/links/link-service';
 
 const AUTH_ERROR = 'No autorizado. Por favor inicia sesión.';
 const INVALID_ERROR = 'Enlace no válido.';

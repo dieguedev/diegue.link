@@ -28,7 +28,7 @@ export function CreateLinkForm() {
     { status: 'idle' },
   );
 
-  const shortUrl = state.status === 'success' ? state.shortUrl : null;
+  const address = state.status === 'success' ? state.link.address : null;
 
   return (
     <Card variant="secondary" className="w-full">
@@ -75,7 +75,7 @@ export function CreateLinkForm() {
           </Button>
         </form>
 
-        {shortUrl && <CopyUrlButton shortUrl={shortUrl} />}
+        {address && <CopyUrlButton address={address} />}
       </CardContent>
     </Card>
   );

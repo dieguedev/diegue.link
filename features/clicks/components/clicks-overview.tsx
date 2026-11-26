@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { SITE_HOST } from '@/lib/site';
 import { ChevronRight } from 'lucide-react';
 import {
   getClicksOverview,
@@ -12,14 +11,11 @@ import { TrendBadge } from '@/features/clicks/components/trend-badge';
 
 interface ClicksOverviewProps {
   userId: string;
-  username: string;
 }
 
-export async function ClicksOverview({ userId, username }: ClicksOverviewProps) {
+export async function ClicksOverview({ userId }: ClicksOverviewProps) {
   const { series, total, previousTotal, topLinks } = await getClicksOverview({
     userId,
-    username,
-    host: SITE_HOST,
   });
 
   // Sin Clics en ningún periodo el bloque no aporta nada
@@ -64,7 +60,7 @@ export async function ClicksOverview({ userId, username }: ClicksOverviewProps) 
                 </span>
                 <span
                   className="min-w-0 flex-1 truncate font-heading"
-                  title={link.shortUrl}
+                  title={link.address}
                 >
                   {link.slug}
                 </span>

@@ -1,4 +1,4 @@
-import { findAdminUrl } from '@/domain/repositories/url-repository';
+import { resolveLink } from '@/domain/links/link-service';
 import { recordClick } from '@/domain/repositories/click-repository';
 import { getClickMetadata } from '@/lib/analytics/click-metadata';
 import { redirect } from 'next/navigation';
@@ -14,7 +14,7 @@ export async function GET(
     return new Response('Missing slug', { status: 400 });
   }
 
-  const url = await findAdminUrl(slug);
+  const url = await resolveLink({ slug });
 
   if (!url) {
     return new Response('Not found', { status: 404 });

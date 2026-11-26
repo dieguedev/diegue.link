@@ -1,4 +1,3 @@
-import { SITE_HOST } from '@/lib/site';
 import { Link2, SearchX } from 'lucide-react';
 import {
   Empty,
@@ -16,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { listLinks } from '@/domain/services/url-service';
+import { listLinks } from '@/domain/links/link-service';
 import { numberFormat } from '@/lib/utils/number-format';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
 import { EditLinkDialog } from '@/features/links/components/edit-link-dialog';
@@ -30,21 +29,17 @@ const dateFormat = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
 
 interface LinksTableProps {
   userId: string;
-  username: string;
   query?: string;
   page?: number;
 }
 
 export async function LinksTable({
   userId,
-  username,
   query,
   page: requestedPage,
 }: LinksTableProps) {
   const { links, total, page, pageCount } = await listLinks({
     userId,
-    username,
-    host: SITE_HOST,
     query,
     page: requestedPage,
   });
@@ -118,13 +113,13 @@ export async function LinksTable({
                   <TableRow key={link.id} className="bg-secondary-background">
                     <TableCell className="py-3">
                       <a
-                        href={`//${link.shortUrl}`}
+                        href={`//${link.address}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        title={link.shortUrl}
+                        title={link.address}
                         className="inline-block max-w-[14rem] truncate align-bottom font-heading link-underline lg:max-w-xs"
                       >
-                        {link.shortUrl}
+                        {link.address}
                       </a>
                     </TableCell>
                     <TableCell className="py-3">
@@ -147,7 +142,7 @@ export async function LinksTable({
                     <TableCell className="py-3">
                       <div className="flex justify-end gap-2">
                         <CopyLinkButton
-                          shortUrl={link.shortUrl}
+                          address={link.address}
                           className="size-9"
                         />
                         <LinkStatsButton link={link} />
