@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
 
 interface CopyLinkButtonProps {
-  shortUrl: string;
+  address: string;
   className?: string;
 }
 
 const COPIED_DURATION_MS = 2000;
 
-export function CopyLinkButton({ shortUrl, className }: CopyLinkButtonProps) {
+export function CopyLinkButton({ address, className }: CopyLinkButtonProps) {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -23,10 +23,10 @@ export function CopyLinkButton({ shortUrl, className }: CopyLinkButtonProps) {
   }, []);
 
   const handleCopy = async () => {
-    const toastId = `copy-${shortUrl}`;
+    const toastId = `copy-${address}`;
 
     try {
-      await navigator.clipboard.writeText(shortUrl);
+      await navigator.clipboard.writeText(address);
     } catch {
       toast.add({
         id: toastId,
@@ -41,7 +41,7 @@ export function CopyLinkButton({ shortUrl, className }: CopyLinkButtonProps) {
       id: toastId,
       type: 'success',
       title: 'Enlace copiado',
-      description: shortUrl,
+      description: address,
       timeout: COPIED_DURATION_MS,
     });
 
@@ -57,7 +57,7 @@ export function CopyLinkButton({ shortUrl, className }: CopyLinkButtonProps) {
       size="icon"
       className={className}
       onClick={handleCopy}
-      aria-label={`Copiar ${shortUrl}`}
+      aria-label={`Copiar ${address}`}
       title={copied ? 'Copiado' : 'Copiar'}
     >
       {copied ? <Check /> : <Copy />}

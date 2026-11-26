@@ -28,7 +28,7 @@ export type BreakdownItem = { value: string | null; clicks: number };
 export type TopLink = {
   id: number;
   slug: string;
-  shortUrl: string;
+  address: string;
   clicks: number;
 };
 
@@ -91,7 +91,7 @@ export async function getClicksOverview(params: {
   const topLinks = top.flatMap(({ urlId, clicks }) => {
     const link = linksById.get(urlId);
     if (!link) return [];
-    return [{ id: link.id, slug: link.slug, shortUrl: link.shortUrl, clicks }];
+    return [{ id: link.id, slug: link.slug, address: link.address, clicks }];
   });
 
   return { ...trend, topLinks };

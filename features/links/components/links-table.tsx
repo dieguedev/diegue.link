@@ -113,13 +113,13 @@ export async function LinksTable({
                   <TableRow key={link.id} className="bg-secondary-background">
                     <TableCell className="py-3">
                       <a
-                        href={`//${link.shortUrl}`}
+                        href={`//${link.address}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        title={link.shortUrl}
+                        title={link.address}
                         className="inline-block max-w-[14rem] truncate align-bottom font-heading link-underline lg:max-w-xs"
                       >
-                        {link.shortUrl}
+                        {link.address}
                       </a>
                     </TableCell>
                     <TableCell className="py-3">
@@ -142,7 +142,7 @@ export async function LinksTable({
                     <TableCell className="py-3">
                       <div className="flex justify-end gap-2">
                         <CopyLinkButton
-                          shortUrl={link.shortUrl}
+                          address={link.address}
                           className="size-9"
                         />
                         <LinkStatsButton link={link} />

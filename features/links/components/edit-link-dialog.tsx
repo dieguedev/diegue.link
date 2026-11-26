@@ -27,7 +27,7 @@ import {
 } from '@/features/links/actions/update-link';
 import type { LinkSummary } from '@/domain/links/link-service';
 
-type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'shortUrl'>;
+type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'address'>;
 
 export function EditLinkDialog({ link }: { link: EditableLink }) {
   const [open, setOpen] = useState(false);
@@ -40,7 +40,7 @@ export function EditLinkDialog({ link }: { link: EditableLink }) {
             variant="neutral"
             size="icon"
             className="size-9"
-            aria-label={`Editar ${link.shortUrl}`}
+            aria-label={`Editar ${link.address}`}
             title="Editar"
           />
         }
@@ -81,7 +81,7 @@ function EditLinkForm({
     { status: 'idle' },
   );
 
-  const prefix = link.shortUrl.slice(0, -link.slug.length);
+  const prefix = link.address.slice(0, -link.slug.length);
   const error = state.status === 'error' ? state.error : undefined;
   const errorId = `edit-link-error-${link.id}`;
 

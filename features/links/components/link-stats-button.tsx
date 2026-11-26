@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import type { LinkSummary } from '@/domain/links/link-service';
 
 interface LinkStatsButtonProps {
-  link: Pick<LinkSummary, 'id' | 'shortUrl'>;
+  link: Pick<LinkSummary, 'id' | 'address'>;
 }
 
 export function LinkStatsButton({ link }: LinkStatsButtonProps) {
@@ -12,7 +12,7 @@ export function LinkStatsButton({ link }: LinkStatsButtonProps) {
     <Button asChild variant="neutral" size="icon" className="size-9">
       <Link
         href={`/dashboard/links/${link.id}`}
-        aria-label={`Estadísticas de ${link.shortUrl}`}
+        aria-label={`Estadísticas de ${link.address}`}
         title="Estadísticas"
       >
         <ChartColumn />

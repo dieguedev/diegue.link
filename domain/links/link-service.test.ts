@@ -29,7 +29,7 @@ type User = Awaited<ReturnType<typeof createUser>>;
 
 async function addressesOf(user: User) {
   const { links } = await listLinks({ userId: user.id });
-  return links.map(link => link.shortUrl);
+  return links.map(link => link.address);
 }
 
 async function totalClicks(user: User, id: number) {
@@ -68,8 +68,8 @@ describe('R1: el Enlace se muestra con su Dirección', () => {
       const overview = await getClicksOverview({ userId: user.id });
       const stats = await getLinkStats({ id: link.id, userId: user.id });
 
-      expect(overview.topLinks.map(top => top.shortUrl)).toEqual([address]);
-      expect(stats?.link.shortUrl).toBe(address);
+      expect(overview.topLinks.map(top => top.address)).toEqual([address]);
+      expect(stats?.link.address).toBe(address);
     }
   });
 
@@ -84,7 +84,7 @@ describe('R1: el Enlace se muestra con su Dirección', () => {
 
     expect(result).toMatchObject({
       status: 'success',
-      link: { slug: 'portfolio', shortUrl: 'diegue.link/u/ana/portfolio' },
+      link: { slug: 'portfolio', address: 'diegue.link/u/ana/portfolio' },
     });
     expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/portfolio']);
   });
@@ -206,7 +206,7 @@ describe('R4: un Usuario solo ve y toca sus propios Enlaces', () => {
         id: fotos.id,
         slug: 'fotos',
         fullUrl: 'https://luis.dev/fotos',
-        shortUrl: 'diegue.link/u/luis/fotos',
+        address: 'diegue.link/u/luis/fotos',
       },
     ]);
   });

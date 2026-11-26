@@ -47,13 +47,13 @@ export async function LinkStats({ id, userId }: LinkStatsProps) {
         </Link>
         <h1 className="min-w-0 truncate font-heading text-2xl sm:text-3xl">
           <a
-            href={`//${link.shortUrl}`}
+            href={`//${link.address}`}
             target="_blank"
             rel="noopener noreferrer"
-            title={link.shortUrl}
+            title={link.address}
             className="link-underline"
           >
-            {link.shortUrl}
+            {link.address}
           </a>
         </h1>
         <p className="flex min-w-0 items-center gap-1.5 text-foreground/70">

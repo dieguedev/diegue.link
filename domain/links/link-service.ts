@@ -70,17 +70,17 @@ function toAddress({ slug, isAdmin, user }: AddressableLink): string {
 }
 
 function toSummary(
-  link: AddressableLink & Omit<LinkSummary, 'shortUrl'>,
+  link: AddressableLink & Omit<LinkSummary, 'address'>,
 ): LinkSummary {
   const { isAdmin, user, ...summary } = link;
-  return { ...summary, shortUrl: toAddress(link) };
+  return { ...summary, address: toAddress(link) };
 }
 
 export type LinkSummary = {
   id: number;
   slug: string;
   fullUrl: string;
-  shortUrl: string;
+  address: string;
   clicks: number;
   createdAt: Date;
 };

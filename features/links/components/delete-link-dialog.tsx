@@ -18,7 +18,7 @@ import { FieldMessage } from '@/components/ui/field-message';
 import { deleteLink } from '@/features/links/actions/delete-link';
 import type { LinkSummary } from '@/domain/links/link-service';
 
-type DeletableLink = Pick<LinkSummary, 'id' | 'shortUrl'>;
+type DeletableLink = Pick<LinkSummary, 'id' | 'address'>;
 
 export function DeleteLinkDialog({ link }: { link: DeletableLink }) {
   const [open, setOpen] = useState(false);
@@ -49,7 +49,7 @@ export function DeleteLinkDialog({ link }: { link: DeletableLink }) {
             variant="neutral"
             size="icon"
             className="size-9"
-            aria-label={`Eliminar ${link.shortUrl}`}
+            aria-label={`Eliminar ${link.address}`}
             title="Eliminar"
           />
         }
@@ -63,7 +63,7 @@ export function DeleteLinkDialog({ link }: { link: DeletableLink }) {
           </AlertDialogMedia>
           <AlertDialogTitle>¿Eliminar este enlace?</AlertDialogTitle>
           <AlertDialogDescription>
-            <span className="font-heading break-all">{link.shortUrl}</span>{' '}
+            <span className="font-heading break-all">{link.address}</span>{' '}
             dejará de redirigir y perderás sus clics. Esta acción no se puede
             deshacer.
           </AlertDialogDescription>
