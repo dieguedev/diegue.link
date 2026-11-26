@@ -11,7 +11,6 @@ export default defineConfig({
     env: testEnv,
     globalSetup: ['./tests/global-setup.ts'],
     setupFiles: ['./tests/setup.ts'],
-    // La base de datos es compartida: los archivos no pueden correr a la vez
     fileParallelism: false,
   },
 });

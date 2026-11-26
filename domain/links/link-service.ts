@@ -62,7 +62,6 @@ type AddressableLink = {
   user: { username: string };
 };
 
-/** Único sitio que conoce la forma de la Dirección de un Enlace */
 function toAddress({ slug, isAdmin, user }: AddressableLink): string {
   return isAdmin
     ? `${SITE_HOST}/${slug}`
@@ -107,7 +106,6 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
     if (validationError) return { status: 'error', error: validationError };
   }
 
-  // Se guarda en el Enlace para resolver las Direcciones del admin sin tocar `User`
   const isAdmin = await findUserIsAdmin(userId);
 
   if (rawSlug) {
@@ -220,10 +218,6 @@ export async function removeLink(
   return { status: 'success' };
 }
 
-/**
- * Busca el Enlace al que apunta una Dirección. Sin `username` es una
- * Dirección del admin (`host/slug`); con él, la de un Usuario (`host/u/username/slug`).
- */
 export async function resolveLink(params: {
   slug: string;
   username?: string;
@@ -231,7 +225,6 @@ export async function resolveLink(params: {
   return findUrlByAddress(params);
 }
 
-/** Enlace del Usuario con su Dirección, o `null` si no existe o es de otro */
 export async function findLinkForUser(
   id: number,
   userId: string,
@@ -240,7 +233,6 @@ export async function findLinkForUser(
   return url && toSummary(url);
 }
 
-/** Enlaces del Usuario con su Dirección; ignora los ids que no son suyos */
 export async function findLinksByIds(
   ids: number[],
   userId: string,

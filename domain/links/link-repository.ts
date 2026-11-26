@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma/client';
 
-/** Lo que hace falta para montar la Dirección de un Enlace */
 const ADDRESS_SELECT = {
   slug: true,
   isAdmin: true,
@@ -48,7 +47,6 @@ export async function createUrl(data: CreateUrlData) {
   }
 }
 
-/** Sin `username`, busca entre los Enlaces del admin, que cuelgan de la raíz */
 export async function findUrlByAddress({
   slug,
   username,
