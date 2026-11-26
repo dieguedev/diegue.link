@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { recordClick } from '@/domain/repositories/click-repository';
+import {
+  getClicksOverview,
+  getLinkStats,
+} from '@/domain/services/stats-service';
 import type { ClickMetadata } from '@/lib/analytics/click-metadata';
 import {
   editLink,
@@ -46,6 +50,27 @@ describe('R1: el Enlace se muestra con su Dirección', () => {
     await createLink(ana, { slug: 'cv' });
 
     expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
+  });
+
+  test('E3: las estadísticas dan la misma Dirección que la lista', async () => {
+    const admin = await createUser({ username: 'diegue', isAdmin: true });
+    const ana = await createUser({ username: 'ana' });
+    const encuesta = await createLink(admin, { slug: 'encuesta' });
+    const cv = await createLink(ana, { slug: 'cv' });
+    await recordClick(encuesta.id, VISIT);
+    await recordClick(cv.id, VISIT);
+
+    for (const [user, link] of [
+      [admin, encuesta],
+      [ana, cv],
+    ] as const) {
+      const [address] = await addressesOf(user);
+      const overview = await getClicksOverview({ userId: user.id });
+      const stats = await getLinkStats({ id: link.id, userId: user.id });
+
+      expect(overview.topLinks.map(top => top.shortUrl)).toEqual([address]);
+      expect(stats?.link.shortUrl).toBe(address);
+    }
   });
 
   test('E4: al crear un Enlace se devuelve su Dirección', async () => {

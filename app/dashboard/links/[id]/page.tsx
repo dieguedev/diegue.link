@@ -17,11 +17,7 @@ export default async function LinkStatsPage({ params }: LinkStatsPageProps) {
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-10">
-      <LinkStats
-        id={linkId}
-        userId={session.user.id}
-        username={session.user.username}
-      />
+      <LinkStats id={linkId} userId={session.user.id} />
     </div>
   );
 }

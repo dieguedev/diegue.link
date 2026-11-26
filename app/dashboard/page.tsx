@@ -18,10 +18,7 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
   return (
     <div className="container mx-auto flex flex-col gap-12 px-4 py-10">
       <div className="mx-auto w-full max-w-5xl">
-        <ClicksOverview
-          userId={session.user.id}
-          username={session.user.username}
-        />
+        <ClicksOverview userId={session.user.id} />
       </div>
       <div className="mx-auto w-full max-w-5xl">
         <Suspense fallback={<div className="text-center">Cargando...</div>}>

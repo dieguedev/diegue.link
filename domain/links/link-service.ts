@@ -4,6 +4,8 @@ import {
   createUrl,
   deleteUrl,
   findUrlByAddress,
+  findUrlByIdForUser,
+  findUrlsByIds,
   findUrlsByUser,
   findUserIsAdmin,
   updateUrl,
@@ -72,15 +74,6 @@ function toSummary(
 ): LinkSummary {
   const { isAdmin, user, ...summary } = link;
   return { ...summary, shortUrl: toAddress(link) };
-}
-
-export function buildShortUrl(
-  slug: string,
-  isAdmin: boolean,
-  username: string,
-  host: string,
-): string {
-  return isAdmin ? `${host}/${slug}` : `${host}/u/${username}/${slug}`;
 }
 
 export type LinkSummary = {
@@ -236,4 +229,22 @@ export async function resolveLink(params: {
   username?: string;
 }): Promise<{ id: number; fullUrl: string } | null> {
   return findUrlByAddress(params);
+}
+
+/** Enlace del Usuario con su Dirección, o `null` si no existe o es de otro */
+export async function findLinkForUser(
+  id: number,
+  userId: string,
+): Promise<LinkSummary | null> {
+  const url = await findUrlByIdForUser(id, userId);
+  return url && toSummary(url);
+}
+
+/** Enlaces del Usuario con su Dirección; ignora los ids que no son suyos */
+export async function findLinksByIds(
+  ids: number[],
+  userId: string,
+): Promise<LinkSummary[]> {
+  const urls = await findUrlsByIds(ids, userId);
+  return urls.map(toSummary);
 }

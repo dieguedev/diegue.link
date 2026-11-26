@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { SITE_HOST } from '@/lib/site';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, CornerDownRight } from 'lucide-react';
 import {
@@ -20,11 +19,10 @@ const RANGE = `Últimos ${STATS_RANGE_DAYS} días`;
 interface LinkStatsProps {
   id: number;
   userId: string;
-  username: string;
 }
 
-export async function LinkStats({ id, userId, username }: LinkStatsProps) {
-  const stats = await getLinkStats({ id, userId, username, host: SITE_HOST });
+export async function LinkStats({ id, userId }: LinkStatsProps) {
+  const stats = await getLinkStats({ id, userId });
   if (!stats) notFound();
 
   const { link, series, total, previousTotal } = stats;

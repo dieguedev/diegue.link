@@ -6,10 +6,10 @@ import {
   type ClickScope,
 } from '@/domain/repositories/click-repository';
 import {
-  findUrlByIdForUser,
-  findUrlsByIds,
-} from '@/domain/links/link-repository';
-import { buildShortUrl } from '@/domain/links/link-service';
+  findLinkForUser,
+  findLinksByIds,
+  type LinkSummary,
+} from '@/domain/links/link-service';
 
 export const STATS_RANGE_DAYS = 30;
 const TOP_LIMIT = 5;
@@ -35,14 +35,7 @@ export type TopLink = {
 export type ClicksOverview = ClicksTrend & { topLinks: TopLink[] };
 
 export type LinkStats = ClicksTrend & {
-  link: {
-    id: number;
-    slug: string;
-    fullUrl: string;
-    shortUrl: string;
-    clicks: number;
-    createdAt: Date;
-  };
+  link: LinkSummary;
   devices: BreakdownItem[];
   countries: BreakdownItem[];
   cities: BreakdownItem[];
@@ -79,11 +72,9 @@ function topWithOthers(
 
 export async function getClicksOverview(params: {
   userId: string;
-  username: string;
-  host: string;
   days?: number;
 }): Promise<ClicksOverview> {
-  const { userId, username, host, days = STATS_RANGE_DAYS } = params;
+  const { userId, days = STATS_RANGE_DAYS } = params;
 
   const [trend, byLink] = await Promise.all([
     getTrend({ userId }, days),
@@ -91,23 +82,16 @@ export async function getClicksOverview(params: {
   ]);
 
   const top = byLink.slice(0, TOP_LIMIT);
-  const urls = await findUrlsByIds(
+  const links = await findLinksByIds(
     top.map(t => t.urlId),
     userId,
   );
-  const urlsById = new Map(urls.map(url => [url.id, url]));
+  const linksById = new Map(links.map(link => [link.id, link]));
 
   const topLinks = top.flatMap(({ urlId, clicks }) => {
-    const url = urlsById.get(urlId);
-    if (!url) return [];
-    return [
-      {
-        id: url.id,
-        slug: url.slug,
-        shortUrl: buildShortUrl(url.slug, url.isAdmin, username, host),
-        clicks,
-      },
-    ];
+    const link = linksById.get(urlId);
+    if (!link) return [];
+    return [{ id: link.id, slug: link.slug, shortUrl: link.shortUrl, clicks }];
   });
 
   return { ...trend, topLinks };
@@ -116,17 +100,15 @@ export async function getClicksOverview(params: {
 export async function getLinkStats(params: {
   id: number;
   userId: string;
-  username: string;
-  host: string;
   days?: number;
 }): Promise<LinkStats | null> {
-  const { id, userId, username, host, days = STATS_RANGE_DAYS } = params;
+  const { id, userId, days = STATS_RANGE_DAYS } = params;
 
   // Comprueba que el Enlace es del Usuario antes de leer ningún Clic
-  const url = await findUrlByIdForUser(id, userId);
-  if (!url) return null;
+  const link = await findLinkForUser(id, userId);
+  if (!link) return null;
 
-  const scope = { urlId: url.id };
+  const scope = { urlId: link.id };
   const since = sinceDaysAgo(days);
   const breakdown = (dimension: ClickDimension) =>
     countClicksBy(scope, dimension, since);
@@ -142,11 +124,9 @@ export async function getLinkStats(params: {
       breakdown('os'),
     ]);
 
-  const { isAdmin, ...link } = url;
-
   return {
     ...trend,
-    link: { ...link, shortUrl: buildShortUrl(url.slug, isAdmin, username, host) },
+    link,
     devices,
     countries: topWithOthers(countries),
     cities: topWithOthers(cities),

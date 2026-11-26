@@ -65,21 +65,14 @@ export async function findUrlByAddress({
 export async function findUrlByIdForUser(id: number, userId: string) {
   return prisma.url.findFirst({
     where: { id, userId },
-    select: {
-      id: true,
-      slug: true,
-      fullUrl: true,
-      clicks: true,
-      createdAt: true,
-      isAdmin: true,
-    },
+    select: LINK_SELECT,
   });
 }
 
 export async function findUrlsByIds(ids: number[], userId: string) {
   return prisma.url.findMany({
     where: { id: { in: ids }, userId },
-    select: { id: true, slug: true, fullUrl: true, isAdmin: true },
+    select: LINK_SELECT,
   });
 }
 
