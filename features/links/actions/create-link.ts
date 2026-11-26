@@ -15,7 +15,7 @@ export async function createLink(formData: FormData): Promise<CreateLinkResult> 
   if (!session) return { status: 'error', error: AUTH_ERROR };
 
   const result = await shorten({
-    rawUrl: formData.get('url')?.toString().trim(),
+    rawUrl: formData.get('url')?.toString(),
     rawSlug: formData.get('slug')?.toString().trim(),
     userId: session.user.id,
   });

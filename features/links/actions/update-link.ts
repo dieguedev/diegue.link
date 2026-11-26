@@ -20,7 +20,7 @@ export async function updateLink(formData: FormData): Promise<UpdateLinkResult> 
   const result = await editLink({
     id,
     userId: session.user.id,
-    rawUrl: formData.get('url')?.toString().trim(),
+    rawUrl: formData.get('url')?.toString(),
     rawSlug: formData.get('slug')?.toString().trim(),
   });
 

@@ -10,6 +10,7 @@ import {
   findUserIsAdmin,
   updateUrl,
 } from '@/domain/links/link-repository';
+import { parseDestination } from '@/domain/links/destination';
 import { SITE_HOST } from '@/lib/site';
 
 const CONFIG = {
@@ -22,8 +23,6 @@ const CONFIG = {
 };
 
 const ERRORS = {
-  URL_REQ: 'La URL es obligatoria.',
-  URL_INV: 'La URL no es válida.',
   SLUG_GEN: 'No se ha podido generar un alias único.',
   SLUG_LONG: `El alias no puede tener más de ${CONFIG.SLUG_MAX_LENGTH} caracteres.`,
   SLUG_CHARS: 'El alias sólo puede contener letras, números y guiones.',
@@ -34,15 +33,6 @@ const ERRORS = {
   UPDATE: 'No se han podido guardar los cambios. Intenta de nuevo.',
   DELETE: 'No se ha podido eliminar el enlace. Intenta de nuevo.',
 };
-
-function validateUrl(rawUrl: string): string | null {
-  try {
-    new URL(rawUrl);
-  } catch {
-    return ERRORS.URL_INV;
-  }
-  return null;
-}
 
 function validateSlug(slug: string): string | null {
   if (slug.length > CONFIG.SLUG_MAX_LENGTH) return ERRORS.SLUG_LONG;
@@ -97,9 +87,10 @@ export type ShortenResult =
 export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   const { rawUrl, rawSlug, userId } = params;
 
-  if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
-  const urlError = validateUrl(rawUrl);
-  if (urlError) return { status: 'error', error: urlError };
+  const parsed = parseDestination(rawUrl);
+  if (parsed.status === 'invalid')
+    return { status: 'error', error: parsed.error };
+  const fullUrl = parsed.destination;
 
   if (rawSlug) {
     const validationError = validateSlug(rawSlug);
@@ -111,7 +102,7 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   if (rawSlug) {
     const result = await createUrl({
       slug: rawSlug,
-      fullUrl: rawUrl,
+      fullUrl,
       userId,
       isAdmin,
     });
@@ -124,7 +115,7 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
 
   for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
     const slug = generateSlug();
-    const result = await createUrl({ slug, fullUrl: rawUrl, userId, isAdmin });
+    const result = await createUrl({ slug, fullUrl, userId, isAdmin });
     if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
     if (result !== 'collision')
       return { status: 'success', link: toSummary(result) };
@@ -185,9 +176,10 @@ export async function editLink(
 ): Promise<MutationResult> {
   const { id, userId, rawUrl, rawSlug } = params;
 
-  if (!rawUrl) return { status: 'error', error: ERRORS.URL_REQ };
-  const urlError = validateUrl(rawUrl);
-  if (urlError) return { status: 'error', error: urlError };
+  const parsed = parseDestination(rawUrl);
+  if (parsed.status === 'invalid')
+    return { status: 'error', error: parsed.error };
+  const fullUrl = parsed.destination;
 
   if (!rawSlug) return { status: 'error', error: ERRORS.SLUG_REQ };
   const slugError = validateSlug(rawSlug);
@@ -197,7 +189,7 @@ export async function editLink(
     id,
     userId,
     slug: rawSlug,
-    fullUrl: rawUrl,
+    fullUrl,
   });
   if (result === 'collision')
     return { status: 'error', error: ERRORS.SLUG_EXISTS };

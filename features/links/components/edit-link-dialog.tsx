@@ -26,6 +26,7 @@ import {
   type UpdateLinkResult,
 } from '@/features/links/actions/update-link';
 import type { LinkSummary } from '@/domain/links/link-service';
+import { parseDestination } from '@/domain/links/destination';
 
 type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'address'>;
 
@@ -55,7 +56,6 @@ export function EditLinkDialog({ link }: { link: EditableLink }) {
             anterior dejará de funcionar.
           </DialogDescription>
         </DialogHeader>
-        {/* Se monta en cada apertura, así los errores no sobreviven al cierre */}
         <EditLinkForm link={link} onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
@@ -74,6 +74,9 @@ function EditLinkForm({
     FormData
   >(
     async (_prevState, formData) => {
+      const destination = parseDestination(formData.get('url'));
+      if (destination.status === 'invalid')
+        return { status: 'error', error: destination.error };
       const result = await updateLink(formData);
       if (result.status === 'success') onSuccess();
       return result;
@@ -94,8 +97,12 @@ function EditLinkForm({
         <Input
           id={`edit-url-${link.id}`}
           name="url"
-          type="url"
-          required
+          type="text"
+          inputMode="url"
+          autoComplete="url"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           defaultValue={link.fullUrl}
           disabled={isPending}
           aria-describedby={error ? errorId : undefined}

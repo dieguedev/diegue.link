@@ -13,24 +13,8 @@ import {
 import { AuthModal } from '@/features/auth/components/auth-modal';
 import { createLink } from '@/features/links/actions/create-link';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
+import { parseDestination } from '@/domain/links/destination';
 import { shake } from '@/lib/utils/shake';
-
-const EMPTY_ERROR = 'Pega un enlace para acortarlo.';
-const INVALID_ERROR = 'Ese enlace no parece válido.';
-
-function normalizeUrl(raw: string): string | null {
-  const value = raw.trim();
-  if (!value) return null;
-  const withProtocol = /^[a-z][a-z\d+.-]*:\/\//i.test(value)
-    ? value
-    : `https://${value}`;
-  try {
-    const url = new URL(withProtocol);
-    return url.hostname.includes('.') ? url.toString() : null;
-  } catch {
-    return null;
-  }
-}
 
 interface HeroShortenerProps {
   isLoggedIn: boolean;
@@ -51,13 +35,11 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
   };
 
   const readUrl = () => {
-    const raw = inputRef.current?.value ?? '';
-    const url = normalizeUrl(raw);
-    if (!url) {
-      fail(raw.trim() ? INVALID_ERROR : EMPTY_ERROR);
-      inputRef.current?.focus();
-    }
-    return url;
+    const result = parseDestination(inputRef.current?.value ?? '');
+    if (result.status === 'valid') return result.destination;
+    fail(result.error);
+    inputRef.current?.focus();
+    return null;
   };
 
   const shorten = (url: string, { afterLogin = false } = {}) => {
