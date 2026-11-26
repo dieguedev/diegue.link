@@ -46,7 +46,6 @@ export type UrlMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
-  isAdmin: boolean | null
   domainId: number | null
 }
 
@@ -58,7 +57,6 @@ export type UrlMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
-  isAdmin: boolean | null
   domainId: number | null
 }
 
@@ -70,7 +68,6 @@ export type UrlCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   userId: number
-  isAdmin: number
   domainId: number
   _all: number
 }
@@ -96,7 +93,6 @@ export type UrlMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   userId?: true
-  isAdmin?: true
   domainId?: true
 }
 
@@ -108,7 +104,6 @@ export type UrlMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   userId?: true
-  isAdmin?: true
   domainId?: true
 }
 
@@ -120,7 +115,6 @@ export type UrlCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   userId?: true
-  isAdmin?: true
   domainId?: true
   _all?: true
 }
@@ -219,7 +213,6 @@ export type UrlGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   userId: string
-  isAdmin: boolean
   domainId: number
   _count: UrlCountAggregateOutputType | null
   _avg: UrlAvgAggregateOutputType | null
@@ -254,7 +247,6 @@ export type UrlWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   userId?: Prisma.StringFilter<"Url"> | string
-  isAdmin?: Prisma.BoolFilter<"Url"> | boolean
   domainId?: Prisma.IntFilter<"Url"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   domain?: Prisma.XOR<Prisma.DomainScalarRelationFilter, Prisma.DomainWhereInput>
@@ -269,7 +261,6 @@ export type UrlOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   domainId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   domain?: Prisma.DomainOrderByWithRelationInput
@@ -278,7 +269,7 @@ export type UrlOrderByWithRelationInput = {
 
 export type UrlWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  userId_slug?: Prisma.UrlUserIdSlugCompoundUniqueInput
+  domainId_slug?: Prisma.UrlDomainIdSlugCompoundUniqueInput
   AND?: Prisma.UrlWhereInput | Prisma.UrlWhereInput[]
   OR?: Prisma.UrlWhereInput[]
   NOT?: Prisma.UrlWhereInput | Prisma.UrlWhereInput[]
@@ -288,12 +279,11 @@ export type UrlWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   userId?: Prisma.StringFilter<"Url"> | string
-  isAdmin?: Prisma.BoolFilter<"Url"> | boolean
   domainId?: Prisma.IntFilter<"Url"> | number
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   domain?: Prisma.XOR<Prisma.DomainScalarRelationFilter, Prisma.DomainWhereInput>
   clickEvents?: Prisma.ClickListRelationFilter
-}, "id" | "userId_slug">
+}, "id" | "domainId_slug">
 
 export type UrlOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -303,7 +293,6 @@ export type UrlOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   domainId?: Prisma.SortOrder
   _count?: Prisma.UrlCountOrderByAggregateInput
   _avg?: Prisma.UrlAvgOrderByAggregateInput
@@ -323,7 +312,6 @@ export type UrlScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Url"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Url"> | Date | string
   userId?: Prisma.StringWithAggregatesFilter<"Url"> | string
-  isAdmin?: Prisma.BoolWithAggregatesFilter<"Url"> | boolean
   domainId?: Prisma.IntWithAggregatesFilter<"Url"> | number
 }
 
@@ -333,7 +321,6 @@ export type UrlCreateInput = {
   clicks?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  isAdmin?: boolean
   user: Prisma.UserCreateNestedOneWithoutUrlsInput
   domain: Prisma.DomainCreateNestedOneWithoutUrlsInput
   clickEvents?: Prisma.ClickCreateNestedManyWithoutUrlInput
@@ -347,7 +334,6 @@ export type UrlUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
-  isAdmin?: boolean
   domainId: number
   clickEvents?: Prisma.ClickUncheckedCreateNestedManyWithoutUrlInput
 }
@@ -358,7 +344,6 @@ export type UrlUpdateInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
   domain?: Prisma.DomainUpdateOneRequiredWithoutUrlsNestedInput
   clickEvents?: Prisma.ClickUpdateManyWithoutUrlNestedInput
@@ -372,7 +357,6 @@ export type UrlUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   domainId?: Prisma.IntFieldUpdateOperationsInput | number
   clickEvents?: Prisma.ClickUncheckedUpdateManyWithoutUrlNestedInput
 }
@@ -385,7 +369,6 @@ export type UrlCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
-  isAdmin?: boolean
   domainId: number
 }
 
@@ -395,7 +378,6 @@ export type UrlUpdateManyMutationInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UrlUncheckedUpdateManyInput = {
@@ -406,7 +388,6 @@ export type UrlUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   domainId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -420,8 +401,8 @@ export type UrlOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type UrlUserIdSlugCompoundUniqueInput = {
-  userId: string
+export type UrlDomainIdSlugCompoundUniqueInput = {
+  domainId: number
   slug: string
 }
 
@@ -433,7 +414,6 @@ export type UrlCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   domainId?: Prisma.SortOrder
 }
 
@@ -451,7 +431,6 @@ export type UrlMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   domainId?: Prisma.SortOrder
 }
 
@@ -463,7 +442,6 @@ export type UrlMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   domainId?: Prisma.SortOrder
 }
 
@@ -582,7 +560,6 @@ export type UrlCreateWithoutUserInput = {
   clicks?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  isAdmin?: boolean
   domain: Prisma.DomainCreateNestedOneWithoutUrlsInput
   clickEvents?: Prisma.ClickCreateNestedManyWithoutUrlInput
 }
@@ -594,7 +571,6 @@ export type UrlUncheckedCreateWithoutUserInput = {
   clicks?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  isAdmin?: boolean
   domainId: number
   clickEvents?: Prisma.ClickUncheckedCreateNestedManyWithoutUrlInput
 }
@@ -636,7 +612,6 @@ export type UrlScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Url"> | Date | string
   userId?: Prisma.StringFilter<"Url"> | string
-  isAdmin?: Prisma.BoolFilter<"Url"> | boolean
   domainId?: Prisma.IntFilter<"Url"> | number
 }
 
@@ -646,7 +621,6 @@ export type UrlCreateWithoutDomainInput = {
   clicks?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  isAdmin?: boolean
   user: Prisma.UserCreateNestedOneWithoutUrlsInput
   clickEvents?: Prisma.ClickCreateNestedManyWithoutUrlInput
 }
@@ -659,7 +633,6 @@ export type UrlUncheckedCreateWithoutDomainInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
-  isAdmin?: boolean
   clickEvents?: Prisma.ClickUncheckedCreateNestedManyWithoutUrlInput
 }
 
@@ -695,7 +668,6 @@ export type UrlCreateWithoutClickEventsInput = {
   clicks?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  isAdmin?: boolean
   user: Prisma.UserCreateNestedOneWithoutUrlsInput
   domain: Prisma.DomainCreateNestedOneWithoutUrlsInput
 }
@@ -708,7 +680,6 @@ export type UrlUncheckedCreateWithoutClickEventsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
-  isAdmin?: boolean
   domainId: number
 }
 
@@ -734,7 +705,6 @@ export type UrlUpdateWithoutClickEventsInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
   domain?: Prisma.DomainUpdateOneRequiredWithoutUrlsNestedInput
 }
@@ -747,7 +717,6 @@ export type UrlUncheckedUpdateWithoutClickEventsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   domainId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -758,7 +727,6 @@ export type UrlCreateManyUserInput = {
   clicks?: number
   createdAt?: Date | string
   updatedAt?: Date | string
-  isAdmin?: boolean
   domainId: number
 }
 
@@ -768,7 +736,6 @@ export type UrlUpdateWithoutUserInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   domain?: Prisma.DomainUpdateOneRequiredWithoutUrlsNestedInput
   clickEvents?: Prisma.ClickUpdateManyWithoutUrlNestedInput
 }
@@ -780,7 +747,6 @@ export type UrlUncheckedUpdateWithoutUserInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   domainId?: Prisma.IntFieldUpdateOperationsInput | number
   clickEvents?: Prisma.ClickUncheckedUpdateManyWithoutUrlNestedInput
 }
@@ -792,7 +758,6 @@ export type UrlUncheckedUpdateManyWithoutUserInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   domainId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -804,7 +769,6 @@ export type UrlCreateManyDomainInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
-  isAdmin?: boolean
 }
 
 export type UrlUpdateWithoutDomainInput = {
@@ -813,7 +777,6 @@ export type UrlUpdateWithoutDomainInput = {
   clicks?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutUrlsNestedInput
   clickEvents?: Prisma.ClickUpdateManyWithoutUrlNestedInput
 }
@@ -826,7 +789,6 @@ export type UrlUncheckedUpdateWithoutDomainInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   clickEvents?: Prisma.ClickUncheckedUpdateManyWithoutUrlNestedInput
 }
 
@@ -838,7 +800,6 @@ export type UrlUncheckedUpdateManyWithoutDomainInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -880,7 +841,6 @@ export type UrlSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
-  isAdmin?: boolean
   domainId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   domain?: boolean | Prisma.DomainDefaultArgs<ExtArgs>
@@ -896,7 +856,6 @@ export type UrlSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
-  isAdmin?: boolean
   domainId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   domain?: boolean | Prisma.DomainDefaultArgs<ExtArgs>
@@ -910,7 +869,6 @@ export type UrlSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
-  isAdmin?: boolean
   domainId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   domain?: boolean | Prisma.DomainDefaultArgs<ExtArgs>
@@ -924,11 +882,10 @@ export type UrlSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
-  isAdmin?: boolean
   domainId?: boolean
 }
 
-export type UrlOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "fullUrl" | "clicks" | "createdAt" | "updatedAt" | "userId" | "isAdmin" | "domainId", ExtArgs["result"]["url"]>
+export type UrlOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "fullUrl" | "clicks" | "createdAt" | "updatedAt" | "userId" | "domainId", ExtArgs["result"]["url"]>
 export type UrlInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   domain?: boolean | Prisma.DomainDefaultArgs<ExtArgs>
@@ -959,7 +916,6 @@ export type $UrlPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     createdAt: Date
     updatedAt: Date
     userId: string
-    isAdmin: boolean
     domainId: number
   }, ExtArgs["result"]["url"]>
   composites: {}
@@ -1394,7 +1350,6 @@ export interface UrlFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Url", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Url", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Url", 'String'>
-  readonly isAdmin: Prisma.FieldRef<"Url", 'Boolean'>
   readonly domainId: Prisma.FieldRef<"Url", 'Int'>
 }
     

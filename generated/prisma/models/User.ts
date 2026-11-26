@@ -33,7 +33,6 @@ export type UserMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   username: string | null
-  isAdmin: boolean | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -45,7 +44,6 @@ export type UserMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   username: string | null
-  isAdmin: boolean | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -57,7 +55,6 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   username: number
-  isAdmin: number
   _all: number
 }
 
@@ -71,7 +68,6 @@ export type UserMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   username?: true
-  isAdmin?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -83,7 +79,6 @@ export type UserMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   username?: true
-  isAdmin?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -95,7 +90,6 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   username?: true
-  isAdmin?: true
   _all?: true
 }
 
@@ -180,7 +174,6 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   username: string
-  isAdmin: boolean
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -213,7 +206,6 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   username?: Prisma.StringFilter<"User"> | string
-  isAdmin?: Prisma.BoolFilter<"User"> | boolean
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   urls?: Prisma.UrlListRelationFilter
@@ -229,7 +221,6 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   urls?: Prisma.UrlOrderByRelationAggregateInput
@@ -248,7 +239,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   image?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  isAdmin?: Prisma.BoolFilter<"User"> | boolean
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   urls?: Prisma.UrlListRelationFilter
@@ -264,7 +254,6 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -282,7 +271,6 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   username?: Prisma.StringWithAggregatesFilter<"User"> | string
-  isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
 }
 
 export type UserCreateInput = {
@@ -294,7 +282,6 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlCreateNestedManyWithoutUserInput
@@ -310,7 +297,6 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlUncheckedCreateNestedManyWithoutUserInput
@@ -326,7 +312,6 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUpdateManyWithoutUserNestedInput
@@ -342,7 +327,6 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUncheckedUpdateManyWithoutUserNestedInput
@@ -358,7 +342,6 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
 }
 
 export type UserUpdateManyMutationInput = {
@@ -370,7 +353,6 @@ export type UserUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -382,7 +364,6 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -394,7 +375,6 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -406,7 +386,6 @@ export type UserMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -418,7 +397,6 @@ export type UserMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   username?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -514,7 +492,6 @@ export type UserCreateWithoutDomainsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlCreateNestedManyWithoutUserInput
@@ -529,7 +506,6 @@ export type UserUncheckedCreateWithoutDomainsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlUncheckedCreateNestedManyWithoutUserInput
@@ -560,7 +536,6 @@ export type UserUpdateWithoutDomainsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUpdateManyWithoutUserNestedInput
@@ -575,7 +550,6 @@ export type UserUncheckedUpdateWithoutDomainsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUncheckedUpdateManyWithoutUserNestedInput
@@ -590,7 +564,6 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlCreateNestedManyWithoutUserInput
   domains?: Prisma.DomainCreateNestedManyWithoutOwnerInput
@@ -605,7 +578,6 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlUncheckedCreateNestedManyWithoutUserInput
   domains?: Prisma.DomainUncheckedCreateNestedManyWithoutOwnerInput
@@ -636,7 +608,6 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUpdateManyWithoutUserNestedInput
   domains?: Prisma.DomainUpdateManyWithoutOwnerNestedInput
@@ -651,7 +622,6 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUncheckedUpdateManyWithoutUserNestedInput
   domains?: Prisma.DomainUncheckedUpdateManyWithoutOwnerNestedInput
@@ -666,7 +636,6 @@ export type UserCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlCreateNestedManyWithoutUserInput
   domains?: Prisma.DomainCreateNestedManyWithoutOwnerInput
@@ -681,7 +650,6 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   urls?: Prisma.UrlUncheckedCreateNestedManyWithoutUserInput
   domains?: Prisma.DomainUncheckedCreateNestedManyWithoutOwnerInput
@@ -712,7 +680,6 @@ export type UserUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUpdateManyWithoutUserNestedInput
   domains?: Prisma.DomainUpdateManyWithoutOwnerNestedInput
@@ -727,7 +694,6 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   urls?: Prisma.UrlUncheckedUpdateManyWithoutUserNestedInput
   domains?: Prisma.DomainUncheckedUpdateManyWithoutOwnerNestedInput
@@ -742,7 +708,6 @@ export type UserCreateWithoutUrlsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   domains?: Prisma.DomainCreateNestedManyWithoutOwnerInput
@@ -757,7 +722,6 @@ export type UserUncheckedCreateWithoutUrlsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   username: string
-  isAdmin?: boolean
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   domains?: Prisma.DomainUncheckedCreateNestedManyWithoutOwnerInput
@@ -788,7 +752,6 @@ export type UserUpdateWithoutUrlsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   domains?: Prisma.DomainUpdateManyWithoutOwnerNestedInput
@@ -803,7 +766,6 @@ export type UserUncheckedUpdateWithoutUrlsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   domains?: Prisma.DomainUncheckedUpdateManyWithoutOwnerNestedInput
@@ -876,7 +838,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   username?: boolean
-  isAdmin?: boolean
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   urls?: boolean | Prisma.User$urlsArgs<ExtArgs>
@@ -893,7 +854,6 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   username?: boolean
-  isAdmin?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -905,7 +865,6 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   username?: boolean
-  isAdmin?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -917,10 +876,9 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   username?: boolean
-  isAdmin?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "username" | "isAdmin", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "username", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
@@ -948,7 +906,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     username: string
-    isAdmin: boolean
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1384,7 +1341,6 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly username: Prisma.FieldRef<"User", 'String'>
-  readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>
 }
     
 

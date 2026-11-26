@@ -3,8 +3,8 @@ import { Prisma } from '@/generated/prisma/client';
 
 const ADDRESS_SELECT = {
   slug: true,
-  isAdmin: true,
-  domain: { select: { host: true } },
+  userId: true,
+  domain: { select: { host: true, ownerId: true } },
   user: { select: { username: true } },
 } as const;
 
@@ -20,7 +20,6 @@ export type CreateUrlData = {
   slug: string;
   fullUrl: string;
   userId: string;
-  isAdmin: boolean;
   domainId: number;
 };
 
@@ -49,8 +48,6 @@ export async function createUrl(data: CreateUrlData) {
   }
 }
 
-const RESOLVED_SELECT = { id: true, fullUrl: true } as const;
-
 export async function findUrlByAddress({
   host,
   slug,
@@ -59,43 +56,9 @@ export async function findUrlByAddress({
   slug: string;
 }) {
   return prisma.url.findFirst({
-    where: {
-      slug,
-      domain: { host },
-      OR: [{ isAdmin: true }, { slug: { contains: '/' } }],
-    },
-    select: RESOLVED_SELECT,
+    where: { slug, domain: { host } },
+    select: { id: true, fullUrl: true },
   });
-}
-
-export async function findUnprefixedUrl({
-  host,
-  username,
-  slug,
-}: {
-  host: string;
-  username: string;
-  slug: string;
-}) {
-  return prisma.url.findFirst({
-    where: { slug, isAdmin: false, user: { username }, domain: { host } },
-    select: RESOLVED_SELECT,
-  });
-}
-
-export async function existsUnprefixedUrl({
-  userId,
-  slug,
-  exceptId,
-}: {
-  userId: string;
-  slug: string;
-  exceptId?: number;
-}) {
-  const count = await prisma.url.count({
-    where: { userId, slug, isAdmin: false, id: { not: exceptId } },
-  });
-  return count > 0;
 }
 
 export async function findUrlByIdForUser(id: number, userId: string) {
