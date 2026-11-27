@@ -1,4 +1,5 @@
 import { Copy, Link as LinkIcon, MousePointerClick } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/card';
 import { HighlightedText } from '@/components/ui/highlighted-text';
 import { SITE_NAME } from '@/lib/site';
@@ -8,11 +9,9 @@ const FRAGMENT_CLASS =
 
 const USERNAME = <span className="font-bold text-main">ana.</span>;
 
-const STEPS = [
-  {
-    title: 'Pega el enlace largo',
-    text: 'Un formulario, un artículo, un archivo en la nube... Cualquier cosa que quieras guardar o compartir!',
-    fragment: (
+function stepFragments(alias: string) {
+  return {
+    paste: (
       <div className={FRAGMENT_CLASS}>
         <LinkIcon className="size-4 shrink-0" />
         <span className="truncate">
@@ -20,30 +19,22 @@ const STEPS = [
         </span>
       </div>
     ),
-  },
-  {
-    title: 'Elige tu alias',
-    text: 'Escribe la palabra que quieras al final o deja que generemos un identificador único por ti. Tu alias nunca estará pillado, cada uno es único por usuario.',
-    fragment: (
+    alias: (
       <div className={FRAGMENT_CLASS}>
         <span className="truncate">
           {USERNAME}
           {SITE_NAME}/
         </span>
         <span className="shrink-0 border-2 border-border bg-main px-1.5 py-0.5 font-bold">
-          encuesta
+          {alias}
         </span>
       </div>
     ),
-  },
-  {
-    title: 'Comparte y observa los clics',
-    text: 'Cópialo y pégalo donde quieras. En tu panel ves cuántas veces lo han abierto y puedes cambiar el destino en cualquier momento.',
-    fragment: (
+    share: (
       <div className={`${FRAGMENT_CLASS} justify-between`}>
         <span className="truncate">
           {USERNAME}
-          {SITE_NAME}/encuesta
+          {SITE_NAME}/{alias}
         </span>
         <span className="flex shrink-0 items-center gap-2">
           <span className="flex h-8 items-center gap-1 border-2 border-border bg-secondary-background px-2 font-sans font-bold">
@@ -56,10 +47,15 @@ const STEPS = [
         </span>
       </div>
     ),
-  },
-];
+  };
+}
+
+const STEP_KEYS = ['paste', 'alias', 'share'] as const;
 
 export function HowItWorks() {
+  const t = useTranslations('HowItWorks');
+  const fragments = stepFragments(t('exampleAlias'));
+
   return (
     <section
       id="como-funciona"
@@ -72,17 +68,16 @@ export function HowItWorks() {
             id="como-funciona-title"
             className="text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl"
           >
-            Un enlace corto en <HighlightedText>tres pasos</HighlightedText>
+            {t.rich('title', {
+              highlight: chunks => <HighlightedText>{chunks}</HighlightedText>,
+            })}
           </h2>
-          <p className="max-w-2xl text-base sm:text-xl">
-            Los enlaces largos son sospechosos, difíciles de leer y de recordar.
-            Solo necesitas una cuenta gratuita y el enlace que quieras acortar!
-          </p>
+          <p className="max-w-2xl text-base sm:text-xl">{t('intro')}</p>
         </div>
 
         <ol className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-          {STEPS.map((step, i) => (
-            <li key={step.title} className="min-w-0">
+          {STEP_KEYS.map((key, i) => (
+            <li key={key} className="min-w-0">
               <Card className="h-full gap-5 px-6 shadow-none">
                 <span
                   aria-hidden="true"
@@ -90,13 +85,15 @@ export function HowItWorks() {
                 >
                   {i + 1}
                 </span>
-                <div aria-hidden="true">{step.fragment}</div>
+                <div aria-hidden="true">{fragments[key]}</div>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-bold tracking-tight">
-                    <span className="sr-only">Paso {i + 1}: </span>
-                    {step.title}
+                    <span className="sr-only">
+                      {t('step', { number: i + 1 })}{' '}
+                    </span>
+                    {t(`steps.${key}.title`)}
                   </h3>
-                  <p className="text-base">{step.text}</p>
+                  <p className="text-base">{t(`steps.${key}.text`)}</p>
                 </div>
               </Card>
             </li>
