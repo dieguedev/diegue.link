@@ -26,7 +26,7 @@ export function Faq() {
     <section
       id="preguntas"
       aria-labelledby="preguntas-title"
-      className="border-b-2 border-border"
+      className="border-b-2 border-border bg-secondary-background"
     >
       <div className="mx-auto grid min-h-[calc(100svh-4rem)] w-full max-w-6xl content-center gap-10 px-4 py-20 lg:grid-cols-[2fr_3fr] lg:gap-16">
         <div className="flex flex-col gap-4">
