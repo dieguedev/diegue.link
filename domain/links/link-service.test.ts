@@ -139,6 +139,13 @@ describe('En link service', () => {
       }
     });
 
+    it('lleva el host del sitio si es de trim.cat', async () => {
+      const trimCat = await createDomain({ host: 'trim.cat' });
+      await createLink(ana, trimCat, { slug: 'x7Kp2a' });
+
+      expect(await addressesOf(ana)).toEqual(['trim.cat/x7Kp2a']);
+    });
+
     it('se conserva al editar el alias', async () => {
       const cv = await createLink(ana, diegueLink, { slug: 'u/ana/cv' });
 
