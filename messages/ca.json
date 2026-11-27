@@ -40,7 +40,7 @@
       },
       "alias": {
         "title": "Tria el teu àlies",
-        "text": "Escriu la paraula que vulguis al final o deixa que generem un identificador únic per tu. El teu àlies mai no estarà agafat: cadascun és únic per usuari."
+        "text": "Te'n generem un de curt de 5 caràcters a l'instant. Amb un domini propi verificat pots escriure la paraula que vulguis al final."
       },
       "share": {
         "title": "Comparteix i mira els clics",
@@ -66,11 +66,11 @@
       },
       "destination": {
         "question": "Puc canviar on porta un enllaç?",
-        "answer": "Sí. Des del tauler edites la destinació i l'àlies quan vulguis. Si canvies l'àlies, l'URL curta anterior deixa de funcionar."
+        "answer": "Sí. Des del tauler canvies la destinació quan vulguis. En un domini propi també pots canviar l'àlies; si ho fas, l'URL curta anterior deixa de funcionar."
       },
       "alias": {
         "question": "Quins caràcters admet un àlies?",
-        "answer": "Lletres sense accent, números, guions i guions baixos, fins a 50 caràcters. Cada usuari té la seva pròpia adreça, com ara ana.{site}, així que el teu àlies no xoca amb el de ningú."
+        "answer": "Lletres sense accent, números, guions i guions baixos, fins a 50 caràcters. Només el pots triar en un domini propi verificat, on no xoca amb el de ningú més; a trim.cat es genera automàticament."
       },
       "clicks": {
         "question": "Com es compten els clics?",
@@ -168,7 +168,7 @@
   "Links": {
     "create": {
       "title": "Escurça una URL",
-      "description": "Afegeix l'URL que vols escurçar per generar un enllaç curt. Pots afegir-hi un àlies personalitzat perquè sigui més descriptiu o més fàcil de recordar.",
+      "description": "Afegeix l'URL que vols escurçar per generar un enllaç curt a trim.cat. Si tens un domini propi verificat, pots triar-lo i posar-hi un àlies personalitzat.",
       "url": "URL per escurçar",
       "domain": "Domini",
       "alias": "Àlies personalitzat (opcional)",
@@ -239,7 +239,7 @@
       "DESTINATION_INVALID": "L'URL no és vàlida.",
       "ALIAS_GENERATION_FAILED": "No s'ha pogut generar un àlies únic.",
       "ALIAS_TOO_LONG": "L'àlies no pot tenir més de 50 caràcters.",
-      "ALIAS_INVALID_CHARS": "L'àlies només pot contenir lletres, números i guions.",
+      "ALIAS_INVALID_CHARS": "L'àlies només pot contenir lletres, números, guions i guions baixos.",
       "ALIAS_REQUIRED": "L'àlies és obligatori.",
       "ALIAS_TAKEN": "Aquest àlies ja existeix.",
       "DOMAIN_NOT_ALLOWED": "No pots crear enllaços en aquest domini.",
