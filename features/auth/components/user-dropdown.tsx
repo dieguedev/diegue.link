@@ -8,6 +8,7 @@ import {
   Settings,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import {
   DropdownMenu,
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export function UserDropdown({ username }: Props) {
+  const t = useTranslations('Auth.userMenu');
   const pathname = usePathname();
   const isInDashboard = pathname.startsWith('/dashboard');
 
@@ -52,23 +54,23 @@ export function UserDropdown({ username }: Props) {
           {isInDashboard ? (
             <Link href="/">
               <HomeIcon />
-              <span>Inicio</span>
+              <span>{t('home')}</span>
             </Link>
           ) : (
             <Link href="/dashboard">
               <LayoutDashboard />
-              <span>Dashboard</span>
+              <span>{t('dashboard')}</span>
             </Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings />
-          <span>Ajustes</span>
+          <span>{t('settings')}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogOut}>
           <LogOut />
-          <span>Cerrar sesión</span>
+          <span>{t('logOut')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

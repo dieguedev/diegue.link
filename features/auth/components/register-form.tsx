@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -10,17 +11,27 @@ import { Label } from '@/components/ui/label';
 import { authClient } from '@/lib/auth/auth-client';
 import { registerInline } from '@/lib/forms/register-inline';
 import { shakeFields } from '@/lib/utils/shake';
-import { getAuthErrorMessage } from '@/features/auth/auth-errors';
-import { registerSchema, type RegisterInput } from '@/features/auth/schemas';
+import { useAuthErrorMessage } from '@/features/auth/auth-errors';
+import {
+  createRegisterSchema,
+  type RegisterInput,
+} from '@/features/auth/schemas';
 
 interface RegisterFormProps {
   onSuccess: () => void;
 }
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const t = useTranslations('Auth');
+  const tValidation = useTranslations('Auth.validation');
+  const authErrorMessage = useAuthErrorMessage();
+  const schema = useMemo(
+    () => createRegisterSchema(tValidation),
+    [tValidation],
+  );
   const formRef = useRef<HTMLFormElement>(null);
   const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(schema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',
   });
@@ -35,12 +46,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     try {
       const { error } = await authClient.signUp.email(data);
       if (error) {
-        setError('root.server', { message: getAuthErrorMessage(error) });
+        setError('root.server', { message: authErrorMessage(error) });
         return;
       }
       onSuccess();
     } catch {
-      setError('root.server', { message: getAuthErrorMessage({}) });
+      setError('root.server', { message: authErrorMessage({}) });
     }
   };
 
@@ -54,7 +65,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     >
       <fieldset disabled={isSubmitting} className="flex min-w-0 flex-col gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="register-name">Nombre</Label>
+          <Label htmlFor="register-name">{t('register.name')}</Label>
           <Input
             id="register-name"
             type="text"
@@ -71,7 +82,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="register-email">Email</Label>
+          <Label htmlFor="register-email">{t('register.email')}</Label>
           <Input
             id="register-email"
             type="email"
@@ -88,7 +99,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="register-username">Nombre de usuario</Label>
+          <Label htmlFor="register-username">{t('register.username')}</Label>
           <Input
             id="register-username"
             type="text"
@@ -103,12 +114,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           <FieldMessage
             id="register-username-message"
             error={errors.username?.message}
-            hint="Entre 3 y 30 caracteres."
+            hint={t('register.usernameHint')}
           />
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="register-password">Contraseña</Label>
+          <Label htmlFor="register-password">{t('register.password')}</Label>
           <Input
             id="register-password"
             type="password"
@@ -121,7 +132,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           <FieldMessage
             id="register-password-message"
             error={errors.password?.message}
-            hint="Mínimo 8 caracteres."
+            hint={t('register.passwordHint')}
           />
         </div>
 
@@ -132,7 +143,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         )}
 
         <Button type="submit" className="w-full" loading={isSubmitting}>
-          Crear cuenta
+          {t('register.submit')}
         </Button>
       </fieldset>
     </form>
