@@ -10,7 +10,10 @@ import {
   findUsername,
   updateUrl,
 } from '@/domain/links/link-repository';
-import { parseDestination } from '@/domain/links/destination';
+import {
+  parseDestination,
+  type DestinationError,
+} from '@/domain/links/destination';
 import {
   findDomainByHost,
   findVerifiedDomainOwnedBy,
@@ -26,19 +29,31 @@ const CONFIG = {
   PAGE_SIZE: 20,
 };
 
-const ERRORS = {
-  SLUG_GEN: 'No se ha podido generar un alias único.',
-  SLUG_LONG: `El alias no puede tener más de ${CONFIG.SLUG_MAX_LENGTH} caracteres.`,
-  SLUG_CHARS: 'El alias sólo puede contener letras, números y guiones.',
-  SLUG_REQ: 'El alias es obligatorio.',
-  SLUG_EXISTS: 'Este alias ya existe.',
-  GENERIC: 'Error al crear la URL corta. Intenta de nuevo.',
-  NOT_FOUND: 'Este enlace ya no existe.',
-  UPDATE: 'No se han podido guardar los cambios. Intenta de nuevo.',
-  DELETE: 'No se ha podido eliminar el enlace. Intenta de nuevo.',
-};
+export type LinkError =
+  | DestinationError
+  | 'ALIAS_GENERATION_FAILED'
+  | 'ALIAS_TOO_LONG'
+  | 'ALIAS_INVALID_CHARS'
+  | 'ALIAS_REQUIRED'
+  | 'ALIAS_TAKEN'
+  | 'CREATE_FAILED'
+  | 'LINK_NOT_FOUND'
+  | 'UPDATE_FAILED'
+  | 'DELETE_FAILED';
 
-function validateSlug(slug: string): string | null {
+const ERRORS = {
+  SLUG_GEN: 'ALIAS_GENERATION_FAILED',
+  SLUG_LONG: 'ALIAS_TOO_LONG',
+  SLUG_CHARS: 'ALIAS_INVALID_CHARS',
+  SLUG_REQ: 'ALIAS_REQUIRED',
+  SLUG_EXISTS: 'ALIAS_TAKEN',
+  GENERIC: 'CREATE_FAILED',
+  NOT_FOUND: 'LINK_NOT_FOUND',
+  UPDATE: 'UPDATE_FAILED',
+  DELETE: 'DELETE_FAILED',
+} satisfies Record<string, LinkError>;
+
+function validateSlug(slug: string): LinkError | null {
   if (slug.length > CONFIG.SLUG_MAX_LENGTH) return ERRORS.SLUG_LONG;
   if (!CONFIG.SLUG_PATTERN.test(slug)) return ERRORS.SLUG_CHARS;
   return null;
@@ -110,7 +125,7 @@ export type ShortenParams = {
 
 export type ShortenResult =
   | { status: 'success'; link: LinkSummary }
-  | { status: 'error'; error: string };
+  | { status: 'error'; error: LinkError };
 
 export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   const { rawUrl, rawSlug, userId } = params;
@@ -204,7 +219,7 @@ export type EditLinkParams = {
 
 export type MutationResult =
   | { status: 'success' }
-  | { status: 'error'; error: string };
+  | { status: 'error'; error: LinkError };
 
 export async function editLink(
   params: EditLinkParams,

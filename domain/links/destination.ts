@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+export type DestinationError = 'DESTINATION_REQUIRED' | 'DESTINATION_INVALID';
+
 const ERRORS = {
-  REQUIRED: 'La URL es obligatoria.',
-  INVALID: 'La URL no es válida.',
-};
+  REQUIRED: 'DESTINATION_REQUIRED',
+  INVALID: 'DESTINATION_INVALID',
+} satisfies Record<string, DestinationError>;
 
 const ALLOWED_PROTOCOLS = ['http:', 'https:'];
 const HAS_PROTOCOL = /^[a-z][a-z\d+.-]*:\/\//i;
@@ -30,10 +32,13 @@ export const destinationSchema = z
 
 export type DestinationResult =
   | { status: 'valid'; destination: string }
-  | { status: 'invalid'; error: string };
+  | { status: 'invalid'; error: DestinationError };
 
 export function parseDestination(raw: unknown): DestinationResult {
   const result = destinationSchema.safeParse(raw);
   if (result.success) return { status: 'valid', destination: result.data };
-  return { status: 'invalid', error: result.error.issues[0].message };
+  return {
+    status: 'invalid',
+    error: result.error.issues[0].message as DestinationError,
+  };
 }

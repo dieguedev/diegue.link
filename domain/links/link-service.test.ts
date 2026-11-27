@@ -164,8 +164,8 @@ describe('En link service', () => {
   });
 
   describe('el destino de un enlace', () => {
-    const invalid = { status: 'error', error: 'La URL no es válida.' };
-    const required = { status: 'error', error: 'La URL es obligatoria.' };
+    const invalid = { status: 'error', error: 'DESTINATION_INVALID' };
+    const required = { status: 'error', error: 'DESTINATION_REQUIRED' };
 
     async function destinationsOf(user: User) {
       const { links } = await listLinks({ userId: user.id });
@@ -373,7 +373,7 @@ describe('En link service', () => {
 
       expect(await shorten(charla)).toEqual({
         status: 'error',
-        error: 'Este alias ya existe.',
+        error: 'ALIAS_TAKEN',
       });
     });
 
@@ -460,7 +460,7 @@ describe('En link service', () => {
         slug: 'u/luis/fotos',
         fullUrl: 'https://luis.dev/fotos',
       });
-      const notFound = { status: 'error', error: 'Este enlace ya no existe.' };
+      const notFound = { status: 'error', error: 'LINK_NOT_FOUND' };
 
       expect(
         await editLink({
