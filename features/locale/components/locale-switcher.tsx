@@ -38,10 +38,10 @@ export function LocaleSwitcher() {
           aria-label={t('label')}
           title={t('label')}
           disabled={isPending}
-          className="uppercase"
+          className="w-10 px-0 uppercase sm:w-auto sm:px-4"
         >
-          <Languages aria-hidden className="hidden min-[360px]:block" />
-          {locale}
+          <Languages aria-hidden />
+          <span className="hidden sm:inline">{locale}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
