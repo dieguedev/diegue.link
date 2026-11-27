@@ -3,6 +3,8 @@ import { SITE_HOST, SITE_ORIGIN, SYSTEM_DOMAIN_HOST } from '@/lib/site';
 const WWW = 'www.';
 const SITE_PATHS = ['/dashboard', '/api/auth'];
 const ASSET = /\/[^/]+\.[a-z\d]+$/i;
+const LOCAL_NETWORK_HOST =
+  /^(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/;
 
 export type Route =
   | { type: 'site' }
@@ -13,6 +15,13 @@ function isSitePath(pathname: string): boolean {
   if (pathname === '/' || ASSET.test(pathname)) return true;
   return SITE_PATHS.some(
     path => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
+
+function isSiteHost(host: string): boolean {
+  if (host === SITE_HOST) return true;
+  return (
+    process.env.NODE_ENV === 'development' && LOCAL_NETWORK_HOST.test(host)
   );
 }
 
@@ -30,7 +39,7 @@ export function routeRequest({
       permanent: true,
     };
 
-  if (host === SITE_HOST)
+  if (isSiteHost(host))
     return isSitePath(pathname)
       ? { type: 'site' }
       : { type: 'link', domain: SYSTEM_DOMAIN_HOST, path: pathname };
