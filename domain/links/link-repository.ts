@@ -4,8 +4,7 @@ import { Prisma } from '@/generated/prisma/client';
 const ADDRESS_SELECT = {
   slug: true,
   userId: true,
-  domain: { select: { host: true, ownerId: true } },
-  user: { select: { username: true } },
+  domain: { select: { host: true, ownerId: true, verifiedAt: true } },
 } as const;
 
 const LINK_SELECT = {

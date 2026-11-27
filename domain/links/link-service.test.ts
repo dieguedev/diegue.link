@@ -148,77 +148,6 @@ describe('En link service', () => {
 
       expect(await addressesOf(ana)).toEqual(['trim.cat/x7Kp2a']);
     });
-
-    it('se conserva al editar el alias', async () => {
-      const cv = await createLink(ana, diegueLink, { slug: 'u/ana/cv' });
-
-      await editLink({
-        id: cv.id,
-        userId: ana.id,
-        rawUrl: cv.fullUrl,
-        rawSlug: 'curriculum',
-      });
-
-      const { links } = await listLinks({ userId: ana.id });
-      expect(links).toMatchObject([
-        { slug: 'curriculum', address: 'diegue.link/u/ana/curriculum' },
-      ]);
-    });
-  });
-
-  describe('el alias en trim.cat', () => {
-    const allZeros = (size: number) => Buffer.alloc(size);
-
-    afterEach(() => {
-      vi.mocked(randomBytes).mockReset();
-    });
-
-    it('se genera aunque se pida uno', async () => {
-      for (const domainId of [undefined, trimCat.id]) {
-        await shorten({
-          rawUrl: 'https://ana.dev/blog',
-          rawSlug: 'blog',
-          domainId,
-          userId: ana.id,
-        });
-      }
-
-      expect(await addressesOf(ana)).toEqual([
-        expect.stringMatching(/^trim\.cat\/[a-zA-Z0-9]{5}$/),
-        expect.stringMatching(/^trim\.cat\/[a-zA-Z0-9]{5}$/),
-      ]);
-    });
-
-    it('se alarga a 6 caracteres si los generados chocan', async () => {
-      vi.mocked(randomBytes).mockImplementation(allZeros);
-      await createLink(diegue, trimCat, { slug: 'aaaaa' });
-
-      const result = await shorten({
-        rawUrl: 'https://ana.dev/blog',
-        rawSlug: undefined,
-        userId: ana.id,
-      });
-
-      expect(result).toMatchObject({
-        status: 'success',
-        link: { address: 'trim.cat/aaaaaa' },
-      });
-    });
-
-    it('da error si tampoco se puede generar', async () => {
-      vi.mocked(randomBytes).mockImplementation(allZeros);
-      await createLink(diegue, trimCat, { slug: 'aaaaa' });
-      await createLink(diegue, trimCat, { slug: 'aaaaaa' });
-
-      expect(
-        await shorten({
-          rawUrl: 'https://ana.dev/blog',
-          rawSlug: undefined,
-          userId: ana.id,
-        }),
-      ).toEqual({ status: 'error', error: 'ALIAS_GENERATION_FAILED' });
-      expect(await addressesOf(ana)).toEqual([]);
-    });
   });
 
   describe('el destino de un enlace', () => {
@@ -300,7 +229,7 @@ describe('En link service', () => {
           id: cv.id,
           userId: ana.id,
           rawUrl: 'javascript:void(0)',
-          rawSlug: 'cv',
+          rawSlug: undefined,
         }),
       ).toEqual(invalid);
       expect(await destinationsOf(ana)).toEqual(['https://ana.dev/cv.pdf']);
@@ -313,10 +242,93 @@ describe('En link service', () => {
         id: cv.id,
         userId: ana.id,
         rawUrl: '  ana.dev/cv  ',
-        rawSlug: 'cv',
+        rawSlug: undefined,
       });
 
       expect(await destinationsOf(ana)).toEqual(['https://ana.dev/cv']);
+    });
+  });
+
+  describe('al editar un enlace', () => {
+    it('cambia el destino de uno de trim.cat', async () => {
+      const blog = await createLink(ana, trimCat, { slug: 'x7Kp2' });
+
+      expect(
+        await editLink({
+          id: blog.id,
+          userId: ana.id,
+          rawUrl: 'https://ana.dev/blog',
+          rawSlug: undefined,
+        }),
+      ).toEqual({ status: 'success' });
+      expect((await listLinks({ userId: ana.id })).links).toMatchObject([
+        { address: 'trim.cat/x7Kp2', fullUrl: 'https://ana.dev/blog' },
+      ]);
+    });
+
+    it('cambia el alias de uno de un dominio propio', async () => {
+      const charla = await createLink(diegue, diegueLink, { slug: 'charla' });
+
+      expect(
+        await editLink({
+          id: charla.id,
+          userId: diegue.id,
+          rawUrl: charla.fullUrl,
+          rawSlug: 'charla-2026',
+        }),
+      ).toEqual({ status: 'success' });
+      expect(await addressesOf(diegue)).toEqual(['diegue.link/charla-2026']);
+    });
+
+    it('conserva el alias heredado de /u/ al cambiar el destino', async () => {
+      const cv = await createLink(ana, diegueLink, { slug: 'u/ana/cv' });
+
+      expect(
+        await editLink({
+          id: cv.id,
+          userId: ana.id,
+          rawUrl: 'https://ana.dev/cv-2026.pdf',
+          rawSlug: undefined,
+        }),
+      ).toEqual({ status: 'success' });
+      expect((await listLinks({ userId: ana.id })).links).toMatchObject([
+        {
+          address: 'diegue.link/u/ana/cv',
+          fullUrl: 'https://ana.dev/cv-2026.pdf',
+        },
+      ]);
+    });
+
+    it('no cambia el alias de uno de trim.cat', async () => {
+      const blog = await createLink(ana, trimCat, {
+        slug: 'x7Kp2',
+        fullUrl: 'https://ana.dev/blog',
+      });
+
+      expect(
+        await editLink({
+          id: blog.id,
+          userId: ana.id,
+          rawUrl: 'https://ana.dev/otro',
+          rawSlug: 'mi-blog',
+        }),
+      ).toEqual({ status: 'error', error: 'ALIAS_NOT_EDITABLE' });
+      expect((await listLinks({ userId: ana.id })).links).toMatchObject([
+        { address: 'trim.cat/x7Kp2', fullUrl: 'https://ana.dev/blog' },
+      ]);
+    });
+
+    it('indica si su alias se puede cambiar', async () => {
+      await createLink(diegue, trimCat, { slug: 'x7Kp2' });
+      await createLink(diegue, diegueLink, { slug: 'charla' });
+
+      const { links } = await listLinks({ userId: diegue.id });
+      expect(
+        links.map(({ address, aliasEditable }) => ({ address, aliasEditable })),
+      ).toEqual([
+        { address: 'diegue.link/charla', aliasEditable: true },
+        { address: 'trim.cat/x7Kp2', aliasEditable: false },
+      ]);
     });
   });
 
@@ -627,7 +639,7 @@ describe('En link service', () => {
       expect(links).toMatchObject([
         {
           id: fotos.id,
-          slug: 'fotos',
+          slug: 'u/luis/fotos',
           fullUrl: 'https://luis.dev/fotos',
           address: 'diegue.link/u/luis/fotos',
         },

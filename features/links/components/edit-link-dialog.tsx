@@ -31,7 +31,10 @@ import type { LinkSummary } from '@/domain/links/link-service';
 import { parseDestination } from '@/domain/links/destination';
 import { parseAlias } from '@/domain/links/alias';
 
-type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'address'>;
+type EditableLink = Pick<
+  LinkSummary,
+  'id' | 'slug' | 'fullUrl' | 'address' | 'aliasEditable'
+>;
 
 export function EditLinkDialog({ link }: { link: EditableLink }) {
   const t = useTranslations('Links.edit');
@@ -55,7 +58,11 @@ export function EditLinkDialog({ link }: { link: EditableLink }) {
       <DialogContent className="sm:max-w-md" closeLabel={t('close')}>
         <DialogHeader>
           <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>{t('description')}</DialogDescription>
+          <DialogDescription>
+            {link.aliasEditable
+              ? t('description')
+              : t('descriptionDestination')}
+          </DialogDescription>
         </DialogHeader>
         <EditLinkForm link={link} onSuccess={() => setOpen(false)} />
       </DialogContent>
@@ -80,9 +87,11 @@ function EditLinkForm({
       const destination = parseDestination(formData.get('url'));
       if (destination.status === 'invalid')
         return { status: 'error', error: destination.error };
-      const alias = parseAlias(formData.get('slug'));
-      if (alias.status === 'invalid')
-        return { status: 'error', error: alias.error };
+      if (link.aliasEditable) {
+        const alias = parseAlias(formData.get('slug'));
+        if (alias.status === 'invalid')
+          return { status: 'error', error: alias.error };
+      }
       const result = await updateLink(formData);
       if (result.status === 'success') onSuccess();
       return result;
@@ -116,22 +125,27 @@ function EditLinkForm({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor={`edit-slug-${link.id}`}>{t('edit.alias')}</Label>
-        <InputGroup>
-          <InputGroupAddon className="max-w-[60%] shrink-0 pl-3" title={prefix}>
-            <span className="truncate text-foreground/60">{prefix}</span>
-          </InputGroupAddon>
-          <InputGroupInput
-            id={`edit-slug-${link.id}`}
-            name="slug"
-            defaultValue={link.slug}
-            disabled={isPending}
-            className="min-w-0 pl-0!"
-            aria-describedby={error ? errorId : undefined}
-          />
-        </InputGroup>
-      </div>
+      {link.aliasEditable && (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor={`edit-slug-${link.id}`}>{t('edit.alias')}</Label>
+          <InputGroup>
+            <InputGroupAddon
+              className="max-w-[60%] shrink-0 pl-3"
+              title={prefix}
+            >
+              <span className="truncate text-foreground/60">{prefix}</span>
+            </InputGroupAddon>
+            <InputGroupInput
+              id={`edit-slug-${link.id}`}
+              name="slug"
+              defaultValue={link.slug}
+              disabled={isPending}
+              className="min-w-0 pl-0!"
+              aria-describedby={error ? errorId : undefined}
+            />
+          </InputGroup>
+        </div>
+      )}
 
       <FieldMessage id={errorId} error={error} />
 

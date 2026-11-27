@@ -33,6 +33,7 @@ export type LinkError =
   | 'ALIAS_GENERATION_FAILED'
   | 'ALIAS_TAKEN'
   | 'DOMAIN_NOT_ALLOWED'
+  | 'ALIAS_NOT_EDITABLE'
   | 'CREATE_FAILED'
   | 'LINK_NOT_FOUND'
   | 'UPDATE_FAILED'
@@ -42,6 +43,7 @@ const ERRORS = {
   SLUG_GEN: 'ALIAS_GENERATION_FAILED',
   SLUG_EXISTS: 'ALIAS_TAKEN',
   DOMAIN_NOT_ALLOWED: 'DOMAIN_NOT_ALLOWED',
+  ALIAS_NOT_EDITABLE: 'ALIAS_NOT_EDITABLE',
   GENERIC: 'CREATE_FAILED',
   NOT_FOUND: 'LINK_NOT_FOUND',
   UPDATE: 'UPDATE_FAILED',
@@ -54,41 +56,35 @@ function generateSlug(length: number): string {
     .join('');
 }
 
+type OwnableDomain = { ownerId: string | null; verifiedAt: Date | null };
+
+function isOwnDomain(domain: OwnableDomain, userId: string): boolean {
+  return domain.ownerId === userId && domain.verifiedAt !== null;
+}
+
 type AddressableLink = {
   slug: string;
   userId: string;
-  domain: { host: string; ownerId: string | null };
-  user: { username: string };
+  domain: OwnableDomain & { host: string };
 };
-
-function userPrefix(username: string): string {
-  return `u/${username}/`;
-}
-
-function prefixOf({ slug, user }: AddressableLink): string {
-  const prefix = userPrefix(user.username);
-  return slug.startsWith(prefix) ? prefix : '';
-}
-
-function aliasOf(link: AddressableLink): string {
-  return link.slug.slice(prefixOf(link).length);
-}
 
 function toAddress(link: AddressableLink): string {
   return `${publicHostOf(link.domain.host)}/${link.slug}`;
 }
 
-function toSummary(
-  link: AddressableLink & Omit<LinkSummary, 'address'>,
-): LinkSummary {
-  const { userId, domain, user, ...summary } = link;
-  return { ...summary, slug: aliasOf(link), address: toAddress(link) };
+function isAliasEditable(link: AddressableLink): boolean {
+  return isOwnDomain(link.domain, link.userId);
 }
 
-type OwnableDomain = { ownerId: string | null; verifiedAt: Date | null };
-
-function isOwnDomain(domain: OwnableDomain, userId: string): boolean {
-  return domain.ownerId === userId && domain.verifiedAt !== null;
+function toSummary(
+  link: AddressableLink & Omit<LinkSummary, 'address' | 'aliasEditable'>,
+): LinkSummary {
+  const { userId, domain, ...summary } = link;
+  return {
+    ...summary,
+    address: toAddress(link),
+    aliasEditable: isAliasEditable(link),
+  };
 }
 
 export type LinkDomain = { id: number; host: string; choosesAlias: boolean };
@@ -135,6 +131,7 @@ export type LinkSummary = {
   slug: string;
   fullUrl: string;
   address: string;
+  aliasEditable: boolean;
   clicks: number;
   createdAt: Date;
 };
@@ -259,6 +256,25 @@ export type MutationResult =
   | { status: 'success' }
   | { status: 'error'; error: LinkError };
 
+type EditedSlug =
+  | { status: 'ok'; slug: string }
+  | { status: 'error'; error: LinkError };
+
+function editedSlugOf(
+  link: AddressableLink,
+  rawSlug: string | undefined,
+): EditedSlug {
+  if (!isAliasEditable(link)) {
+    if (rawSlug) return { status: 'error', error: ERRORS.ALIAS_NOT_EDITABLE };
+    return { status: 'ok', slug: link.slug };
+  }
+
+  const parsedAlias = parseAlias(rawSlug);
+  if (parsedAlias.status === 'invalid')
+    return { status: 'error', error: parsedAlias.error };
+  return { status: 'ok', slug: parsedAlias.alias };
+}
+
 export async function editLink(
   params: EditLinkParams,
 ): Promise<MutationResult> {
@@ -269,19 +285,13 @@ export async function editLink(
     return { status: 'error', error: parsed.error };
   const fullUrl = parsed.destination;
 
-  const parsedAlias = parseAlias(rawSlug);
-  if (parsedAlias.status === 'invalid')
-    return { status: 'error', error: parsedAlias.error };
-
   const link = await findUrlByIdForUser(id, userId);
   if (!link) return { status: 'error', error: ERRORS.NOT_FOUND };
 
-  const result = await updateUrl({
-    id,
-    userId,
-    slug: prefixOf(link) + parsedAlias.alias,
-    fullUrl,
-  });
+  const slug = editedSlugOf(link, rawSlug);
+  if (slug.status === 'error') return slug;
+
+  const result = await updateUrl({ id, userId, slug: slug.slug, fullUrl });
   if (result === 'collision')
     return { status: 'error', error: ERRORS.SLUG_EXISTS };
   if (result === 'not_found')
