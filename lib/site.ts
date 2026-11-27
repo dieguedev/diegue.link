@@ -1,4 +1,4 @@
-export const SITE_NAME = 'diegue.link';
+export const SITE_NAME = 'trim.cat';
 export const SITE_HOST = process.env.SITE_HOST ?? 'localhost:3000';
 export const SITE_ORIGIN = `${process.env.SITE_HOST ? 'https' : 'http'}://${SITE_HOST}`;
 
