@@ -8,6 +8,7 @@ export function Footer() {
   const t = useTranslations('Footer');
   const links = [
     { label: t('howItWorks'), href: '#como-funciona' },
+    { label: t('ownDomain'), href: '#dominio-propio' },
     { label: t('faq'), href: '#preguntas' },
     { label: 'GitHub', href: GITHUB_REPO_URL, external: true },
   ];

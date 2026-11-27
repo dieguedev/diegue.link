@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "{site} | Acortador de URLs",
-    "description": "Acorta tus URLs de forma gratuita. Crea enlaces cortos personalizados y obtén estadísticas.",
+    "description": "Acorta tus URLs gratis en trim.cat, cambia su destino cuando quieras y mira los clics de cada enlace.",
     "ogLocale": "es_ES"
   },
   "Header": {
@@ -32,19 +32,39 @@
     "title": "Un enlace corto en <highlight>tres pasos</highlight>",
     "intro": "Los enlaces largos son sospechosos, difíciles de leer y de recordar. Solo necesitas una cuenta gratuita y el enlace que quieras acortar!",
     "step": "Paso {number}:",
-    "exampleAlias": "encuesta",
     "steps": {
       "paste": {
         "title": "Pega el enlace largo",
         "text": "Un formulario, un artículo, un archivo en la nube... Cualquier cosa que quieras guardar o compartir!"
       },
       "alias": {
-        "title": "Elige tu alias",
-        "text": "Te generamos uno corto de 5 caracteres al momento. Con un dominio propio verificado puedes escribir la palabra que quieras al final."
+        "title": "Recibe tu alias",
+        "text": "Te generamos uno corto de 5 caracteres al momento, sin que tengas que pensar nada."
       },
       "share": {
         "title": "Comparte y observa los clics",
         "text": "Cópialo y pégalo donde quieras. En tu panel ves cuántas veces lo han abierto y puedes cambiar el destino en cualquier momento."
+      }
+    }
+  },
+  "OwnDomain": {
+    "badge": "Próximamente",
+    "title": "Tu dominio, <highlight>tus alias</highlight>",
+    "intro": "Pronto podrás conectar tu propio dominio y elegir la palabra que quieras al final de cada enlace, en lugar de un alias generado.",
+    "exampleDomain": "tudominio.com",
+    "exampleAlias": "charla",
+    "points": {
+      "root": {
+        "title": "El alias, en la raíz",
+        "text": "Enlaces como tudominio.com/charla, sin prefijos ni rutas de usuario."
+      },
+      "yours": {
+        "title": "Solo para ti",
+        "text": "Nadie más crea enlaces en tu dominio, así que el alias que elijas siempre está libre."
+      },
+      "panel": {
+        "title": "El mismo panel",
+        "text": "Tus enlaces de trim.cat y los de tu dominio, juntos y con sus clics."
       }
     }
   },
@@ -66,11 +86,11 @@
       },
       "destination": {
         "question": "¿Puedo cambiar adónde lleva un enlace?",
-        "answer": "Sí. Desde el panel cambias el destino cuando quieras. En un dominio propio también puedes cambiar el alias; si lo haces, la URL corta anterior deja de funcionar."
+        "answer": "Sí. Desde el panel cambias el destino cuando quieras, y la URL corta sigue siendo la misma."
       },
       "alias": {
         "question": "¿Qué caracteres admite un alias?",
-        "answer": "Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Solo puedes elegirlo en un dominio propio verificado, donde no choca con el de nadie más; en trim.cat se genera automáticamente."
+        "answer": "En trim.cat el alias se genera automáticamente con 5 caracteres. Pronto podrás conectar tu propio dominio y elegirlo tú: letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres."
       },
       "clicks": {
         "question": "¿Cómo se cuentan los clics?",
@@ -94,6 +114,7 @@
     "tagline": "Acortador de enlaces gratuito y de código abierto.",
     "navLabel": "Pie de página",
     "howItWorks": "Cómo funciona",
+    "ownDomain": "Tu dominio",
     "faq": "Preguntas frecuentes",
     "newTab": "(se abre en una pestaña nueva)"
   },

@@ -2,59 +2,50 @@ import { Copy, Link as LinkIcon, MousePointerClick } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/card';
 import { HighlightedText } from '@/components/ui/highlighted-text';
-import { SITE_NAME } from '@/lib/site';
+import { SYSTEM_DOMAIN_HOST } from '@/lib/site';
 
 const FRAGMENT_CLASS =
   'flex min-h-14 items-center gap-2 rounded-base border-2 border-border bg-secondary-background px-3 py-2 font-mono text-sm';
 
-const USERNAME = <span className="font-bold text-main">ana.</span>;
+const EXAMPLE_ALIAS = 'x7Kp2';
 
-function stepFragments(alias: string) {
-  return {
-    paste: (
-      <div className={FRAGMENT_CLASS}>
-        <LinkIcon className="size-4 shrink-0" />
-        <span className="truncate">
-          https://docs.google.com/forms/d/e/1FAIpQLSf9kXq2bR7vTzW/viewform?usp=sf_link
+const STEP_FRAGMENTS = {
+  paste: (
+    <div className={FRAGMENT_CLASS}>
+      <LinkIcon className="size-4 shrink-0" />
+      <span className="truncate">
+        https://docs.google.com/forms/d/e/1FAIpQLSf9kXq2bR7vTzW/viewform?usp=sf_link
+      </span>
+    </div>
+  ),
+  alias: (
+    <div className={FRAGMENT_CLASS}>
+      <span className="truncate">
+        {SYSTEM_DOMAIN_HOST}/
+        <span className="font-bold text-main">{EXAMPLE_ALIAS}</span>
+      </span>
+    </div>
+  ),
+  share: (
+    <div className={`${FRAGMENT_CLASS} justify-between`}>
+      <span className="truncate">{SYSTEM_DOMAIN_HOST}/{EXAMPLE_ALIAS}</span>
+      <span className="flex shrink-0 items-center gap-2">
+        <span className="flex h-8 items-center gap-1 border-2 border-border bg-secondary-background px-2 font-sans font-bold">
+          <MousePointerClick className="size-4" />
+          128
         </span>
-      </div>
-    ),
-    alias: (
-      <div className={FRAGMENT_CLASS}>
-        <span className="truncate">
-          {USERNAME}
-          {SITE_NAME}/
+        <span className="grid size-8 place-items-center border-2 border-border bg-main">
+          <Copy className="size-4" />
         </span>
-        <span className="shrink-0 border-2 border-border bg-main px-1.5 py-0.5 font-bold">
-          {alias}
-        </span>
-      </div>
-    ),
-    share: (
-      <div className={`${FRAGMENT_CLASS} justify-between`}>
-        <span className="truncate">
-          {USERNAME}
-          {SITE_NAME}/{alias}
-        </span>
-        <span className="flex shrink-0 items-center gap-2">
-          <span className="flex h-8 items-center gap-1 border-2 border-border bg-secondary-background px-2 font-sans font-bold">
-            <MousePointerClick className="size-4" />
-            128
-          </span>
-          <span className="grid size-8 place-items-center border-2 border-border bg-main">
-            <Copy className="size-4" />
-          </span>
-        </span>
-      </div>
-    ),
-  };
-}
+      </span>
+    </div>
+  ),
+};
 
 const STEP_KEYS = ['paste', 'alias', 'share'] as const;
 
 export function HowItWorks() {
   const t = useTranslations('HowItWorks');
-  const fragments = stepFragments(t('exampleAlias'));
 
   return (
     <section
@@ -85,7 +76,7 @@ export function HowItWorks() {
                 >
                   {i + 1}
                 </span>
-                <div aria-hidden="true">{fragments[key]}</div>
+                <div aria-hidden="true">{STEP_FRAGMENTS[key]}</div>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-bold tracking-tight">
                     <span className="sr-only">

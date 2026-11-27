@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "{site} | Escurçador d'URL",
-    "description": "Escurça les teves URL de franc. Crea enllaços curts personalitzats i consulta'n les estadístiques.",
+    "description": "Escurça les teves URL de franc a trim.cat, canvia'n la destinació quan vulguis i mira els clics de cada enllaç.",
     "ogLocale": "ca_ES"
   },
   "Header": {
@@ -32,19 +32,39 @@
     "title": "Un enllaç curt en <highlight>tres passos</highlight>",
     "intro": "Els enllaços llargs fan sospitar i són difícils de llegir i de recordar. Només necessites un compte gratuït i l'enllaç que vulguis escurçar!",
     "step": "Pas {number}:",
-    "exampleAlias": "enquesta",
     "steps": {
       "paste": {
         "title": "Enganxa l'enllaç llarg",
         "text": "Un formulari, un article, un fitxer al núvol... Qualsevol cosa que vulguis desar o compartir!"
       },
       "alias": {
-        "title": "Tria el teu àlies",
-        "text": "Te'n generem un de curt de 5 caràcters a l'instant. Amb un domini propi verificat pots escriure la paraula que vulguis al final."
+        "title": "Rep el teu àlies",
+        "text": "Te'n generem un de curt de 5 caràcters a l'instant, sense que hagis de pensar res."
       },
       "share": {
         "title": "Comparteix i mira els clics",
         "text": "Copia'l i enganxa'l on vulguis. Al teu tauler veus quantes vegades l'han obert i pots canviar la destinació en qualsevol moment."
+      }
+    }
+  },
+  "OwnDomain": {
+    "badge": "Aviat",
+    "title": "El teu domini, <highlight>els teus àlies</highlight>",
+    "intro": "Aviat podràs connectar el teu domini propi i triar la paraula que vulguis al final de cada enllaç, en lloc d'un àlies generat.",
+    "exampleDomain": "elteudomini.cat",
+    "exampleAlias": "xerrada",
+    "points": {
+      "root": {
+        "title": "L'àlies, a l'arrel",
+        "text": "Enllaços com elteudomini.cat/xerrada, sense prefixos ni rutes d'usuari."
+      },
+      "yours": {
+        "title": "Només per a tu",
+        "text": "Ningú més crea enllaços al teu domini, així que l'àlies que triïs sempre està lliure."
+      },
+      "panel": {
+        "title": "El mateix tauler",
+        "text": "Els teus enllaços de trim.cat i els del teu domini, junts i amb els seus clics."
       }
     }
   },
@@ -66,11 +86,11 @@
       },
       "destination": {
         "question": "Puc canviar on porta un enllaç?",
-        "answer": "Sí. Des del tauler canvies la destinació quan vulguis. En un domini propi també pots canviar l'àlies; si ho fas, l'URL curta anterior deixa de funcionar."
+        "answer": "Sí. Des del tauler canvies la destinació quan vulguis, i l'URL curta continua sent la mateixa."
       },
       "alias": {
         "question": "Quins caràcters admet un àlies?",
-        "answer": "Lletres sense accent, números, guions i guions baixos, fins a 50 caràcters. Només el pots triar en un domini propi verificat, on no xoca amb el de ningú més; a trim.cat es genera automàticament."
+        "answer": "A trim.cat l'àlies es genera automàticament amb 5 caràcters. Aviat podràs connectar el teu domini propi i triar-lo tu: lletres sense accent, números, guions i guions baixos, fins a 50 caràcters."
       },
       "clicks": {
         "question": "Com es compten els clics?",
@@ -94,6 +114,7 @@
     "tagline": "Escurçador d'enllaços gratuït i de codi obert.",
     "navLabel": "Peu de pàgina",
     "howItWorks": "Com funciona",
+    "ownDomain": "El teu domini",
     "faq": "Preguntes freqüents",
     "newTab": "(s'obre en una pestanya nova)"
   },
