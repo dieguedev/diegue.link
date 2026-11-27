@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import {
   Pagination,
   PaginationContent,
@@ -37,6 +38,8 @@ export function LinksPagination({
   pageCount,
   query,
 }: LinksPaginationProps) {
+  const t = useTranslations();
+
   if (pageCount <= 1) return null;
 
   const href = (target: number) => {
@@ -48,10 +51,12 @@ export function LinksPagination({
   };
 
   return (
-    <Pagination>
+    <Pagination aria-label={t('Ui.pagination.label')}>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
+            label={t('Ui.pagination.previous')}
+            aria-label={t('Ui.pagination.previousLabel')}
             href={href(page - 1)}
             disabled={page <= 1}
             scroll={false}
@@ -61,7 +66,7 @@ export function LinksPagination({
         {getPageSlots(page, pageCount).map((slot, i) =>
           slot === 'ellipsis' ? (
             <PaginationItem key={`ellipsis-${i}`} className="hidden sm:block">
-              <PaginationEllipsis />
+              <PaginationEllipsis label={t('Ui.pagination.more')} />
             </PaginationItem>
           ) : (
             <PaginationItem
@@ -71,7 +76,7 @@ export function LinksPagination({
               <PaginationLink
                 href={href(slot)}
                 isActive={slot === page}
-                aria-label={`Página ${slot}`}
+                aria-label={t('Links.pagination.page', { page: slot })}
                 scroll={false}
               >
                 {slot}
@@ -81,11 +86,13 @@ export function LinksPagination({
         )}
 
         <PaginationItem className="px-2 text-sm text-foreground/70 tabular-nums sm:hidden">
-          de {pageCount}
+          {t('Links.pagination.of', { count: pageCount })}
         </PaginationItem>
 
         <PaginationItem>
           <PaginationNext
+            label={t('Ui.pagination.next')}
+            aria-label={t('Ui.pagination.nextLabel')}
             href={href(page + 1)}
             disabled={page >= pageCount}
             scroll={false}

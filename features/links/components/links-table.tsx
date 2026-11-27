@@ -1,4 +1,5 @@
 import { Link2, SearchX } from 'lucide-react';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import {
   Empty,
   EmptyDescription,
@@ -25,8 +26,6 @@ import { LinkItem } from '@/features/links/components/link-item';
 import { LinksPagination } from '@/features/links/components/links-pagination';
 import { LinksSearch } from '@/features/links/components/links-search';
 
-const dateFormat = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
-
 interface LinksTableProps {
   userId: string;
   query?: string;
@@ -44,11 +43,15 @@ export async function LinksTable({
     page: requestedPage,
   });
   const isSearching = Boolean(query?.trim());
+  const t = await getTranslations('Links.list');
+  const format = await getFormatter();
+  const createdAt = (date: Date) =>
+    format.dateTime(date, { dateStyle: 'medium' });
 
   return (
     <section aria-labelledby="links-heading" className="flex flex-col gap-4">
       <h2 id="links-heading" className="text-2xl">
-        Tus enlaces
+        {t('title')}
         {total > 0 && (
           <span className="ml-2 font-base text-foreground/70 tabular-nums">
             {numberFormat(total)}
@@ -64,10 +67,9 @@ export async function LinksTable({
             <EmptyMedia variant="icon">
               <SearchX />
             </EmptyMedia>
-            <EmptyTitle>Sin resultados</EmptyTitle>
+            <EmptyTitle>{t('noResultsTitle')}</EmptyTitle>
             <EmptyDescription>
-              Ningún enlace coincide con «{query?.trim()}». Prueba con otro
-              alias o destino.
+              {t('noResultsDescription', { query: query?.trim() ?? '' })}
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -77,11 +79,8 @@ export async function LinksTable({
             <EmptyMedia variant="icon">
               <Link2 />
             </EmptyMedia>
-            <EmptyTitle>Aún no tienes enlaces</EmptyTitle>
-            <EmptyDescription>
-              Acorta tu primera URL con el formulario de arriba y aparecerá
-              aquí, lista para editar o compartir.
-            </EmptyDescription>
+            <EmptyTitle>{t('emptyTitle')}</EmptyTitle>
+            <EmptyDescription>{t('emptyDescription')}</EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : (
@@ -91,7 +90,7 @@ export async function LinksTable({
               <LinkItem
                 key={link.id}
                 link={link}
-                createdAt={dateFormat.format(link.createdAt)}
+                createdAt={createdAt(link.createdAt)}
               />
             ))}
           </ItemGroup>
@@ -99,12 +98,14 @@ export async function LinksTable({
             <Table>
               <TableHeader>
                 <TableRow className="bg-main text-main-foreground">
-                  <TableHead>Enlace</TableHead>
-                  <TableHead>Destino</TableHead>
-                  <TableHead className="text-right">Clics</TableHead>
-                  <TableHead className="hidden md:table-cell">Creado</TableHead>
+                  <TableHead>{t('link')}</TableHead>
+                  <TableHead>{t('destination')}</TableHead>
+                  <TableHead className="text-right">{t('clicks')}</TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    {t('created')}
+                  </TableHead>
                   <TableHead className="text-right">
-                    <span className="sr-only">Acciones</span>
+                    <span className="sr-only">{t('actions')}</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -137,7 +138,7 @@ export async function LinksTable({
                       {numberFormat(link.clicks)}
                     </TableCell>
                     <TableCell className="hidden py-3 whitespace-nowrap tabular-nums md:table-cell">
-                      {dateFormat.format(link.createdAt)}
+                      {createdAt(link.createdAt)}
                     </TableCell>
                     <TableCell className="py-3">
                       <div className="flex justify-end gap-2">

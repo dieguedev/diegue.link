@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -16,13 +17,19 @@ import {
 } from '@/components/ui/alert-dialog';
 import { FieldMessage } from '@/components/ui/field-message';
 import { deleteLink } from '@/features/links/actions/delete-link';
+import {
+  useLinkErrorMessage,
+  type LinkActionError,
+} from '@/features/links/link-errors';
 import type { LinkSummary } from '@/domain/links/link-service';
 
 type DeletableLink = Pick<LinkSummary, 'id' | 'address'>;
 
 export function DeleteLinkDialog({ link }: { link: DeletableLink }) {
+  const t = useTranslations('Links.delete');
+  const errorMessage = useLinkErrorMessage();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<LinkActionError>();
   const [isPending, startTransition] = useTransition();
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -49,8 +56,8 @@ export function DeleteLinkDialog({ link }: { link: DeletableLink }) {
             variant="neutral"
             size="icon"
             className="size-9"
-            aria-label={`Eliminar ${link.address}`}
-            title="Eliminar"
+            aria-label={t('label', { address: link.address })}
+            title={t('trigger')}
           />
         }
       >
@@ -61,24 +68,32 @@ export function DeleteLinkDialog({ link }: { link: DeletableLink }) {
           <AlertDialogMedia>
             <Trash2 />
           </AlertDialogMedia>
-          <AlertDialogTitle>¿Eliminar este enlace?</AlertDialogTitle>
+          <AlertDialogTitle>{t('title')}</AlertDialogTitle>
           <AlertDialogDescription>
-            <span className="font-heading break-all">{link.address}</span>{' '}
-            dejará de redirigir y perderás sus clics. Esta acción no se puede
-            deshacer.
+            {t.rich('description', {
+              address: () => (
+                <span className="font-heading break-all">{link.address}</span>
+              ),
+            })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <FieldMessage id={errorId} error={error} className="text-center" />
+        <FieldMessage
+          id={errorId}
+          error={error && errorMessage(error)}
+          className="text-center"
+        />
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>
+            {t('cancel')}
+          </AlertDialogCancel>
           <Button
             onClick={handleDelete}
             loading={isPending}
             aria-describedby={error ? errorId : undefined}
           >
-            Eliminar
+            {t('submit')}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

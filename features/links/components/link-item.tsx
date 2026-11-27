@@ -1,4 +1,5 @@
 import { CornerDownRight, MousePointerClick } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   Item,
   ItemActions,
@@ -20,6 +21,8 @@ interface LinkItemProps {
 }
 
 export function LinkItem({ link, createdAt }: LinkItemProps) {
+  const t = useTranslations('Links.list');
+
   return (
     <Item
       role="listitem"
@@ -39,7 +42,7 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
         </ItemTitle>
         <ItemDescription className="line-clamp-none flex min-w-0 items-center gap-1.5 text-foreground/70">
           <CornerDownRight aria-hidden className="size-3.5 shrink-0" />
-          <span className="sr-only">Destino:</span>
+          <span className="sr-only">{t('destinationLabel')}</span>
           <a
             href={link.fullUrl}
             target="_blank"
@@ -61,7 +64,7 @@ export function LinkItem({ link, createdAt }: LinkItemProps) {
           <span className="inline-flex h-9 items-center gap-1.5 rounded-base border-2 border-border bg-main px-2.5 font-heading text-main-foreground tabular-nums">
             <MousePointerClick aria-hidden className="size-4" />
             {numberFormat(link.clicks)}
-            <span className="sr-only">clics</span>
+            <span className="sr-only">{t('clicksLabel')}</span>
           </span>
           <span className="truncate text-xs text-foreground/70 tabular-nums">
             {createdAt}

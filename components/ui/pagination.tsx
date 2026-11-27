@@ -12,7 +12,6 @@ function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
     <nav
       data-slot="pagination"
       role="navigation"
-      aria-label="Paginación"
       className={cn('mx-auto flex w-full justify-center', className)}
       {...props}
     />
@@ -88,35 +87,35 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
+  label,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: React.ComponentProps<typeof PaginationLink> & { label: string }) {
   return (
     <PaginationLink
       data-slot="pagination-previous"
-      aria-label="Ir a la página anterior"
       size="default"
       className={cn('gap-1 px-2.5 sm:pr-4', className)}
       {...props}
     >
       <ChevronLeft className="size-4" />
-      <span className="hidden sm:inline">Anterior</span>
+      <span className="hidden sm:inline">{label}</span>
     </PaginationLink>
   );
 }
 
 function PaginationNext({
   className,
+  label,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: React.ComponentProps<typeof PaginationLink> & { label: string }) {
   return (
     <PaginationLink
       data-slot="pagination-next"
-      aria-label="Ir a la página siguiente"
       size="default"
       className={cn('gap-1 px-2.5 sm:pl-4', className)}
       {...props}
     >
-      <span className="hidden sm:inline">Siguiente</span>
+      <span className="hidden sm:inline">{label}</span>
       <ChevronRight className="size-4" />
     </PaginationLink>
   );
@@ -124,8 +123,9 @@ function PaginationNext({
 
 function PaginationEllipsis({
   className,
+  label,
   ...props
-}: React.ComponentProps<'span'>) {
+}: React.ComponentProps<'span'> & { label: string }) {
   return (
     <span
       data-slot="pagination-ellipsis"
@@ -134,7 +134,7 @@ function PaginationEllipsis({
       {...props}
     >
       <MoreHorizontal className="size-4" />
-      <span className="sr-only">Más páginas</span>
+      <span className="sr-only">{label}</span>
     </span>
   );
 }

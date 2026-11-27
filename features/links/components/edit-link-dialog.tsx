@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import { Pencil } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -25,12 +26,14 @@ import {
   updateLink,
   type UpdateLinkResult,
 } from '@/features/links/actions/update-link';
+import { useLinkErrorMessage } from '@/features/links/link-errors';
 import type { LinkSummary } from '@/domain/links/link-service';
 import { parseDestination } from '@/domain/links/destination';
 
 type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'address'>;
 
 export function EditLinkDialog({ link }: { link: EditableLink }) {
+  const t = useTranslations('Links.edit');
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,20 +44,17 @@ export function EditLinkDialog({ link }: { link: EditableLink }) {
             variant="neutral"
             size="icon"
             className="size-9"
-            aria-label={`Editar ${link.address}`}
-            title="Editar"
+            aria-label={t('label', { address: link.address })}
+            title={t('trigger')}
           />
         }
       >
         <Pencil />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" closeLabel={t('close')}>
         <DialogHeader>
-          <DialogTitle>Editar enlace</DialogTitle>
-          <DialogDescription>
-            Cambia el destino o el alias. Si cambias el alias, el enlace
-            anterior dejará de funcionar.
-          </DialogDescription>
+          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
         <EditLinkForm link={link} onSuccess={() => setOpen(false)} />
       </DialogContent>
@@ -69,6 +69,8 @@ function EditLinkForm({
   link: EditableLink;
   onSuccess: () => void;
 }) {
+  const t = useTranslations('Links');
+  const errorMessage = useLinkErrorMessage();
   const [state, formAction, isPending] = useActionState<
     UpdateLinkResult,
     FormData
@@ -85,7 +87,8 @@ function EditLinkForm({
   );
 
   const prefix = link.address.slice(0, -link.slug.length);
-  const error = state.status === 'error' ? state.error : undefined;
+  const error =
+    state.status === 'error' ? errorMessage(state.error) : undefined;
   const errorId = `edit-link-error-${link.id}`;
 
   return (
@@ -93,7 +96,7 @@ function EditLinkForm({
       <input type="hidden" name="id" value={link.id} />
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor={`edit-url-${link.id}`}>Destino</Label>
+        <Label htmlFor={`edit-url-${link.id}`}>{t('edit.destination')}</Label>
         <Input
           id={`edit-url-${link.id}`}
           name="url"
@@ -110,7 +113,7 @@ function EditLinkForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor={`edit-slug-${link.id}`}>Alias</Label>
+        <Label htmlFor={`edit-slug-${link.id}`}>{t('edit.alias')}</Label>
         <InputGroup>
           <InputGroupAddon className="max-w-[60%] shrink-0 pl-3" title={prefix}>
             <span className="truncate text-foreground/60">{prefix}</span>
@@ -121,7 +124,7 @@ function EditLinkForm({
             required
             maxLength={50}
             pattern="[a-zA-Z0-9\-_]+"
-            title="Solo letras, números, guiones y guiones bajos"
+            title={t('aliasRule')}
             defaultValue={link.slug}
             disabled={isPending}
             className="min-w-0 pl-0!"
@@ -138,10 +141,10 @@ function EditLinkForm({
             <Button type="button" variant="neutral" disabled={isPending} />
           }
         >
-          Cancelar
+          {t('edit.cancel')}
         </DialogClose>
         <Button type="submit" loading={isPending}>
-          Guardar cambios
+          {t('edit.submit')}
         </Button>
       </DialogFooter>
     </form>

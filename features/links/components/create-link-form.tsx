@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Card,
   CardContent,
@@ -16,9 +17,12 @@ import {
   type CreateLinkResult,
 } from '@/features/links/actions/create-link';
 import { CopyUrlButton } from '@/features/links/components/copy-url-button';
+import { useLinkErrorMessage } from '@/features/links/link-errors';
 import { parseDestination } from '@/domain/links/destination';
 
 export function CreateLinkForm() {
+  const t = useTranslations('Links');
+  const errorMessage = useLinkErrorMessage();
   const [state, formAction, isPending] = useActionState<
     CreateLinkResult,
     FormData
@@ -37,17 +41,13 @@ export function CreateLinkForm() {
   return (
     <Card variant="secondary" className="w-full">
       <CardHeader>
-        <CardTitle>Acorta una URL</CardTitle>
-        <CardDescription>
-          Añade la URL a acortar para generar un enlace corto. Puedes añadir un
-          alias personalizado para que sea más descriptivo o más fácil de
-          recordar.
-        </CardDescription>
+        <CardTitle>{t('create.title')}</CardTitle>
+        <CardDescription>{t('create.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="url">URL a acortar</Label>
+            <Label htmlFor="url">{t('create.url')}</Label>
             <Input
               id="url"
               name="url"
@@ -63,23 +63,23 @@ export function CreateLinkForm() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="slug">Alias personalizado (opcional)</Label>
+            <Label htmlFor="slug">{t('create.alias')}</Label>
             <Input
               id="slug"
               name="slug"
-              placeholder="mi-enlace"
+              placeholder={t('create.aliasPlaceholder')}
               pattern="[a-zA-Z0-9-_]+"
-              title="Solo letras, números, guiones y guiones bajos"
+              title={t('aliasRule')}
               disabled={isPending}
             />
           </div>
 
           {state.status === 'error' && (
-            <p className="text-sm text-red-500">{state.error}</p>
+            <p className="text-sm text-red-500">{errorMessage(state.error)}</p>
           )}
 
           <Button type="submit" disabled={isPending}>
-            {isPending ? 'Acortando...' : 'Acortar URL'}
+            {isPending ? t('create.pending') : t('create.submit')}
           </Button>
         </form>
 
