@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   Card,
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/native-select';
 import { Button } from '@/components/ui/button';
 import {
   createLink,
@@ -19,9 +20,14 @@ import {
 import { CopyUrlButton } from '@/features/links/components/copy-url-button';
 import { useLinkErrorMessage } from '@/features/links/link-errors';
 import { parseDestination } from '@/domain/links/destination';
+import { parseAlias } from '@/domain/links/alias';
+import type { LinkDomain } from '@/domain/links/link-service';
 
-export function CreateLinkForm() {
+export function CreateLinkForm({ domains }: { domains: LinkDomain[] }) {
   const t = useTranslations('Links');
+  const [domainId, setDomainId] = useState(domains[0]?.id);
+  const choosesAlias =
+    domains.find(domain => domain.id === domainId)?.choosesAlias ?? false;
   const errorMessage = useLinkErrorMessage();
   const [state, formAction, isPending] = useActionState<
     CreateLinkResult,
@@ -31,6 +37,12 @@ export function CreateLinkForm() {
       const destination = parseDestination(formData.get('url'));
       if (destination.status === 'invalid')
         return { status: 'error', error: destination.error };
+      const slug = formData.get('slug')?.toString().trim();
+      if (slug) {
+        const alias = parseAlias(slug);
+        if (alias.status === 'invalid')
+          return { status: 'error', error: alias.error };
+      }
       return await createLink(formData);
     },
     { status: 'idle' },
@@ -62,17 +74,36 @@ export function CreateLinkForm() {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="slug">{t('create.alias')}</Label>
-            <Input
-              id="slug"
-              name="slug"
-              placeholder={t('create.aliasPlaceholder')}
-              pattern="[a-zA-Z0-9-_]+"
-              title={t('aliasRule')}
-              disabled={isPending}
-            />
-          </div>
+          {domains.length > 1 && (
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="domainId">{t('create.domain')}</Label>
+              <NativeSelect
+                id="domainId"
+                name="domainId"
+                value={domainId}
+                onChange={event => setDomainId(Number(event.target.value))}
+                disabled={isPending}
+              >
+                {domains.map(domain => (
+                  <option key={domain.id} value={domain.id}>
+                    {domain.host}
+                  </option>
+                ))}
+              </NativeSelect>
+            </div>
+          )}
+
+          {choosesAlias && (
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="slug">{t('create.alias')}</Label>
+              <Input
+                id="slug"
+                name="slug"
+                placeholder={t('create.aliasPlaceholder')}
+                disabled={isPending}
+              />
+            </div>
+          )}
 
           {state.status === 'error' && (
             <p className="text-sm text-red-500">{errorMessage(state.error)}</p>

@@ -4,8 +4,7 @@ import { Prisma } from '@/generated/prisma/client';
 const ADDRESS_SELECT = {
   slug: true,
   userId: true,
-  domain: { select: { host: true, ownerId: true } },
-  user: { select: { username: true } },
+  domain: { select: { host: true, ownerId: true, verifiedAt: true } },
 } as const;
 
 const LINK_SELECT = {
@@ -24,14 +23,6 @@ export type CreateUrlData = {
 };
 
 export type UrlPersistResult = 'success' | 'collision' | 'error';
-
-export async function findUsername(userId: string) {
-  const user = await prisma.user.findUniqueOrThrow({
-    where: { id: userId },
-    select: { username: true },
-  });
-  return user.username;
-}
 
 export async function createUrl(data: CreateUrlData) {
   try {

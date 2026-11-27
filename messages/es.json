@@ -40,7 +40,7 @@
       },
       "alias": {
         "title": "Elige tu alias",
-        "text": "Escribe la palabra que quieras al final o deja que generemos un identificador único por ti. Tu alias nunca estará pillado, cada uno es único por usuario."
+        "text": "Te generamos uno corto de 5 caracteres al momento. Con un dominio propio verificado puedes escribir la palabra que quieras al final."
       },
       "share": {
         "title": "Comparte y observa los clics",
@@ -66,11 +66,11 @@
       },
       "destination": {
         "question": "¿Puedo cambiar adónde lleva un enlace?",
-        "answer": "Sí. Desde el panel editas el destino y el alias cuando quieras. Si cambias el alias, la URL corta anterior deja de funcionar."
+        "answer": "Sí. Desde el panel cambias el destino cuando quieras. En un dominio propio también puedes cambiar el alias; si lo haces, la URL corta anterior deja de funcionar."
       },
       "alias": {
         "question": "¿Qué caracteres admite un alias?",
-        "answer": "Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Cada usuario tiene su propia dirección, como ana.{site}, así que tu alias no choca con el de nadie."
+        "answer": "Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Solo puedes elegirlo en un dominio propio verificado, donde no choca con el de nadie más; en trim.cat se genera automáticamente."
       },
       "clicks": {
         "question": "¿Cómo se cuentan los clics?",
@@ -168,8 +168,9 @@
   "Links": {
     "create": {
       "title": "Acorta una URL",
-      "description": "Añade la URL a acortar para generar un enlace corto. Puedes añadir un alias personalizado para que sea más descriptivo o más fácil de recordar.",
+      "description": "Añade la URL a acortar para generar un enlace corto en trim.cat. Si tienes un dominio propio verificado, puedes elegirlo y ponerle un alias personalizado.",
       "url": "URL a acortar",
+      "domain": "Dominio",
       "alias": "Alias personalizado (opcional)",
       "aliasPlaceholder": "mi-enlace",
       "submit": "Acortar URL",
@@ -177,7 +178,6 @@
       "result": "Tu enlace corto:",
       "open": "Abrir {address}"
     },
-    "aliasRule": "Solo letras, números, guiones y guiones bajos",
     "copy": {
       "label": "Copiar {address}",
       "copy": "Copiar",
@@ -191,6 +191,7 @@
       "trigger": "Editar",
       "title": "Editar enlace",
       "description": "Cambia el destino o el alias. Si cambias el alias, el enlace anterior dejará de funcionar.",
+      "descriptionDestination": "Cambia el destino. El alias solo se puede elegir en un dominio propio.",
       "destination": "Destino",
       "alias": "Alias",
       "cancel": "Cancelar",
@@ -238,9 +239,11 @@
       "DESTINATION_INVALID": "La URL no es válida.",
       "ALIAS_GENERATION_FAILED": "No se ha podido generar un alias único.",
       "ALIAS_TOO_LONG": "El alias no puede tener más de 50 caracteres.",
-      "ALIAS_INVALID_CHARS": "El alias sólo puede contener letras, números y guiones.",
+      "ALIAS_INVALID_CHARS": "El alias solo puede contener letras, números, guiones y guiones bajos.",
       "ALIAS_REQUIRED": "El alias es obligatorio.",
       "ALIAS_TAKEN": "Este alias ya existe.",
+      "DOMAIN_NOT_ALLOWED": "No puedes crear enlaces en ese dominio.",
+      "ALIAS_NOT_EDITABLE": "El alias de este enlace no se puede cambiar.",
       "CREATE_FAILED": "Error al crear la URL corta. Intenta de nuevo.",
       "LINK_NOT_FOUND": "Este enlace ya no existe.",
       "UPDATE_FAILED": "No se han podido guardar los cambios. Intenta de nuevo.",

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { routeRequest } from '@/lib/routing/route-request';
 
 const SITE = { type: 'site' };
@@ -86,6 +86,46 @@ describe('En el enrutado por host', () => {
         type: 'redirect',
         to: 'https://trim.cat/x7Kp2a',
         permanent: true,
+      });
+    });
+  });
+
+  describe('un host de la red local', () => {
+    const LOCAL_HOSTS = [
+      'localhost:3000',
+      '127.0.0.1:3000',
+      '192.168.50.212:3000',
+    ];
+
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('muestra el sitio en desarrollo', () => {
+      vi.stubEnv('NODE_ENV', 'development');
+
+      for (const host of LOCAL_HOSTS) {
+        expect(routesOf(host, ['/', '/dashboard'])).toEqual([SITE, SITE]);
+      }
+    });
+
+    it('busca sus alias en trim.cat en desarrollo', () => {
+      vi.stubEnv('NODE_ENV', 'development');
+
+      expect(
+        routeRequest({ host: '192.168.50.212:3000', pathname: '/x7Kp2a' }),
+      ).toEqual({ type: 'link', domain: 'trim.cat', path: '/x7Kp2a' });
+    });
+
+    it('se busca como cualquier dominio fuera de desarrollo', () => {
+      vi.stubEnv('NODE_ENV', 'production');
+
+      expect(
+        routeRequest({ host: '192.168.50.212:3000', pathname: '/dashboard' }),
+      ).toEqual({
+        type: 'link',
+        domain: '192.168.50.212:3000',
+        path: '/dashboard',
       });
     });
   });
