@@ -32,15 +32,14 @@
     "title": "Un enllaç curt en <highlight>tres passos</highlight>",
     "intro": "Els enllaços llargs fan sospitar i són difícils de llegir i de recordar. Només necessites un compte gratuït i l'enllaç que vulguis escurçar!",
     "step": "Pas {number}:",
-    "exampleAlias": "enquesta",
     "steps": {
       "paste": {
         "title": "Enganxa l'enllaç llarg",
         "text": "Un formulari, un article, un fitxer al núvol... Qualsevol cosa que vulguis desar o compartir!"
       },
       "alias": {
-        "title": "Tria el teu àlies",
-        "text": "Te'n generem un de curt de 5 caràcters a l'instant. Amb un domini propi verificat pots escriure la paraula que vulguis al final."
+        "title": "Rep el teu àlies",
+        "text": "Te'n generem un de curt de 5 caràcters a l'instant. Amb el teu domini propi verificat pots triar la paraula que vulguis, com eldomini.cat/enquesta."
       },
       "share": {
         "title": "Comparteix i mira els clics",

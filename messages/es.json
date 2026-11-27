@@ -32,15 +32,14 @@
     "title": "Un enlace corto en <highlight>tres pasos</highlight>",
     "intro": "Los enlaces largos son sospechosos, difíciles de leer y de recordar. Solo necesitas una cuenta gratuita y el enlace que quieras acortar!",
     "step": "Paso {number}:",
-    "exampleAlias": "encuesta",
     "steps": {
       "paste": {
         "title": "Pega el enlace largo",
         "text": "Un formulario, un artículo, un archivo en la nube... Cualquier cosa que quieras guardar o compartir!"
       },
       "alias": {
-        "title": "Elige tu alias",
-        "text": "Te generamos uno corto de 5 caracteres al momento. Con un dominio propio verificado puedes escribir la palabra que quieras al final."
+        "title": "Recibe tu alias",
+        "text": "Te generamos uno corto de 5 caracteres al momento. Con tu propio dominio verificado puedes elegir la palabra que quieras, como tudominio.com/encuesta."
       },
       "share": {
         "title": "Comparte y observa los clics",
