@@ -7,7 +7,6 @@ import {
   findUrlByIdForUser,
   findUrlsByIds,
   findUrlsByUser,
-  findUsername,
   updateUrl,
 } from '@/domain/links/link-repository';
 import {
@@ -20,16 +19,11 @@ import {
   findDomainById,
   findVerifiedDomainsOwnedBy,
 } from '@/domain/domains/domain-repository';
-import {
-  PRIMARY_DOMAIN_HOST,
-  SYSTEM_DOMAIN_HOST,
-  publicHostOf,
-} from '@/lib/site';
+import { SYSTEM_DOMAIN_HOST, publicHostOf } from '@/lib/site';
 
 const CONFIG = {
-  SLUG_LENGTH: 6,
+  GENERATED_ALIAS_LENGTHS: [5, 5, 5, 6],
   ALPHABET: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-  MAX_ATTEMPTS: 3,
   PAGE_SIZE: 20,
 };
 
@@ -54,7 +48,7 @@ const ERRORS = {
   DELETE: 'DELETE_FAILED',
 } satisfies Record<string, LinkError>;
 
-function generateSlug(length = CONFIG.SLUG_LENGTH): string {
+function generateSlug(length: number): string {
   return Array.from(randomBytes(length))
     .map(byte => CONFIG.ALPHABET[byte % CONFIG.ALPHABET.length])
     .join('');
@@ -71,8 +65,9 @@ function userPrefix(username: string): string {
   return `u/${username}/`;
 }
 
-function prefixOf({ userId, domain, user }: AddressableLink): string {
-  return domain.ownerId === userId ? '' : userPrefix(user.username);
+function prefixOf({ slug, user }: AddressableLink): string {
+  const prefix = userPrefix(user.username);
+  return slug.startsWith(prefix) ? prefix : '';
 }
 
 function aliasOf(link: AddressableLink): string {
@@ -115,22 +110,11 @@ export async function linkDomainsFor(userId: string): Promise<LinkDomain[]> {
   ];
 }
 
-type LinkTarget = { domainId: number; prefix: string; choosesAlias: boolean };
+type LinkTarget = { domainId: number; choosesAlias: boolean };
 
-async function defaultTargetFor(userId: string): Promise<LinkTarget | null> {
-  const [ownDomain] = await findVerifiedDomainsOwnedBy(userId);
-  if (ownDomain)
-    return { domainId: ownDomain.id, prefix: '', choosesAlias: true };
-
-  const primaryDomain = await findDomainByHost(PRIMARY_DOMAIN_HOST);
-  if (!primaryDomain) return null;
-
-  const username = await findUsername(userId);
-  return {
-    domainId: primaryDomain.id,
-    prefix: userPrefix(username),
-    choosesAlias: true,
-  };
+async function systemTarget(): Promise<LinkTarget | null> {
+  const systemDomain = await findDomainByHost(SYSTEM_DOMAIN_HOST);
+  return systemDomain && { domainId: systemDomain.id, choosesAlias: false };
 }
 
 async function chosenTargetFor(
@@ -140,10 +124,9 @@ async function chosenTargetFor(
   if (!Number.isInteger(domainId)) return null;
   const domain = await findDomainById(domainId);
   if (!domain) return null;
-  if (isOwnDomain(domain, userId))
-    return { domainId, prefix: '', choosesAlias: true };
+  if (isOwnDomain(domain, userId)) return { domainId, choosesAlias: true };
   if (domain.host === SYSTEM_DOMAIN_HOST)
-    return { domainId, prefix: '', choosesAlias: false };
+    return { domainId, choosesAlias: false };
   return null;
 }
 
@@ -180,12 +163,9 @@ async function createWithAlias(
   return { status: 'success', link: toSummary(result) };
 }
 
-async function createWithGeneratedAlias(
-  link: NewLink,
-  prefix: string,
-): Promise<ShortenResult> {
-  for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
-    const result = await createUrl({ ...link, slug: prefix + generateSlug() });
+async function createWithGeneratedAlias(link: NewLink): Promise<ShortenResult> {
+  for (const length of CONFIG.GENERATED_ALIAS_LENGTHS) {
+    const result = await createUrl({ ...link, slug: generateSlug(length) });
     if (result === 'error') return { status: 'error', error: ERRORS.GENERIC };
     if (result !== 'collision')
       return { status: 'success', link: toSummary(result) };
@@ -205,13 +185,12 @@ async function createInTarget({
   target: LinkTarget;
 }): Promise<ShortenResult> {
   const link = { fullUrl, userId, domainId: target.domainId };
-  if (!target.choosesAlias || !rawSlug)
-    return createWithGeneratedAlias(link, target.prefix);
+  if (!target.choosesAlias || !rawSlug) return createWithGeneratedAlias(link);
 
   const parsedAlias = parseAlias(rawSlug);
   if (parsedAlias.status === 'invalid')
     return { status: 'error', error: parsedAlias.error };
-  return createWithAlias(link, target.prefix + parsedAlias.alias);
+  return createWithAlias(link, parsedAlias.alias);
 }
 
 export async function shorten(params: ShortenParams): Promise<ShortenResult> {
@@ -223,7 +202,7 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
   const fullUrl = parsed.destination;
 
   if (domainId === undefined) {
-    const target = await defaultTargetFor(userId);
+    const target = await systemTarget();
     if (!target) return { status: 'error', error: ERRORS.GENERIC };
     return createInTarget({ fullUrl, userId, rawSlug, target });
   }

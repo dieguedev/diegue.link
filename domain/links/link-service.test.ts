@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { randomBytes } from 'crypto';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { recordClick } from '@/domain/repositories/click-repository';
 import {
@@ -15,6 +16,11 @@ import {
   shorten,
 } from '@/domain/links/link-service';
 import { createDomain, createLink, createUser } from '@/tests/factories';
+
+vi.mock('crypto', async importOriginal => {
+  const actual = await importOriginal<typeof import('crypto')>();
+  return { ...actual, randomBytes: vi.fn(actual.randomBytes) };
+});
 
 const VISIT: ClickMetadata = {
   isBot: false,
@@ -76,18 +82,16 @@ describe('En link service', () => {
   });
 
   describe('la dirección de un enlace', () => {
-    it('se devuelve al crearlo', async () => {
+    it('se crea en trim.cat con un alias generado de 5 caracteres', async () => {
       const result = await shorten({
         rawUrl: 'https://ana.dev/portfolio',
-        rawSlug: 'portfolio',
+        rawSlug: undefined,
         userId: ana.id,
       });
 
-      expect(result).toMatchObject({
-        status: 'success',
-        link: { slug: 'portfolio', address: 'diegue.link/u/ana/portfolio' },
-      });
-      expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/portfolio']);
+      const [address] = await addressesOf(ana);
+      expect(address).toMatch(/^trim\.cat\/[a-zA-Z0-9]{5}$/);
+      expect(result).toMatchObject({ status: 'success', link: { address } });
     });
 
     it('cuelga de la raíz de un dominio propio con el alias elegido', async () => {
@@ -115,47 +119,6 @@ describe('En link service', () => {
       expect(result.status).toBe('success');
       expect(await addressesOf(diegue)).toEqual([
         expect.stringMatching(/^diegue\.link\/[a-zA-Z0-9]+$/),
-      ]);
-    });
-
-    it('lleva el nombre de su usuario si no lo es', async () => {
-      const result = await shorten({
-        rawUrl: 'https://ana.dev/blog',
-        rawSlug: 'blog',
-        userId: ana.id,
-      });
-
-      expect(result).toMatchObject({
-        status: 'success',
-        link: { slug: 'blog', address: 'diegue.link/u/ana/blog' },
-      });
-    });
-
-    it('lleva el nombre de su usuario si su dominio no está verificado', async () => {
-      await createDomain({ host: 'ana.dev', owner: ana, verified: false });
-
-      const result = await shorten({
-        rawUrl: 'https://ana.dev/blog',
-        rawSlug: 'blog',
-        userId: ana.id,
-      });
-
-      expect(result).toMatchObject({
-        status: 'success',
-        link: { address: 'diegue.link/u/ana/blog' },
-      });
-    });
-
-    it('lleva el nombre de su usuario también con un alias generado', async () => {
-      const result = await shorten({
-        rawUrl: 'https://ana.dev/blog',
-        rawSlug: undefined,
-        userId: ana.id,
-      });
-
-      expect(result.status).toBe('success');
-      expect(await addressesOf(ana)).toEqual([
-        expect.stringMatching(/^diegue\.link\/u\/ana\/[a-zA-Z0-9]{6}$/),
       ]);
     });
 
@@ -204,18 +167,57 @@ describe('En link service', () => {
   });
 
   describe('el alias en trim.cat', () => {
+    const allZeros = (size: number) => Buffer.alloc(size);
+
+    afterEach(() => {
+      vi.mocked(randomBytes).mockReset();
+    });
+
     it('se genera aunque se pida uno', async () => {
+      for (const domainId of [undefined, trimCat.id]) {
+        await shorten({
+          rawUrl: 'https://ana.dev/blog',
+          rawSlug: 'blog',
+          domainId,
+          userId: ana.id,
+        });
+      }
+
+      expect(await addressesOf(ana)).toEqual([
+        expect.stringMatching(/^trim\.cat\/[a-zA-Z0-9]{5}$/),
+        expect.stringMatching(/^trim\.cat\/[a-zA-Z0-9]{5}$/),
+      ]);
+    });
+
+    it('se alarga a 6 caracteres si los generados chocan', async () => {
+      vi.mocked(randomBytes).mockImplementation(allZeros);
+      await createLink(diegue, trimCat, { slug: 'aaaaa' });
+
       const result = await shorten({
         rawUrl: 'https://ana.dev/blog',
-        rawSlug: 'blog',
-        domainId: trimCat.id,
+        rawSlug: undefined,
         userId: ana.id,
       });
 
-      expect(result.status).toBe('success');
-      expect(await addressesOf(ana)).toEqual([
-        expect.stringMatching(/^trim\.cat\/[a-zA-Z0-9]{6}$/),
-      ]);
+      expect(result).toMatchObject({
+        status: 'success',
+        link: { address: 'trim.cat/aaaaaa' },
+      });
+    });
+
+    it('da error si tampoco se puede generar', async () => {
+      vi.mocked(randomBytes).mockImplementation(allZeros);
+      await createLink(diegue, trimCat, { slug: 'aaaaa' });
+      await createLink(diegue, trimCat, { slug: 'aaaaaa' });
+
+      expect(
+        await shorten({
+          rawUrl: 'https://ana.dev/blog',
+          rawSlug: undefined,
+          userId: ana.id,
+        }),
+      ).toEqual({ status: 'error', error: 'ALIAS_GENERATION_FAILED' });
+      expect(await addressesOf(ana)).toEqual([]);
     });
   });
 

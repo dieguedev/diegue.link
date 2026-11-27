@@ -25,14 +25,6 @@ export type CreateUrlData = {
 
 export type UrlPersistResult = 'success' | 'collision' | 'error';
 
-export async function findUsername(userId: string) {
-  const user = await prisma.user.findUniqueOrThrow({
-    where: { id: userId },
-    select: { username: true },
-  });
-  return user.username;
-}
-
 export async function createUrl(data: CreateUrlData) {
   try {
     return await prisma.url.create({ data, select: LINK_SELECT });
