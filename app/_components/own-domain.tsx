@@ -5,7 +5,7 @@ import { HighlightedText } from '@/components/ui/highlighted-text';
 import { SYSTEM_DOMAIN_HOST } from '@/lib/site';
 
 const FRAGMENT_CLASS =
-  'flex min-h-14 items-center rounded-base border-2 border-border bg-secondary-background px-3 py-2 font-mono text-sm';
+  'flex min-h-14 items-center rounded-base border-2 border-border bg-background px-3 py-2 font-mono text-sm';
 
 const ALIAS_CLASS =
   'shrink-0 border-2 border-border bg-main px-1.5 py-0.5 font-bold';
@@ -44,7 +44,11 @@ export function OwnDomain() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-8">
-          <Card aria-hidden="true" className="gap-3 px-6 shadow-none">
+          <Card
+            aria-hidden="true"
+            variant="secondary"
+            className="gap-3 px-6 shadow-none"
+          >
             <div className={FRAGMENT_CLASS}>
               <span className="truncate">{SYSTEM_DOMAIN_HOST}/</span>
               <span className={ALIAS_CLASS}>{GENERATED_ALIAS}</span>
