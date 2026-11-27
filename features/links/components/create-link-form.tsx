@@ -19,6 +19,7 @@ import {
 import { CopyUrlButton } from '@/features/links/components/copy-url-button';
 import { useLinkErrorMessage } from '@/features/links/link-errors';
 import { parseDestination } from '@/domain/links/destination';
+import { parseAlias } from '@/domain/links/alias';
 
 export function CreateLinkForm() {
   const t = useTranslations('Links');
@@ -31,6 +32,12 @@ export function CreateLinkForm() {
       const destination = parseDestination(formData.get('url'));
       if (destination.status === 'invalid')
         return { status: 'error', error: destination.error };
+      const slug = formData.get('slug')?.toString().trim();
+      if (slug) {
+        const alias = parseAlias(slug);
+        if (alias.status === 'invalid')
+          return { status: 'error', error: alias.error };
+      }
       return await createLink(formData);
     },
     { status: 'idle' },
@@ -68,8 +75,6 @@ export function CreateLinkForm() {
               id="slug"
               name="slug"
               placeholder={t('create.aliasPlaceholder')}
-              pattern="[a-zA-Z0-9-_]+"
-              title={t('aliasRule')}
               disabled={isPending}
             />
           </div>

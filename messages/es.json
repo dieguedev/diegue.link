@@ -177,7 +177,6 @@
       "result": "Tu enlace corto:",
       "open": "Abrir {address}"
     },
-    "aliasRule": "Solo letras, números, guiones y guiones bajos",
     "copy": {
       "label": "Copiar {address}",
       "copy": "Copiar",

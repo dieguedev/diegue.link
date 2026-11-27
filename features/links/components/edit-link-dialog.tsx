@@ -29,6 +29,7 @@ import {
 import { useLinkErrorMessage } from '@/features/links/link-errors';
 import type { LinkSummary } from '@/domain/links/link-service';
 import { parseDestination } from '@/domain/links/destination';
+import { parseAlias } from '@/domain/links/alias';
 
 type EditableLink = Pick<LinkSummary, 'id' | 'slug' | 'fullUrl' | 'address'>;
 
@@ -79,6 +80,9 @@ function EditLinkForm({
       const destination = parseDestination(formData.get('url'));
       if (destination.status === 'invalid')
         return { status: 'error', error: destination.error };
+      const alias = parseAlias(formData.get('slug'));
+      if (alias.status === 'invalid')
+        return { status: 'error', error: alias.error };
       const result = await updateLink(formData);
       if (result.status === 'success') onSuccess();
       return result;
@@ -121,10 +125,6 @@ function EditLinkForm({
           <InputGroupInput
             id={`edit-slug-${link.id}`}
             name="slug"
-            required
-            maxLength={50}
-            pattern="[a-zA-Z0-9\-_]+"
-            title={t('aliasRule')}
             defaultValue={link.slug}
             disabled={isPending}
             className="min-w-0 pl-0!"

@@ -14,6 +14,7 @@ import {
   parseDestination,
   type DestinationError,
 } from '@/domain/links/destination';
+import { parseAlias, type AliasError } from '@/domain/links/alias';
 import {
   findDomainByHost,
   findVerifiedDomainOwnedBy,
@@ -21,8 +22,6 @@ import {
 import { PRIMARY_DOMAIN_HOST, publicHostOf } from '@/lib/site';
 
 const CONFIG = {
-  SLUG_MAX_LENGTH: 50,
-  SLUG_PATTERN: /^[a-zA-Z0-9-_]+$/,
   SLUG_LENGTH: 6,
   ALPHABET: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
   MAX_ATTEMPTS: 3,
@@ -31,10 +30,8 @@ const CONFIG = {
 
 export type LinkError =
   | DestinationError
+  | AliasError
   | 'ALIAS_GENERATION_FAILED'
-  | 'ALIAS_TOO_LONG'
-  | 'ALIAS_INVALID_CHARS'
-  | 'ALIAS_REQUIRED'
   | 'ALIAS_TAKEN'
   | 'CREATE_FAILED'
   | 'LINK_NOT_FOUND'
@@ -43,21 +40,12 @@ export type LinkError =
 
 const ERRORS = {
   SLUG_GEN: 'ALIAS_GENERATION_FAILED',
-  SLUG_LONG: 'ALIAS_TOO_LONG',
-  SLUG_CHARS: 'ALIAS_INVALID_CHARS',
-  SLUG_REQ: 'ALIAS_REQUIRED',
   SLUG_EXISTS: 'ALIAS_TAKEN',
   GENERIC: 'CREATE_FAILED',
   NOT_FOUND: 'LINK_NOT_FOUND',
   UPDATE: 'UPDATE_FAILED',
   DELETE: 'DELETE_FAILED',
 } satisfies Record<string, LinkError>;
-
-function validateSlug(slug: string): LinkError | null {
-  if (slug.length > CONFIG.SLUG_MAX_LENGTH) return ERRORS.SLUG_LONG;
-  if (!CONFIG.SLUG_PATTERN.test(slug)) return ERRORS.SLUG_CHARS;
-  return null;
-}
 
 function generateSlug(length = CONFIG.SLUG_LENGTH): string {
   return Array.from(randomBytes(length))
@@ -135,18 +123,21 @@ export async function shorten(params: ShortenParams): Promise<ShortenResult> {
     return { status: 'error', error: parsed.error };
   const fullUrl = parsed.destination;
 
+  let alias: string | undefined;
   if (rawSlug) {
-    const validationError = validateSlug(rawSlug);
-    if (validationError) return { status: 'error', error: validationError };
+    const parsedAlias = parseAlias(rawSlug);
+    if (parsedAlias.status === 'invalid')
+      return { status: 'error', error: parsedAlias.error };
+    alias = parsedAlias.alias;
   }
 
   const target = await targetFor(userId);
   if (!target) return { status: 'error', error: ERRORS.GENERIC };
   const { domainId, prefix } = target;
 
-  if (rawSlug) {
+  if (alias) {
     const result = await createUrl({
-      slug: prefix + rawSlug,
+      slug: prefix + alias,
       fullUrl,
       userId,
       domainId,
@@ -231,9 +222,9 @@ export async function editLink(
     return { status: 'error', error: parsed.error };
   const fullUrl = parsed.destination;
 
-  if (!rawSlug) return { status: 'error', error: ERRORS.SLUG_REQ };
-  const slugError = validateSlug(rawSlug);
-  if (slugError) return { status: 'error', error: slugError };
+  const parsedAlias = parseAlias(rawSlug);
+  if (parsedAlias.status === 'invalid')
+    return { status: 'error', error: parsedAlias.error };
 
   const link = await findUrlByIdForUser(id, userId);
   if (!link) return { status: 'error', error: ERRORS.NOT_FOUND };
@@ -241,7 +232,7 @@ export async function editLink(
   const result = await updateUrl({
     id,
     userId,
-    slug: prefixOf(link) + rawSlug,
+    slug: prefixOf(link) + parsedAlias.alias,
     fullUrl,
   });
   if (result === 'collision')

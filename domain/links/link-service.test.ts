@@ -330,7 +330,10 @@ describe('En link service', () => {
         fullUrl: 'https://ana.dev/cv.pdf',
       });
 
-      const link = await resolveLink({ domain: 'diegue.link', slug: 'u/ana/cv' });
+      const link = await resolveLink({
+        domain: 'diegue.link',
+        slug: 'u/ana/cv',
+      });
       expect(link).toEqual({ id: cv.id, fullUrl: 'https://ana.dev/cv.pdf' });
 
       await recordClick(link!.id, { ...VISIT, device: 'mobile' });
@@ -346,7 +349,10 @@ describe('En link service', () => {
         fullUrl: 'https://forms.example.com/encuesta',
       });
 
-      const link = await resolveLink({ domain: 'diegue.link', slug: 'encuesta' });
+      const link = await resolveLink({
+        domain: 'diegue.link',
+        slug: 'encuesta',
+      });
       expect(link).toEqual({
         id: encuesta.id,
         fullUrl: 'https://forms.example.com/encuesta',
@@ -391,6 +397,36 @@ describe('En link service', () => {
       expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
       expect(await addressesOf(luis)).toEqual(['diegue.link/u/luis/cv']);
     });
+
+    it('no puede tener más de 50 caracteres', async () => {
+      expect(
+        await shorten({
+          rawUrl: 'https://example.com',
+          rawSlug: 'a'.repeat(51),
+          userId: diegue.id,
+        }),
+      ).toEqual({ status: 'error', error: 'ALIAS_TOO_LONG' });
+      expect(await addressesOf(diegue)).toEqual([]);
+    });
+
+    it('solo admite letras, números, guiones y guiones bajos', async () => {
+      for (const rawSlug of ['mi alias', 'año']) {
+        expect(
+          await shorten({
+            rawUrl: 'https://example.com',
+            rawSlug,
+            userId: diegue.id,
+          }),
+        ).toEqual({ status: 'error', error: 'ALIAS_INVALID_CHARS' });
+      }
+
+      await shorten({
+        rawUrl: 'https://example.com',
+        rawSlug: 'Mi_alias-2',
+        userId: diegue.id,
+      });
+      expect(await addressesOf(diegue)).toEqual(['diegue.link/Mi_alias-2']);
+    });
   });
 
   describe('una dirección no lleva a ningún destino', () => {
@@ -407,7 +443,9 @@ describe('En link service', () => {
     });
 
     it('si el alias es de un usuario y se visita desde la raíz', async () => {
-      expect(await resolveLink({ domain: 'diegue.link', slug: 'cv' })).toBeNull();
+      expect(
+        await resolveLink({ domain: 'diegue.link', slug: 'cv' }),
+      ).toBeNull();
     });
 
     it('si el usuario no existe', async () => {

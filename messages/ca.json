@@ -177,7 +177,6 @@
       "result": "El teu enllaç curt:",
       "open": "Obre {address}"
     },
-    "aliasRule": "Només lletres, números, guions i guions baixos",
     "copy": {
       "label": "Copia {address}",
       "copy": "Copia",
