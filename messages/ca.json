@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "{site} | Escurçador d'URL",
-    "description": "Escurça les teves URL de franc a trim.cat i mira els clics de cada enllaç. Amb el teu domini propi, tries l'àlies.",
+    "description": "Escurça les teves URL de franc a trim.cat, canvia'n la destinació quan vulguis i mira els clics de cada enllaç.",
     "ogLocale": "ca_ES"
   },
   "Header": {
@@ -39,7 +39,7 @@
       },
       "alias": {
         "title": "Rep el teu àlies",
-        "text": "Te'n generem un de curt de 5 caràcters a l'instant. Amb el teu domini propi verificat pots triar la paraula que vulguis, com eldomini.cat/enquesta."
+        "text": "Te'n generem un de curt de 5 caràcters a l'instant, sense que hagis de pensar res."
       },
       "share": {
         "title": "Comparteix i mira els clics",
@@ -86,11 +86,11 @@
       },
       "destination": {
         "question": "Puc canviar on porta un enllaç?",
-        "answer": "Sí. Des del tauler canvies la destinació quan vulguis. En un domini propi també pots canviar l'àlies; si ho fas, l'URL curta anterior deixa de funcionar."
+        "answer": "Sí. Des del tauler canvies la destinació quan vulguis, i l'URL curta continua sent la mateixa."
       },
       "alias": {
         "question": "Quins caràcters admet un àlies?",
-        "answer": "Lletres sense accent, números, guions i guions baixos, fins a 50 caràcters. Només el pots triar en un domini propi verificat, on no xoca amb el de ningú més; a trim.cat es genera automàticament."
+        "answer": "A trim.cat l'àlies es genera automàticament amb 5 caràcters. Aviat podràs connectar el teu domini propi i triar-lo tu: lletres sense accent, números, guions i guions baixos, fins a 50 caràcters."
       },
       "clicks": {
         "question": "Com es compten els clics?",

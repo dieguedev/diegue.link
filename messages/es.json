@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "{site} | Acortador de URLs",
-    "description": "Acorta tus URLs gratis en trim.cat y mira los clics de cada enlace. Con tu propio dominio, eliges el alias.",
+    "description": "Acorta tus URLs gratis en trim.cat, cambia su destino cuando quieras y mira los clics de cada enlace.",
     "ogLocale": "es_ES"
   },
   "Header": {
@@ -39,7 +39,7 @@
       },
       "alias": {
         "title": "Recibe tu alias",
-        "text": "Te generamos uno corto de 5 caracteres al momento. Con tu propio dominio verificado puedes elegir la palabra que quieras, como tudominio.com/encuesta."
+        "text": "Te generamos uno corto de 5 caracteres al momento, sin que tengas que pensar nada."
       },
       "share": {
         "title": "Comparte y observa los clics",
@@ -86,11 +86,11 @@
       },
       "destination": {
         "question": "¿Puedo cambiar adónde lleva un enlace?",
-        "answer": "Sí. Desde el panel cambias el destino cuando quieras. En un dominio propio también puedes cambiar el alias; si lo haces, la URL corta anterior deja de funcionar."
+        "answer": "Sí. Desde el panel cambias el destino cuando quieras, y la URL corta sigue siendo la misma."
       },
       "alias": {
         "question": "¿Qué caracteres admite un alias?",
-        "answer": "Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Solo puedes elegirlo en un dominio propio verificado, donde no choca con el de nadie más; en trim.cat se genera automáticamente."
+        "answer": "En trim.cat el alias se genera automáticamente con 5 caracteres. Pronto podrás conectar tu propio dominio y elegirlo tú: letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres."
       },
       "clicks": {
         "question": "¿Cómo se cuentan los clics?",
