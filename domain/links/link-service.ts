@@ -15,7 +15,7 @@ import {
   findDomainByHost,
   findVerifiedDomainOwnedBy,
 } from '@/domain/domains/domain-repository';
-import { PRIMARY_DOMAIN_HOST, domainHostOf, publicHostOf } from '@/lib/site';
+import { PRIMARY_DOMAIN_HOST, publicHostOf } from '@/lib/site';
 
 const CONFIG = {
   SLUG_MAX_LENGTH: 50,
@@ -249,13 +249,13 @@ export async function removeLink(
 }
 
 export async function resolveLink({
-  host,
+  domain,
   slug,
 }: {
-  host: string;
+  domain: string;
   slug: string;
 }): Promise<{ id: number; fullUrl: string } | null> {
-  return findUrlByAddress({ host: domainHostOf(host), slug });
+  return findUrlByAddress({ host: domain, slug });
 }
 
 export async function findLinkForUser(

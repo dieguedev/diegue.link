@@ -139,6 +139,13 @@ describe('En link service', () => {
       }
     });
 
+    it('lleva el host del sitio si es de trim.cat', async () => {
+      const trimCat = await createDomain({ host: 'trim.cat' });
+      await createLink(ana, trimCat, { slug: 'x7Kp2a' });
+
+      expect(await addressesOf(ana)).toEqual(['trim.cat/x7Kp2a']);
+    });
+
     it('se conserva al editar el alias', async () => {
       const cv = await createLink(ana, diegueLink, { slug: 'u/ana/cv' });
 
@@ -274,10 +281,10 @@ describe('En link service', () => {
 
     it('sigue llevando a su destino', async () => {
       expect(
-        await resolveLink({ host: 'diegue.link', slug: 'encuesta' }),
+        await resolveLink({ domain: 'diegue.link', slug: 'encuesta' }),
       ).toMatchObject({ fullUrl: 'https://forms.example.com/encuesta' });
       expect(
-        await resolveLink({ host: 'diegue.link', slug: 'u/ana/cv' }),
+        await resolveLink({ domain: 'diegue.link', slug: 'u/ana/cv' }),
       ).toMatchObject({ fullUrl: 'https://ana.dev/cv.pdf' });
     });
   });
@@ -297,8 +304,22 @@ describe('En link service', () => {
 
     it('sigue llevando a su destino', async () => {
       expect(
-        await resolveLink({ host: 'diegue.link', slug: 'u/ana/cv' }),
+        await resolveLink({ domain: 'diegue.link', slug: 'u/ana/cv' }),
       ).toMatchObject({ fullUrl: 'https://ana.dev/cv.pdf' });
+    });
+  });
+
+  describe('un enlace de trim.cat', () => {
+    it('lleva a su destino', async () => {
+      const trimCat = await createDomain({ host: 'trim.cat' });
+      await createLink(ana, trimCat, {
+        slug: 'x7Kp2a',
+        fullUrl: 'https://ana.dev/charla',
+      });
+
+      expect(
+        await resolveLink({ domain: 'trim.cat', slug: 'x7Kp2a' }),
+      ).toMatchObject({ fullUrl: 'https://ana.dev/charla' });
     });
   });
 
@@ -309,7 +330,7 @@ describe('En link service', () => {
         fullUrl: 'https://ana.dev/cv.pdf',
       });
 
-      const link = await resolveLink({ host: 'diegue.link', slug: 'u/ana/cv' });
+      const link = await resolveLink({ domain: 'diegue.link', slug: 'u/ana/cv' });
       expect(link).toEqual({ id: cv.id, fullUrl: 'https://ana.dev/cv.pdf' });
 
       await recordClick(link!.id, { ...VISIT, device: 'mobile' });
@@ -325,7 +346,7 @@ describe('En link service', () => {
         fullUrl: 'https://forms.example.com/encuesta',
       });
 
-      const link = await resolveLink({ host: 'diegue.link', slug: 'encuesta' });
+      const link = await resolveLink({ domain: 'diegue.link', slug: 'encuesta' });
       expect(link).toEqual({
         id: encuesta.id,
         fullUrl: 'https://forms.example.com/encuesta',
@@ -381,29 +402,37 @@ describe('En link service', () => {
 
     it('si el alias no existe', async () => {
       expect(
-        await resolveLink({ host: 'diegue.link', slug: 'noexiste' }),
+        await resolveLink({ domain: 'diegue.link', slug: 'noexiste' }),
       ).toBeNull();
     });
 
     it('si el alias es de un usuario y se visita desde la raíz', async () => {
-      expect(await resolveLink({ host: 'diegue.link', slug: 'cv' })).toBeNull();
+      expect(await resolveLink({ domain: 'diegue.link', slug: 'cv' })).toBeNull();
     });
 
     it('si el usuario no existe', async () => {
       expect(
-        await resolveLink({ host: 'diegue.link', slug: 'u/nadie/cv' }),
+        await resolveLink({ domain: 'diegue.link', slug: 'u/nadie/cv' }),
       ).toBeNull();
     });
 
     it('si el alias es de otro usuario', async () => {
       expect(
-        await resolveLink({ host: 'diegue.link', slug: 'u/luis/cv' }),
+        await resolveLink({ domain: 'diegue.link', slug: 'u/luis/cv' }),
+      ).toBeNull();
+    });
+
+    it('si el alias antiguo se visita en trim.cat', async () => {
+      await createDomain({ host: 'trim.cat' });
+
+      expect(
+        await resolveLink({ domain: 'trim.cat', slug: 'u/ana/cv' }),
       ).toBeNull();
     });
 
     it('si el dominio no existe', async () => {
       expect(
-        await resolveLink({ host: 'otro.example.com', slug: 'encuesta' }),
+        await resolveLink({ domain: 'otro.example.com', slug: 'encuesta' }),
       ).toBeNull();
     });
   });
