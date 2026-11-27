@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import {
   getClicksOverview,
   STATS_RANGE_DAYS,
@@ -21,17 +22,19 @@ export async function ClicksOverview({ userId }: ClicksOverviewProps) {
   // Sin Clics en ningún periodo el bloque no aporta nada
   if (total === 0 && previousTotal === 0) return null;
 
+  const t = await getTranslations('Clicks');
+
   return (
     <section
       aria-labelledby="overview-heading"
       className="grid gap-6 lg:grid-cols-3"
     >
       <h2 id="overview-heading" className="sr-only">
-        Resumen de Clics
+        {t('overview.title')}
       </h2>
 
       <StatsCard
-        title={`Clics en los últimos ${STATS_RANGE_DAYS} días`}
+        title={t('overview.chartTitle', { days: STATS_RANGE_DAYS })}
         className="lg:col-span-2"
       >
         <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -44,8 +47,8 @@ export async function ClicksOverview({ userId }: ClicksOverviewProps) {
       </StatsCard>
 
       <StatsCard
-        title="Más visitados"
-        description={`Últimos ${STATS_RANGE_DAYS} días`}
+        title={t('overview.topLinks')}
+        description={t('range', { days: STATS_RANGE_DAYS })}
         isEmpty={topLinks.length === 0}
       >
         <ol className="flex flex-col gap-2">

@@ -1,4 +1,5 @@
 import { Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils/cn';
 
 interface TrendBadgeProps {
@@ -7,13 +8,15 @@ interface TrendBadgeProps {
 }
 
 export function TrendBadge({ current, previous }: TrendBadgeProps) {
+  const t = useTranslations('Clicks.trend');
+
   // Sin periodo anterior no hay porcentaje que tenga sentido
   if (previous === 0) {
     if (current === 0) return null;
     return (
       <Badge className="bg-chart-4">
         <TrendingUp aria-hidden />
-        Nuevo
+        {t('new')}
       </Badge>
     );
   }
@@ -31,8 +34,7 @@ export function TrendBadge({ current, previous }: TrendBadgeProps) {
     >
       <Icon aria-hidden />
       {change > 0 ? '+' : ''}
-      {change}%
-      <span className="sr-only">respecto al periodo anterior</span>
+      {change}%<span className="sr-only">{t('comparison')}</span>
     </Badge>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts';
+import { useTranslations } from 'next-intl';
 import {
   ChartContainer,
   ChartTooltip,
@@ -28,9 +29,13 @@ interface ClicksBarChartProps {
   color?: keyof typeof COLORS;
 }
 
-export function ClicksBarChart({ data, color = 'chart-2' }: ClicksBarChartProps) {
+export function ClicksBarChart({
+  data,
+  color = 'chart-2',
+}: ClicksBarChartProps) {
+  const t = useTranslations('Clicks');
   const config = {
-    clicks: { label: 'Clics', color: COLORS[color] },
+    clicks: { label: t('clicks'), color: COLORS[color] },
   } satisfies ChartConfig;
 
   return (

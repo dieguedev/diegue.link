@@ -1,6 +1,7 @@
 'use client';
 
 import { Label, Pie, PieChart } from 'recharts';
+import { useTranslations } from 'next-intl';
 import {
   ChartContainer,
   ChartLegend,
@@ -12,19 +13,19 @@ import {
 import type { DeviceKey } from '@/features/clicks/labels';
 import { numberFormat } from '@/lib/utils/number-format';
 
-const config = {
-  clicks: { label: 'Clics' },
-  mobile: { label: 'Móvil', color: 'var(--chart-1)' },
-  desktop: { label: 'Escritorio', color: 'var(--chart-2)' },
-  tablet: { label: 'Tablet', color: 'var(--chart-3)' },
-  other: { label: 'Otro', color: 'var(--chart-4)' },
-} satisfies ChartConfig;
-
 interface DevicesDonutChartProps {
   data: { device: DeviceKey; clicks: number }[];
 }
 
 export function DevicesDonutChart({ data }: DevicesDonutChartProps) {
+  const t = useTranslations('Clicks');
+  const config = {
+    clicks: { label: t('clicks') },
+    mobile: { label: t('devices.mobile'), color: 'var(--chart-1)' },
+    desktop: { label: t('devices.desktop'), color: 'var(--chart-2)' },
+    tablet: { label: t('devices.tablet'), color: 'var(--chart-3)' },
+    other: { label: t('devices.other'), color: 'var(--chart-4)' },
+  } satisfies ChartConfig;
   const total = data.reduce((acc, item) => acc + item.clicks, 0);
   const slices = data.map(item => ({
     ...item,
@@ -69,7 +70,7 @@ export function DevicesDonutChart({ data }: DevicesDonutChartProps) {
                     y={(viewBox.cy ?? 0) + 22}
                     className="fill-foreground/70 text-xs"
                   >
-                    Clics
+                    {t('clicks')}
                   </tspan>
                 </text>
               );
@@ -77,7 +78,9 @@ export function DevicesDonutChart({ data }: DevicesDonutChartProps) {
           />
         </Pie>
         <ChartLegend
-          content={<ChartLegendContent nameKey="device" className="flex-wrap" />}
+          content={
+            <ChartLegendContent nameKey="device" className="flex-wrap" />
+          }
         />
       </PieChart>
     </ChartContainer>

@@ -1,6 +1,7 @@
 'use client';
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { useFormatter, useTranslations } from 'next-intl';
 import {
   ChartContainer,
   ChartTooltip,
@@ -10,21 +11,8 @@ import {
 import type { DailyClicks } from '@/domain/services/stats-service';
 import { cn } from '@/lib/utils/cn';
 
-const config = {
-  clicks: { label: 'Clics', color: 'var(--chart-1)' },
-} satisfies ChartConfig;
-
 // Las fechas llegan como 'YYYY-MM-DD'; a mediodía UTC para que ninguna zona horaria cambie el día
 const toDate = (day: string) => new Date(`${day}T12:00:00Z`);
-const shortDate = new Intl.DateTimeFormat('es-ES', {
-  day: 'numeric',
-  month: 'short',
-});
-const longDate = new Intl.DateTimeFormat('es-ES', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-});
 
 interface ClicksAreaChartProps {
   data: DailyClicks[];
@@ -32,6 +20,12 @@ interface ClicksAreaChartProps {
 }
 
 export function ClicksAreaChart({ data, className }: ClicksAreaChartProps) {
+  const t = useTranslations('Clicks');
+  const format = useFormatter();
+  const config = {
+    clicks: { label: t('clicks'), color: 'var(--chart-1)' },
+  } satisfies ChartConfig;
+
   return (
     <ChartContainer
       config={config}
@@ -49,7 +43,9 @@ export function ClicksAreaChart({ data, className }: ClicksAreaChartProps) {
           axisLine={false}
           tickMargin={8}
           minTickGap={32}
-          tickFormatter={day => shortDate.format(toDate(day))}
+          tickFormatter={day =>
+            format.dateTime(toDate(day), { day: 'numeric', month: 'short' })
+          }
         />
         <YAxis
           tickLine={false}
@@ -65,7 +61,13 @@ export function ClicksAreaChart({ data, className }: ClicksAreaChartProps) {
               indicator="dot"
               labelFormatter={(_, payload) => {
                 const day = payload?.[0]?.payload?.date;
-                return day ? longDate.format(toDate(day)) : null;
+                return day
+                  ? format.dateTime(toDate(day), {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                    })
+                  : null;
               }}
             />
           }
