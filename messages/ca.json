@@ -240,6 +240,7 @@
       "ALIAS_INVALID_CHARS": "L'àlies només pot contenir lletres, números i guions.",
       "ALIAS_REQUIRED": "L'àlies és obligatori.",
       "ALIAS_TAKEN": "Aquest àlies ja existeix.",
+      "DOMAIN_NOT_ALLOWED": "No pots crear enllaços en aquest domini.",
       "CREATE_FAILED": "No s'ha pogut crear l'URL curta. Torna-ho a provar.",
       "LINK_NOT_FOUND": "Aquest enllaç ja no existeix.",
       "UPDATE_FAILED": "No s'han pogut desar els canvis. Torna-ho a provar.",

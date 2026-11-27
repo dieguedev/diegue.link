@@ -9,6 +9,7 @@ import type { ClickMetadata } from '@/lib/analytics/click-metadata';
 import {
   editLink,
   listLinks,
+  linkDomainsFor,
   removeLink,
   resolveLink,
   shorten,
@@ -42,11 +43,36 @@ describe('En link service', () => {
   let diegue: User;
   let ana: User;
   let diegueLink: Domain;
+  let trimCat: Domain;
 
   beforeEach(async () => {
     diegue = await createUser({ username: 'diegue' });
     ana = await createUser({ username: 'ana' });
     diegueLink = await createDomain({ host: 'diegue.link', owner: diegue });
+    trimCat = await createDomain({ host: 'trim.cat' });
+  });
+
+  describe('los dominios de un usuario', () => {
+    it('son trim.cat y sus dominios propios verificados', async () => {
+      const diegueDev = await createDomain({
+        host: 'diegue.dev',
+        owner: diegue,
+      });
+
+      expect(await linkDomainsFor(diegue.id)).toEqual([
+        { id: trimCat.id, host: 'trim.cat', choosesAlias: false },
+        { id: diegueLink.id, host: 'diegue.link', choosesAlias: true },
+        { id: diegueDev.id, host: 'diegue.dev', choosesAlias: true },
+      ]);
+    });
+
+    it('no incluyen uno sin verificar ni el de otro usuario', async () => {
+      await createDomain({ host: 'ana.dev', owner: ana, verified: false });
+
+      expect(await linkDomainsFor(ana.id)).toEqual([
+        { id: trimCat.id, host: 'trim.cat', choosesAlias: false },
+      ]);
+    });
   });
 
   describe('la dirección de un enlace', () => {
@@ -64,10 +90,11 @@ describe('En link service', () => {
       expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/portfolio']);
     });
 
-    it('cuelga de la raíz si el usuario es dueño del dominio', async () => {
+    it('cuelga de la raíz de un dominio propio con el alias elegido', async () => {
       const result = await shorten({
         rawUrl: 'https://charlas.example.com/charla',
         rawSlug: 'charla',
+        domainId: diegueLink.id,
         userId: diegue.id,
       });
 
@@ -75,6 +102,20 @@ describe('En link service', () => {
         status: 'success',
         link: { slug: 'charla', address: 'diegue.link/charla' },
       });
+    });
+
+    it('lleva un alias generado si se deja vacío en un dominio propio', async () => {
+      const result = await shorten({
+        rawUrl: 'https://charlas.example.com/charla',
+        rawSlug: '',
+        domainId: diegueLink.id,
+        userId: diegue.id,
+      });
+
+      expect(result.status).toBe('success');
+      expect(await addressesOf(diegue)).toEqual([
+        expect.stringMatching(/^diegue\.link\/[a-zA-Z0-9]+$/),
+      ]);
     });
 
     it('lleva el nombre de su usuario si no lo es', async () => {
@@ -140,7 +181,6 @@ describe('En link service', () => {
     });
 
     it('lleva el host del sitio si es de trim.cat', async () => {
-      const trimCat = await createDomain({ host: 'trim.cat' });
       await createLink(ana, trimCat, { slug: 'x7Kp2a' });
 
       expect(await addressesOf(ana)).toEqual(['trim.cat/x7Kp2a']);
@@ -159,6 +199,22 @@ describe('En link service', () => {
       const { links } = await listLinks({ userId: ana.id });
       expect(links).toMatchObject([
         { slug: 'curriculum', address: 'diegue.link/u/ana/curriculum' },
+      ]);
+    });
+  });
+
+  describe('el alias en trim.cat', () => {
+    it('se genera aunque se pida uno', async () => {
+      const result = await shorten({
+        rawUrl: 'https://ana.dev/blog',
+        rawSlug: 'blog',
+        domainId: trimCat.id,
+        userId: ana.id,
+      });
+
+      expect(result.status).toBe('success');
+      expect(await addressesOf(ana)).toEqual([
+        expect.stringMatching(/^trim\.cat\/[a-zA-Z0-9]{6}$/),
       ]);
     });
   });
@@ -311,7 +367,6 @@ describe('En link service', () => {
 
   describe('un enlace de trim.cat', () => {
     it('lleva a su destino', async () => {
-      const trimCat = await createDomain({ host: 'trim.cat' });
       await createLink(ana, trimCat, {
         slug: 'x7Kp2a',
         fullUrl: 'https://ana.dev/charla',
@@ -373,6 +428,7 @@ describe('En link service', () => {
       const charla = {
         rawUrl: 'https://charlas.example.com/charla',
         rawSlug: 'charla',
+        domainId: diegueLink.id,
         userId: diegue.id,
       };
       await shorten(charla);
@@ -383,19 +439,24 @@ describe('En link service', () => {
       });
     });
 
-    it('se puede repetir en distintos usuarios', async () => {
+    it('se puede repetir en dominios distintos', async () => {
       const luis = await createUser({ username: 'luis' });
+      const luisDev = await createDomain({ host: 'luis.dev', owner: luis });
 
-      for (const user of [ana, luis]) {
+      for (const [user, domain] of [
+        [diegue, diegueLink],
+        [luis, luisDev],
+      ] as const) {
         await shorten({
           rawUrl: 'https://example.com/cv.pdf',
           rawSlug: 'cv',
+          domainId: domain.id,
           userId: user.id,
         });
       }
 
-      expect(await addressesOf(ana)).toEqual(['diegue.link/u/ana/cv']);
-      expect(await addressesOf(luis)).toEqual(['diegue.link/u/luis/cv']);
+      expect(await addressesOf(diegue)).toEqual(['diegue.link/cv']);
+      expect(await addressesOf(luis)).toEqual(['luis.dev/cv']);
     });
 
     it('no puede tener más de 50 caracteres', async () => {
@@ -403,6 +464,7 @@ describe('En link service', () => {
         await shorten({
           rawUrl: 'https://example.com',
           rawSlug: 'a'.repeat(51),
+          domainId: diegueLink.id,
           userId: diegue.id,
         }),
       ).toEqual({ status: 'error', error: 'ALIAS_TOO_LONG' });
@@ -415,6 +477,7 @@ describe('En link service', () => {
           await shorten({
             rawUrl: 'https://example.com',
             rawSlug,
+            domainId: diegueLink.id,
             userId: diegue.id,
           }),
         ).toEqual({ status: 'error', error: 'ALIAS_INVALID_CHARS' });
@@ -423,9 +486,59 @@ describe('En link service', () => {
       await shorten({
         rawUrl: 'https://example.com',
         rawSlug: 'Mi_alias-2',
+        domainId: diegueLink.id,
         userId: diegue.id,
       });
       expect(await addressesOf(diegue)).toEqual(['diegue.link/Mi_alias-2']);
+    });
+  });
+
+  describe('un enlace no se crea', () => {
+    const notAllowed = { status: 'error', error: 'DOMAIN_NOT_ALLOWED' };
+
+    it('en el dominio de otro usuario', async () => {
+      expect(
+        await shorten({
+          rawUrl: 'https://ana.dev/charla',
+          rawSlug: 'charla',
+          domainId: diegueLink.id,
+          userId: ana.id,
+        }),
+      ).toEqual(notAllowed);
+      expect(await addressesOf(ana)).toEqual([]);
+      expect(await addressesOf(diegue)).toEqual([]);
+    });
+
+    it('en un dominio sin verificar', async () => {
+      const anaDev = await createDomain({
+        host: 'ana.dev',
+        owner: ana,
+        verified: false,
+      });
+
+      expect(
+        await shorten({
+          rawUrl: 'https://ana.dev/charla',
+          rawSlug: 'charla',
+          domainId: anaDev.id,
+          userId: ana.id,
+        }),
+      ).toEqual(notAllowed);
+      expect(await addressesOf(ana)).toEqual([]);
+    });
+
+    it('en un dominio que no existe', async () => {
+      for (const domainId of [999999, Number.NaN]) {
+        expect(
+          await shorten({
+            rawUrl: 'https://ana.dev/charla',
+            rawSlug: undefined,
+            domainId,
+            userId: ana.id,
+          }),
+        ).toEqual(notAllowed);
+      }
+      expect(await addressesOf(ana)).toEqual([]);
     });
   });
 
@@ -461,8 +574,6 @@ describe('En link service', () => {
     });
 
     it('si el alias antiguo se visita en trim.cat', async () => {
-      await createDomain({ host: 'trim.cat' });
-
       expect(
         await resolveLink({ domain: 'trim.cat', slug: 'u/ana/cv' }),
       ).toBeNull();

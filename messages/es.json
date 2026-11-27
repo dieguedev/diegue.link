@@ -240,6 +240,7 @@
       "ALIAS_INVALID_CHARS": "El alias sólo puede contener letras, números y guiones.",
       "ALIAS_REQUIRED": "El alias es obligatorio.",
       "ALIAS_TAKEN": "Este alias ya existe.",
+      "DOMAIN_NOT_ALLOWED": "No puedes crear enlaces en ese dominio.",
       "CREATE_FAILED": "Error al crear la URL corta. Intenta de nuevo.",
       "LINK_NOT_FOUND": "Este enlace ya no existe.",
       "UPDATE_FAILED": "No se han podido guardar los cambios. Intenta de nuevo.",
