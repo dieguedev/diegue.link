@@ -28,14 +28,14 @@ export async function Header() {
             </span>
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-2 sm:gap-3 items-center">
             <LocaleSwitcher />
             <Button
               link
               href={GITHUB_REPO_URL}
               variant="neutral"
               target="_blank"
-              className="group"
+              className="group hidden sm:inline-flex"
             >
               {shortNumberFormat(starAmount)}{' '}
               <Star className="transition-[rotate,fill] duration-500 ease-ui group-hover:rotate-[72deg] group-hover:fill-main" />
@@ -44,7 +44,7 @@ export async function Header() {
               <AuthModal
                 trigger={
                   <Button className="mr-4 md:mr-6">
-                    {t('logIn')} <LogIn />
+                    {t('logIn')} <LogIn className="hidden min-[360px]:block" />
                   </Button>
                 }
               />

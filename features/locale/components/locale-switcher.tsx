@@ -40,7 +40,7 @@ export function LocaleSwitcher() {
           disabled={isPending}
           className="uppercase"
         >
-          <Languages aria-hidden />
+          <Languages aria-hidden className="hidden min-[360px]:block" />
           {locale}
         </Button>
       </DropdownMenuTrigger>
