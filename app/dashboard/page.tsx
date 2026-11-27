@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { auth } from '@/lib/auth/auth';
 import { headers } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { CreateLinkForm } from '@/features/links/components/create-link-form';
 import { LinksTable } from '@/features/links/components/links-table';
@@ -14,6 +15,7 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
   const { q, page } = await searchParams;
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect('/');
+  const t = await getTranslations('Dashboard');
 
   return (
     <div className="container mx-auto flex flex-col gap-12 px-4 py-10">
@@ -21,7 +23,7 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
         <ClicksOverview userId={session.user.id} />
       </div>
       <div className="mx-auto w-full max-w-5xl">
-        <Suspense fallback={<div className="text-center">Cargando...</div>}>
+        <Suspense fallback={<div className="text-center">{t('loading')}</div>}>
           <CreateLinkForm />
         </Suspense>
       </div>

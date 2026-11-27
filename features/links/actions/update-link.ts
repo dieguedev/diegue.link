@@ -5,17 +5,19 @@ import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { editLink, type MutationResult } from '@/domain/links/link-service';
 
-const AUTH_ERROR = 'No autorizado. Por favor inicia sesión.';
-const INVALID_ERROR = 'Enlace no válido.';
+export type UpdateLinkResult =
+  | { status: 'idle' }
+  | MutationResult
+  | { status: 'error'; error: 'UNAUTHORIZED' | 'INVALID_LINK' };
 
-export type UpdateLinkResult = { status: 'idle' } | MutationResult;
-
-export async function updateLink(formData: FormData): Promise<UpdateLinkResult> {
+export async function updateLink(
+  formData: FormData,
+): Promise<UpdateLinkResult> {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return { status: 'error', error: AUTH_ERROR };
+  if (!session) return { status: 'error', error: 'UNAUTHORIZED' };
 
   const id = Number(formData.get('id'));
-  if (!Number.isInteger(id)) return { status: 'error', error: INVALID_ERROR };
+  if (!Number.isInteger(id)) return { status: 'error', error: 'INVALID_LINK' };
 
   const result = await editLink({
     id,

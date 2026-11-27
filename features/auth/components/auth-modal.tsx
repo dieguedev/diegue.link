@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { AnimateSize } from '@/components/ui/animate-size';
 import {
   Dialog,
@@ -36,6 +37,7 @@ export function AuthModal({
   onOpenChange,
   onSuccess,
 }: AuthModalProps) {
+  const t = useTranslations('Auth.modal');
   const router = useRouter();
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen ?? internalOpen;
@@ -58,20 +60,18 @@ export function AuthModal({
         showCloseButton={false}
         className="block w-full max-w-[min(396px,calc(100%-2rem))] gap-0 border-0 bg-transparent p-0 shadow-none! sm:max-w-[396px]"
       >
-        <DialogTitle className="sr-only">Modal de inicio de sesión</DialogTitle>
+        <DialogTitle className="sr-only">{t('title')}</DialogTitle>
         <Tabs defaultValue="login">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
-            <TabsTrigger value="register">Crear cuenta</TabsTrigger>
+            <TabsTrigger value="login">{t('loginTab')}</TabsTrigger>
+            <TabsTrigger value="register">{t('registerTab')}</TabsTrigger>
           </TabsList>
           <Card className="mt-2 py-0">
             <AnimateSize axis="height">
               <TabsContent value="login" className={TAB_CONTENT_CLASS}>
                 <CardHeader>
-                  <CardTitle>Iniciar sesión</CardTitle>
-                  <CardDescription>
-                    Introduce tus datos para acceder a tu cuenta.
-                  </CardDescription>
+                  <CardTitle>{t('loginTitle')}</CardTitle>
+                  <CardDescription>{t('loginDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <LoginForm onSuccess={handleSuccess} />
@@ -79,10 +79,8 @@ export function AuthModal({
               </TabsContent>
               <TabsContent value="register" className={TAB_CONTENT_CLASS}>
                 <CardHeader>
-                  <CardTitle>¡Regístrate!</CardTitle>
-                  <CardDescription>
-                    Crea tu cuenta para comenzar a acortar enlaces.
-                  </CardDescription>
+                  <CardTitle>{t('registerTitle')}</CardTitle>
+                  <CardDescription>{t('registerDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <RegisterForm onSuccess={handleSuccess} />

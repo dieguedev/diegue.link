@@ -1,0 +1,295 @@
+{
+  "Metadata": {
+    "title": "{site} | Escurçador d'URL",
+    "description": "Escurça les teves URL de franc. Crea enllaços curts personalitzats i consulta'n les estadístiques.",
+    "ogLocale": "ca_ES"
+  },
+  "Header": {
+    "logIn": "Inicia sessió"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "es": "Español",
+    "ca": "Català"
+  },
+  "Home": {
+    "heroLabel": "Escurçar un enllaç",
+    "title": "Comença a <highlight>escurçar</highlight><br></br>els teus enllaços",
+    "subtitle": "Converteix qualsevol enllaç llarg en <strong>un de curt</strong> i fàcil de compartir. A més, tingues-los tots a mà <strong>en un sol lloc</strong>, sense notes ni marcadors.",
+    "marquee": {
+      "shorten": "Escurça els teus enllaços",
+      "share": "Comparteix-los",
+      "keep": "Desa'ls"
+    }
+  },
+  "HeroShortener": {
+    "label": "Enllaç per escurçar",
+    "placeholder": "Enganxa aquí el teu enllaç llarg",
+    "submit": "Escurça",
+    "pending": "Escurçant"
+  },
+  "HowItWorks": {
+    "title": "Un enllaç curt en <highlight>tres passos</highlight>",
+    "intro": "Els enllaços llargs fan sospitar i són difícils de llegir i de recordar. Només necessites un compte gratuït i l'enllaç que vulguis escurçar!",
+    "step": "Pas {number}:",
+    "exampleAlias": "enquesta",
+    "steps": {
+      "paste": {
+        "title": "Enganxa l'enllaç llarg",
+        "text": "Un formulari, un article, un fitxer al núvol... Qualsevol cosa que vulguis desar o compartir!"
+      },
+      "alias": {
+        "title": "Tria el teu àlies",
+        "text": "Escriu la paraula que vulguis al final o deixa que generem un identificador únic per tu. El teu àlies mai no estarà agafat: cadascun és únic per usuari."
+      },
+      "share": {
+        "title": "Comparteix i mira els clics",
+        "text": "Copia'l i enganxa'l on vulguis. Al teu tauler veus quantes vegades l'han obert i pots canviar la destinació en qualsevol moment."
+      }
+    }
+  },
+  "Faq": {
+    "title": "Preguntes <highlight>freqüents</highlight>",
+    "intro": "No trobes la teva? Obre una issue a <github>GitHub</github> i et responem allà.",
+    "questions": {
+      "cost": {
+        "question": "Quant costa?",
+        "answer": "Res. Crear un compte, escurçar enllaços i consultar-ne els clics és gratuït."
+      },
+      "account": {
+        "question": "Necessito un compte?",
+        "answer": "Sí. Amb el compte, els teus enllaços queden desats al tauler i només tu els pots editar o esborrar. Et registres amb el teu correu en uns segons."
+      },
+      "expiry": {
+        "question": "Els enllaços caduquen?",
+        "answer": "No. Un enllaç funciona fins que l'esborres des del tauler."
+      },
+      "destination": {
+        "question": "Puc canviar on porta un enllaç?",
+        "answer": "Sí. Des del tauler edites la destinació i l'àlies quan vulguis. Si canvies l'àlies, l'URL curta anterior deixa de funcionar."
+      },
+      "alias": {
+        "question": "Quins caràcters admet un àlies?",
+        "answer": "Lletres sense accent, números, guions i guions baixos, fins a 50 caràcters. Cada usuari té la seva pròpia adreça, com ara ana.{site}, així que el teu àlies no xoca amb el de ningú."
+      },
+      "clicks": {
+        "question": "Com es compten els clics?",
+        "answer": "Cada visita al teu enllaç suma un clic. El total apareix al teu tauler, al costat de cada enllaç."
+      }
+    }
+  },
+  "ClosingCta": {
+    "loggedIn": {
+      "title": "Els teus enllaços, en un sol lloc",
+      "text": "Crea, edita i mira els clics des del teu tauler.",
+      "button": "Ves al meu tauler"
+    },
+    "loggedOut": {
+      "title": "Escurça el teu primer enllaç",
+      "text": "És gratuït i no et porta ni un minut.",
+      "button": "Comença gratis"
+    }
+  },
+  "Footer": {
+    "tagline": "Escurçador d'enllaços gratuït i de codi obert.",
+    "navLabel": "Peu de pàgina",
+    "howItWorks": "Com funciona",
+    "faq": "Preguntes freqüents",
+    "newTab": "(s'obre en una pestanya nova)"
+  },
+  "Dashboard": {
+    "loading": "Carregant..."
+  },
+  "Ui": {
+    "pagination": {
+      "label": "Paginació",
+      "previous": "Anterior",
+      "previousLabel": "Ves a la pàgina anterior",
+      "next": "Següent",
+      "nextLabel": "Ves a la pàgina següent",
+      "more": "Més pàgines"
+    },
+    "toast": {
+      "close": "Tanca la notificació"
+    }
+  },
+  "Auth": {
+    "modal": {
+      "title": "Finestra d'inici de sessió",
+      "loginTab": "Inicia sessió",
+      "registerTab": "Crea un compte",
+      "loginTitle": "Inicia sessió",
+      "loginDescription": "Introdueix les teves dades per accedir al teu compte.",
+      "registerTitle": "Registra't!",
+      "registerDescription": "Crea el teu compte per començar a escurçar enllaços."
+    },
+    "login": {
+      "email": "Correu electrònic",
+      "password": "Contrasenya",
+      "forgotPassword": "Has oblidat la contrasenya?",
+      "submit": "Inicia sessió"
+    },
+    "register": {
+      "name": "Nom",
+      "email": "Correu electrònic",
+      "username": "Nom d'usuari",
+      "usernameHint": "Entre 3 i 30 caràcters.",
+      "password": "Contrasenya",
+      "passwordHint": "Mínim 8 caràcters.",
+      "submit": "Crea un compte"
+    },
+    "validation": {
+      "emailRequired": "Introdueix el teu correu",
+      "emailInvalid": "Introdueix un correu vàlid",
+      "passwordRequired": "Introdueix la teva contrasenya",
+      "nameRequired": "Introdueix el teu nom",
+      "minLength": "Mínim {min} caràcters",
+      "maxLength": "Màxim {max} caràcters",
+      "usernameChars": "Només lletres, números, guions i guions baixos"
+    },
+    "errors": {
+      "INVALID_EMAIL_OR_PASSWORD": "El correu o la contrasenya no són correctes.",
+      "INVALID_EMAIL": "El correu no és vàlid.",
+      "PASSWORD_TOO_SHORT": "La contrasenya és massa curta.",
+      "PASSWORD_TOO_LONG": "La contrasenya és massa llarga.",
+      "USER_ALREADY_EXISTS": "Ja existeix un compte amb aquest correu.",
+      "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "Ja existeix un compte amb aquest correu.",
+      "FAILED_TO_CREATE_USER": "No s'ha pogut crear el compte. Potser el nom d'usuari ja està en ús.",
+      "TOO_MANY_REQUESTS": "Massa intents. Espera un moment i torna-ho a provar.",
+      "FALLBACK": "Alguna cosa ha fallat. Torna-ho a provar."
+    },
+    "userMenu": {
+      "home": "Inici",
+      "dashboard": "Tauler",
+      "settings": "Configuració",
+      "logOut": "Tanca la sessió"
+    }
+  },
+  "Links": {
+    "create": {
+      "title": "Escurça una URL",
+      "description": "Afegeix l'URL que vols escurçar per generar un enllaç curt. Pots afegir-hi un àlies personalitzat perquè sigui més descriptiu o més fàcil de recordar.",
+      "url": "URL per escurçar",
+      "alias": "Àlies personalitzat (opcional)",
+      "aliasPlaceholder": "el-meu-enllac",
+      "submit": "Escurça l'URL",
+      "pending": "Escurçant...",
+      "result": "El teu enllaç curt:",
+      "open": "Obre {address}"
+    },
+    "aliasRule": "Només lletres, números, guions i guions baixos",
+    "copy": {
+      "label": "Copia {address}",
+      "copy": "Copia",
+      "copied": "Copiat",
+      "success": "Enllaç copiat",
+      "failure": "No s'ha pogut copiar l'enllaç",
+      "failureDescription": "El navegador ha bloquejat el porta-retalls."
+    },
+    "edit": {
+      "label": "Edita {address}",
+      "trigger": "Edita",
+      "title": "Edita l'enllaç",
+      "description": "Canvia la destinació o l'àlies. Si canvies l'àlies, l'enllaç anterior deixarà de funcionar.",
+      "destination": "Destinació",
+      "alias": "Àlies",
+      "cancel": "Cancel·la",
+      "submit": "Desa els canvis",
+      "close": "Tanca"
+    },
+    "delete": {
+      "label": "Elimina {address}",
+      "trigger": "Elimina",
+      "title": "Vols eliminar aquest enllaç?",
+      "description": "<address></address> deixarà de redirigir i en perdràs els clics. Aquesta acció no es pot desfer.",
+      "cancel": "Cancel·la",
+      "submit": "Elimina"
+    },
+    "stats": {
+      "label": "Estadístiques de {address}",
+      "trigger": "Estadístiques"
+    },
+    "list": {
+      "title": "Els teus enllaços",
+      "noResultsTitle": "Cap resultat",
+      "noResultsDescription": "Cap enllaç coincideix amb «{query}». Prova amb un altre àlies o una altra destinació.",
+      "emptyTitle": "Encara no tens enllaços",
+      "emptyDescription": "Escurça la teva primera URL amb el formulari de dalt i apareixerà aquí, a punt per editar o compartir.",
+      "link": "Enllaç",
+      "destination": "Destinació",
+      "destinationLabel": "Destinació:",
+      "clicks": "Clics",
+      "clicksLabel": "clics",
+      "created": "Creat",
+      "actions": "Accions"
+    },
+    "search": {
+      "placeholder": "Cerca per àlies o destinació",
+      "label": "Cerca enllaços",
+      "pending": "Cercant",
+      "clear": "Esborra la cerca"
+    },
+    "pagination": {
+      "page": "Pàgina {page}",
+      "of": "de {count}"
+    },
+    "errors": {
+      "DESTINATION_REQUIRED": "L'URL és obligatòria.",
+      "DESTINATION_INVALID": "L'URL no és vàlida.",
+      "ALIAS_GENERATION_FAILED": "No s'ha pogut generar un àlies únic.",
+      "ALIAS_TOO_LONG": "L'àlies no pot tenir més de 50 caràcters.",
+      "ALIAS_INVALID_CHARS": "L'àlies només pot contenir lletres, números i guions.",
+      "ALIAS_REQUIRED": "L'àlies és obligatori.",
+      "ALIAS_TAKEN": "Aquest àlies ja existeix.",
+      "CREATE_FAILED": "No s'ha pogut crear l'URL curta. Torna-ho a provar.",
+      "LINK_NOT_FOUND": "Aquest enllaç ja no existeix.",
+      "UPDATE_FAILED": "No s'han pogut desar els canvis. Torna-ho a provar.",
+      "DELETE_FAILED": "No s'ha pogut eliminar l'enllaç. Torna-ho a provar.",
+      "UNAUTHORIZED": "No autoritzat. Si us plau, inicia sessió.",
+      "INVALID_LINK": "Enllaç no vàlid."
+    }
+  },
+  "Clicks": {
+    "clicks": "Clics",
+    "range": "Últims {days} dies",
+    "noData": "Encara no hi ha dades.",
+    "overview": {
+      "title": "Resum de clics",
+      "chartTitle": "Clics dels últims {days} dies",
+      "topLinks": "Més visitats"
+    },
+    "trend": {
+      "new": "Nou",
+      "comparison": "respecte al període anterior"
+    },
+    "link": {
+      "back": "Els teus enllaços",
+      "destination": "Destinació:",
+      "summary": "Creat el {date} · <count>{clicks}</count> clics en total"
+    },
+    "breakdowns": {
+      "devices": "Dispositius",
+      "countries": "Països",
+      "cities": "Ciutats",
+      "referrers": "Orígens",
+      "browsers": "Navegadors",
+      "os": "Sistemes operatius"
+    },
+    "devices": {
+      "mobile": "Mòbil",
+      "desktop": "Escriptori",
+      "tablet": "Tauleta",
+      "other": "Altres"
+    },
+    "labels": {
+      "other": "Altres",
+      "unknown": {
+        "country": "Desconegut",
+        "city": "Desconeguda",
+        "referrer": "Directe o desconegut",
+        "browser": "Desconegut",
+        "os": "Desconegut"
+      }
+    }
+  }
+}

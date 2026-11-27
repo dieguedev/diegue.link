@@ -2,13 +2,12 @@ import type { BreakdownItem } from '@/domain/services/stats-service';
 
 export type ChartItem = { label: string; clicks: number };
 
-const regionNames = new Intl.DisplayNames(['es'], { type: 'region' });
+export type BreakdownKind = 'country' | 'city' | 'referrer' | 'browser' | 'os';
 
-const DEVICE_LABELS: Record<string, string> = {
-  mobile: 'Móvil',
-  desktop: 'Escritorio',
-  tablet: 'Tablet',
-  other: 'Otro',
+export type ChartLabels = {
+  locale: string;
+  other: string;
+  unknown: string;
 };
 
 function flag(code: string) {
@@ -17,39 +16,31 @@ function flag(code: string) {
   );
 }
 
-function countryLabel(code: string) {
+function countryLabel(code: string, locale: string) {
   try {
+    const regionNames = new Intl.DisplayNames([locale], { type: 'region' });
     return `${flag(code)} ${regionNames.of(code) ?? code}`;
   } catch {
     return code;
   }
 }
 
-type Kind = 'country' | 'city' | 'referrer' | 'browser' | 'os';
-
-const UNKNOWN: Record<Kind, string> = {
-  country: 'Desconocido',
-  city: 'Desconocida',
-  referrer: 'Directo o desconocido',
-  browser: 'Desconocido',
-  os: 'Desconocido',
-};
-
-export function toChartItems(items: BreakdownItem[], kind: Kind): ChartItem[] {
+export function toChartItems(
+  items: BreakdownItem[],
+  kind: BreakdownKind,
+  labels: ChartLabels,
+): ChartItem[] {
   return items.map(({ value, clicks }) => {
-    if (value === 'other') return { label: 'Otros', clicks };
-    if (!value) return { label: UNKNOWN[kind], clicks };
-    if (kind === 'country') return { label: countryLabel(value), clicks };
+    if (value === 'other') return { label: labels.other, clicks };
+    if (!value) return { label: labels.unknown, clicks };
+    if (kind === 'country')
+      return { label: countryLabel(value, labels.locale), clicks };
     return { label: value, clicks };
   });
 }
 
 export const DEVICE_KEYS = ['mobile', 'desktop', 'tablet', 'other'] as const;
 export type DeviceKey = (typeof DEVICE_KEYS)[number];
-
-export function deviceLabel(key: DeviceKey) {
-  return DEVICE_LABELS[key];
-}
 
 export function toDeviceItems(items: BreakdownItem[]) {
   const totals = new Map<DeviceKey, number>();

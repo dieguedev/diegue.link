@@ -10,16 +10,17 @@ const BUTTON_CLASS = 'text-base max-sm:w-full md:text-lg';
 
 interface ClosingCtaButtonProps {
   isLoggedIn: boolean;
+  label: string;
 }
 
-export function ClosingCtaButton({ isLoggedIn }: ClosingCtaButtonProps) {
+export function ClosingCtaButton({ isLoggedIn, label }: ClosingCtaButtonProps) {
   const router = useRouter();
 
   if (isLoggedIn) {
     return (
       <Button asChild variant="neutral" size="hero" className={BUTTON_CLASS}>
         <Link href="/dashboard">
-          Ir a mi panel
+          {label}
           <ArrowRight aria-hidden="true" />
         </Link>
       </Button>
@@ -34,7 +35,7 @@ export function ClosingCtaButton({ isLoggedIn }: ClosingCtaButtonProps) {
       }}
       trigger={
         <Button variant="neutral" size="hero" className={BUTTON_CLASS}>
-          Empezar gratis
+          {label}
           <LogIn aria-hidden="true" />
         </Button>
       }

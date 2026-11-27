@@ -1,0 +1,295 @@
+{
+  "Metadata": {
+    "title": "{site} | Acortador de URLs",
+    "description": "Acorta tus URLs de forma gratuita. Crea enlaces cortos personalizados y obtén estadísticas.",
+    "ogLocale": "es_ES"
+  },
+  "Header": {
+    "logIn": "Log in"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "es": "Español",
+    "ca": "Català"
+  },
+  "Home": {
+    "heroLabel": "Acortar un enlace",
+    "title": "Empieza a <highlight>acortar</highlight><br></br>tus enlaces",
+    "subtitle": "Convierte cualquier enlace largo en <strong>uno corto</strong> y fácil de compartir. Además, tenlos todos a mano <strong>en un solo sitio</strong>, sin notas ni marcadores.",
+    "marquee": {
+      "shorten": "Acorta tus enlaces",
+      "share": "Compártelos",
+      "keep": "Guárdalos"
+    }
+  },
+  "HeroShortener": {
+    "label": "Enlace a acortar",
+    "placeholder": "Pega aquí tu enlace largo",
+    "submit": "Acortar",
+    "pending": "Acortando"
+  },
+  "HowItWorks": {
+    "title": "Un enlace corto en <highlight>tres pasos</highlight>",
+    "intro": "Los enlaces largos son sospechosos, difíciles de leer y de recordar. Solo necesitas una cuenta gratuita y el enlace que quieras acortar!",
+    "step": "Paso {number}:",
+    "exampleAlias": "encuesta",
+    "steps": {
+      "paste": {
+        "title": "Pega el enlace largo",
+        "text": "Un formulario, un artículo, un archivo en la nube... Cualquier cosa que quieras guardar o compartir!"
+      },
+      "alias": {
+        "title": "Elige tu alias",
+        "text": "Escribe la palabra que quieras al final o deja que generemos un identificador único por ti. Tu alias nunca estará pillado, cada uno es único por usuario."
+      },
+      "share": {
+        "title": "Comparte y observa los clics",
+        "text": "Cópialo y pégalo donde quieras. En tu panel ves cuántas veces lo han abierto y puedes cambiar el destino en cualquier momento."
+      }
+    }
+  },
+  "Faq": {
+    "title": "Preguntas <highlight>frecuentes</highlight>",
+    "intro": "¿No encuentras la tuya? Abre una issue en <github>GitHub</github> y te respondemos ahí.",
+    "questions": {
+      "cost": {
+        "question": "¿Cuánto cuesta?",
+        "answer": "Nada. Crear una cuenta, acortar enlaces y consultar sus clics es gratis."
+      },
+      "account": {
+        "question": "¿Necesito una cuenta?",
+        "answer": "Sí. Con ella tus enlaces quedan guardados en tu panel y solo tú puedes editarlos o borrarlos. Te registras con tu correo en unos segundos."
+      },
+      "expiry": {
+        "question": "¿Caducan los enlaces?",
+        "answer": "No. Un enlace funciona hasta que tú lo borras desde el panel."
+      },
+      "destination": {
+        "question": "¿Puedo cambiar adónde lleva un enlace?",
+        "answer": "Sí. Desde el panel editas el destino y el alias cuando quieras. Si cambias el alias, la URL corta anterior deja de funcionar."
+      },
+      "alias": {
+        "question": "¿Qué caracteres admite un alias?",
+        "answer": "Letras sin tilde, números, guiones y guiones bajos, hasta 50 caracteres. Cada usuario tiene su propia dirección, como ana.{site}, así que tu alias no choca con el de nadie."
+      },
+      "clicks": {
+        "question": "¿Cómo se cuentan los clics?",
+        "answer": "Cada visita a tu enlace suma un clic. El total aparece en tu panel, junto a cada enlace."
+      }
+    }
+  },
+  "ClosingCta": {
+    "loggedIn": {
+      "title": "Tus enlaces, en un solo sitio",
+      "text": "Crea, edita y mira los clics desde tu panel.",
+      "button": "Ir a mi panel"
+    },
+    "loggedOut": {
+      "title": "Acorta tu primer enlace",
+      "text": "Es gratis y te lleva menos de un minuto.",
+      "button": "Empezar gratis"
+    }
+  },
+  "Footer": {
+    "tagline": "Acortador de enlaces gratuito y de código abierto.",
+    "navLabel": "Pie de página",
+    "howItWorks": "Cómo funciona",
+    "faq": "Preguntas frecuentes",
+    "newTab": "(se abre en una pestaña nueva)"
+  },
+  "Dashboard": {
+    "loading": "Cargando..."
+  },
+  "Ui": {
+    "pagination": {
+      "label": "Paginación",
+      "previous": "Anterior",
+      "previousLabel": "Ir a la página anterior",
+      "next": "Siguiente",
+      "nextLabel": "Ir a la página siguiente",
+      "more": "Más páginas"
+    },
+    "toast": {
+      "close": "Cerrar notificación"
+    }
+  },
+  "Auth": {
+    "modal": {
+      "title": "Modal de inicio de sesión",
+      "loginTab": "Iniciar sesión",
+      "registerTab": "Crear cuenta",
+      "loginTitle": "Iniciar sesión",
+      "loginDescription": "Introduce tus datos para acceder a tu cuenta.",
+      "registerTitle": "¡Regístrate!",
+      "registerDescription": "Crea tu cuenta para comenzar a acortar enlaces."
+    },
+    "login": {
+      "email": "Email",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión"
+    },
+    "register": {
+      "name": "Nombre",
+      "email": "Email",
+      "username": "Nombre de usuario",
+      "usernameHint": "Entre 3 y 30 caracteres.",
+      "password": "Contraseña",
+      "passwordHint": "Mínimo 8 caracteres.",
+      "submit": "Crear cuenta"
+    },
+    "validation": {
+      "emailRequired": "Introduce tu email",
+      "emailInvalid": "Introduce un email válido",
+      "passwordRequired": "Introduce tu contraseña",
+      "nameRequired": "Introduce tu nombre",
+      "minLength": "Mínimo {min} caracteres",
+      "maxLength": "Máximo {max} caracteres",
+      "usernameChars": "Solo letras, números, guiones y guiones bajos"
+    },
+    "errors": {
+      "INVALID_EMAIL_OR_PASSWORD": "El email o la contraseña no son correctos.",
+      "INVALID_EMAIL": "El email no es válido.",
+      "PASSWORD_TOO_SHORT": "La contraseña es demasiado corta.",
+      "PASSWORD_TOO_LONG": "La contraseña es demasiado larga.",
+      "USER_ALREADY_EXISTS": "Ya existe una cuenta con ese email.",
+      "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "Ya existe una cuenta con ese email.",
+      "FAILED_TO_CREATE_USER": "No se pudo crear la cuenta. Puede que el nombre de usuario ya esté en uso.",
+      "TOO_MANY_REQUESTS": "Demasiados intentos. Espera un momento y vuelve a probar.",
+      "FALLBACK": "Algo ha fallado. Inténtalo de nuevo."
+    },
+    "userMenu": {
+      "home": "Inicio",
+      "dashboard": "Dashboard",
+      "settings": "Ajustes",
+      "logOut": "Cerrar sesión"
+    }
+  },
+  "Links": {
+    "create": {
+      "title": "Acorta una URL",
+      "description": "Añade la URL a acortar para generar un enlace corto. Puedes añadir un alias personalizado para que sea más descriptivo o más fácil de recordar.",
+      "url": "URL a acortar",
+      "alias": "Alias personalizado (opcional)",
+      "aliasPlaceholder": "mi-enlace",
+      "submit": "Acortar URL",
+      "pending": "Acortando...",
+      "result": "Tu enlace corto:",
+      "open": "Abrir {address}"
+    },
+    "aliasRule": "Solo letras, números, guiones y guiones bajos",
+    "copy": {
+      "label": "Copiar {address}",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "success": "Enlace copiado",
+      "failure": "No se pudo copiar el enlace",
+      "failureDescription": "Tu navegador ha bloqueado el portapapeles."
+    },
+    "edit": {
+      "label": "Editar {address}",
+      "trigger": "Editar",
+      "title": "Editar enlace",
+      "description": "Cambia el destino o el alias. Si cambias el alias, el enlace anterior dejará de funcionar.",
+      "destination": "Destino",
+      "alias": "Alias",
+      "cancel": "Cancelar",
+      "submit": "Guardar cambios",
+      "close": "Cerrar"
+    },
+    "delete": {
+      "label": "Eliminar {address}",
+      "trigger": "Eliminar",
+      "title": "¿Eliminar este enlace?",
+      "description": "<address></address> dejará de redirigir y perderás sus clics. Esta acción no se puede deshacer.",
+      "cancel": "Cancelar",
+      "submit": "Eliminar"
+    },
+    "stats": {
+      "label": "Estadísticas de {address}",
+      "trigger": "Estadísticas"
+    },
+    "list": {
+      "title": "Tus enlaces",
+      "noResultsTitle": "Sin resultados",
+      "noResultsDescription": "Ningún enlace coincide con «{query}». Prueba con otro alias o destino.",
+      "emptyTitle": "Aún no tienes enlaces",
+      "emptyDescription": "Acorta tu primera URL con el formulario de arriba y aparecerá aquí, lista para editar o compartir.",
+      "link": "Enlace",
+      "destination": "Destino",
+      "destinationLabel": "Destino:",
+      "clicks": "Clics",
+      "clicksLabel": "clics",
+      "created": "Creado",
+      "actions": "Acciones"
+    },
+    "search": {
+      "placeholder": "Buscar por alias o destino",
+      "label": "Buscar enlaces",
+      "pending": "Buscando",
+      "clear": "Borrar búsqueda"
+    },
+    "pagination": {
+      "page": "Página {page}",
+      "of": "de {count}"
+    },
+    "errors": {
+      "DESTINATION_REQUIRED": "La URL es obligatoria.",
+      "DESTINATION_INVALID": "La URL no es válida.",
+      "ALIAS_GENERATION_FAILED": "No se ha podido generar un alias único.",
+      "ALIAS_TOO_LONG": "El alias no puede tener más de 50 caracteres.",
+      "ALIAS_INVALID_CHARS": "El alias sólo puede contener letras, números y guiones.",
+      "ALIAS_REQUIRED": "El alias es obligatorio.",
+      "ALIAS_TAKEN": "Este alias ya existe.",
+      "CREATE_FAILED": "Error al crear la URL corta. Intenta de nuevo.",
+      "LINK_NOT_FOUND": "Este enlace ya no existe.",
+      "UPDATE_FAILED": "No se han podido guardar los cambios. Intenta de nuevo.",
+      "DELETE_FAILED": "No se ha podido eliminar el enlace. Intenta de nuevo.",
+      "UNAUTHORIZED": "No autorizado. Por favor inicia sesión.",
+      "INVALID_LINK": "Enlace no válido."
+    }
+  },
+  "Clicks": {
+    "clicks": "Clics",
+    "range": "Últimos {days} días",
+    "noData": "Sin datos todavía.",
+    "overview": {
+      "title": "Resumen de Clics",
+      "chartTitle": "Clics en los últimos {days} días",
+      "topLinks": "Más visitados"
+    },
+    "trend": {
+      "new": "Nuevo",
+      "comparison": "respecto al periodo anterior"
+    },
+    "link": {
+      "back": "Tus enlaces",
+      "destination": "Destino:",
+      "summary": "Creado el {date} · <count>{clicks}</count> Clics en total"
+    },
+    "breakdowns": {
+      "devices": "Dispositivos",
+      "countries": "Países",
+      "cities": "Ciudades",
+      "referrers": "Orígenes",
+      "browsers": "Navegadores",
+      "os": "Sistemas operativos"
+    },
+    "devices": {
+      "mobile": "Móvil",
+      "desktop": "Escritorio",
+      "tablet": "Tablet",
+      "other": "Otro"
+    },
+    "labels": {
+      "other": "Otros",
+      "unknown": {
+        "country": "Desconocido",
+        "city": "Desconocida",
+        "referrer": "Directo o desconocido",
+        "browser": "Desconocido",
+        "os": "Desconocido"
+      }
+    }
+  }
+}

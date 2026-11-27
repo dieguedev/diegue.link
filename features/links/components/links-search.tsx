@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Search, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import debounce from 'debounce';
 import { DotLoader } from '@/components/ui/dot-loader';
 import {
@@ -15,6 +16,7 @@ import {
 const DEBOUNCE_MS = 500;
 
 export function LinksSearch() {
+  const t = useTranslations('Links.search');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -68,20 +70,20 @@ export function LinksSearch() {
         type="search"
         value={value}
         onChange={event => handleChange(event.target.value)}
-        placeholder="Buscar por alias o destino"
-        aria-label="Buscar enlaces"
+        placeholder={t('placeholder')}
+        aria-label={t('label')}
         className="[&::-webkit-search-cancel-button]:hidden"
       />
       {(isPending || value) && (
         <InputGroupAddon align="inline-end">
           {isPending ? (
-            <DotLoader label="Buscando" className="px-2" />
+            <DotLoader label={t('pending')} className="px-2" />
           ) : (
             <InputGroupButton
               size="icon-xs"
               onClick={handleClear}
-              aria-label="Borrar búsqueda"
-              title="Borrar búsqueda"
+              aria-label={t('clear')}
+              title={t('clear')}
             >
               <X />
             </InputGroupButton>

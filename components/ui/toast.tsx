@@ -132,7 +132,6 @@ function ToastClose({
   return (
     <ToastPrimitive.Close
       data-slot="toast-close"
-      aria-label="Cerrar notificación"
       render={render}
       className={cn(
         "relative shrink-0 text-foreground after:absolute after:-inset-2 after:content-[''] hover:opacity-70",
@@ -182,7 +181,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
   )
 }
 
-function ToastList() {
+function ToastList({ closeLabel }: { closeLabel: string }) {
   const { toasts } = ToastPrimitive.useToastManager()
 
   return toasts.map((toastItem) => (
@@ -194,7 +193,7 @@ function ToastList() {
           <ToastDescription />
         </div>
         <ToastAction />
-        <ToastClose />
+        <ToastClose aria-label={closeLabel} />
       </ToastContent>
     </Toast>
   ))
@@ -203,14 +202,15 @@ function ToastList() {
 function Toaster({
   children,
   toastManager = toast,
+  closeLabel,
   ...props
-}: ToastPrimitive.Provider.Props) {
+}: ToastPrimitive.Provider.Props & { closeLabel: string }) {
   return (
     <ToastProvider toastManager={toastManager} {...props}>
       {children}
       <ToastPortal>
         <ToastViewport>
-          <ToastList />
+          <ToastList closeLabel={closeLabel} />
         </ToastViewport>
       </ToastPortal>
     </ToastProvider>

@@ -1,24 +1,32 @@
-const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  INVALID_EMAIL_OR_PASSWORD: 'El email o la contraseña no son correctos.',
-  INVALID_EMAIL: 'El email no es válido.',
-  PASSWORD_TOO_SHORT: 'La contraseña es demasiado corta.',
-  PASSWORD_TOO_LONG: 'La contraseña es demasiado larga.',
-  USER_ALREADY_EXISTS: 'Ya existe una cuenta con ese email.',
-  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: 'Ya existe una cuenta con ese email.',
-  FAILED_TO_CREATE_USER:
-    'No se pudo crear la cuenta. Puede que el nombre de usuario ya esté en uso.',
-};
+import { useTranslations } from 'next-intl';
 
-const TOO_MANY_REQUESTS_MESSAGE =
-  'Demasiados intentos. Espera un momento y vuelve a probar.';
-const FALLBACK_MESSAGE = 'Algo ha fallado. Inténtalo de nuevo.';
+const KNOWN_CODES = [
+  'INVALID_EMAIL_OR_PASSWORD',
+  'INVALID_EMAIL',
+  'PASSWORD_TOO_SHORT',
+  'PASSWORD_TOO_LONG',
+  'USER_ALREADY_EXISTS',
+  'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL',
+  'FAILED_TO_CREATE_USER',
+] as const;
+
+type KnownCode = (typeof KNOWN_CODES)[number];
 
 interface AuthError {
   code?: string;
   status?: number;
 }
 
-export function getAuthErrorMessage(error: AuthError): string {
-  if (error.status === 429) return TOO_MANY_REQUESTS_MESSAGE;
-  return (error.code && AUTH_ERROR_MESSAGES[error.code]) || FALLBACK_MESSAGE;
+function isKnownCode(code: string | undefined): code is KnownCode {
+  return KNOWN_CODES.includes(code as KnownCode);
+}
+
+export function useAuthErrorMessage() {
+  const t = useTranslations('Auth.errors');
+
+  return (error: AuthError): string => {
+    if (error.status === 429) return t('TOO_MANY_REQUESTS');
+    if (isKnownCode(error.code)) return t(error.code);
+    return t('FALLBACK');
+  };
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Check, Copy } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
 
@@ -13,6 +14,7 @@ interface CopyLinkButtonProps {
 const COPIED_DURATION_MS = 2000;
 
 export function CopyLinkButton({ address, className }: CopyLinkButtonProps) {
+  const t = useTranslations('Links.copy');
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -31,8 +33,8 @@ export function CopyLinkButton({ address, className }: CopyLinkButtonProps) {
       toast.add({
         id: toastId,
         type: 'error',
-        title: 'No se pudo copiar el enlace',
-        description: 'Tu navegador ha bloqueado el portapapeles.',
+        title: t('failure'),
+        description: t('failureDescription'),
       });
       return;
     }
@@ -40,7 +42,7 @@ export function CopyLinkButton({ address, className }: CopyLinkButtonProps) {
     toast.add({
       id: toastId,
       type: 'success',
-      title: 'Enlace copiado',
+      title: t('success'),
       description: address,
       timeout: COPIED_DURATION_MS,
     });
@@ -57,8 +59,8 @@ export function CopyLinkButton({ address, className }: CopyLinkButtonProps) {
       size="icon"
       className={className}
       onClick={handleCopy}
-      aria-label={`Copiar ${address}`}
-      title={copied ? 'Copiado' : 'Copiar'}
+      aria-label={t('label', { address })}
+      title={copied ? t('copied') : t('copy')}
     >
       {copied ? <Check /> : <Copy />}
     </Button>

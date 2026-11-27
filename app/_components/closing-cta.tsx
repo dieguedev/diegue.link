@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 import StarWithStroke from '@/components/ui/star-with-stroke';
 import { auth } from '@/lib/auth/auth';
 import { ClosingCtaButton } from '@/app/_components/closing-cta-button';
@@ -6,6 +7,9 @@ import { ClosingCtaButton } from '@/app/_components/closing-cta-button';
 export async function ClosingCta() {
   const session = await auth.api.getSession({ headers: await headers() });
   const isLoggedIn = !!session;
+  const t = await getTranslations(
+    isLoggedIn ? 'ClosingCta.loggedIn' : 'ClosingCta.loggedOut',
+  );
 
   return (
     <section
@@ -31,16 +35,12 @@ export async function ClosingCta() {
           id="cierre-title"
           className="text-4xl font-bold leading-[1.1] tracking-tight text-main-foreground sm:text-5xl lg:text-7xl"
         >
-          {isLoggedIn
-            ? 'Tus enlaces, en un solo sitio'
-            : 'Acorta tu primer enlace'}
+          {t('title')}
         </h2>
         <p className="max-w-xl text-base text-main-foreground sm:text-xl">
-          {isLoggedIn
-            ? 'Crea, edita y mira los clics desde tu panel.'
-            : 'Es gratis y te lleva menos de un minuto.'}
+          {t('text')}
         </p>
-        <ClosingCtaButton isLoggedIn={isLoggedIn} />
+        <ClosingCtaButton isLoggedIn={isLoggedIn} label={t('button')} />
       </div>
     </section>
   );

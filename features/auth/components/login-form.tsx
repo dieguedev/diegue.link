@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -10,17 +11,21 @@ import { Label } from '@/components/ui/label';
 import { authClient } from '@/lib/auth/auth-client';
 import { registerInline } from '@/lib/forms/register-inline';
 import { shakeFields } from '@/lib/utils/shake';
-import { getAuthErrorMessage } from '@/features/auth/auth-errors';
-import { loginSchema, type LoginInput } from '@/features/auth/schemas';
+import { useAuthErrorMessage } from '@/features/auth/auth-errors';
+import { createLoginSchema, type LoginInput } from '@/features/auth/schemas';
 
 interface LoginFormProps {
   onSuccess: () => void;
 }
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
+  const t = useTranslations('Auth');
+  const tValidation = useTranslations('Auth.validation');
+  const authErrorMessage = useAuthErrorMessage();
+  const schema = useMemo(() => createLoginSchema(tValidation), [tValidation]);
   const formRef = useRef<HTMLFormElement>(null);
   const form = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(schema),
     mode: 'onSubmit',
     reValidateMode: 'onChange',
   });
@@ -35,12 +40,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     try {
       const { error } = await authClient.signIn.email(data);
       if (error) {
-        setError('root.server', { message: getAuthErrorMessage(error) });
+        setError('root.server', { message: authErrorMessage(error) });
         return;
       }
       onSuccess();
     } catch {
-      setError('root.server', { message: getAuthErrorMessage({}) });
+      setError('root.server', { message: authErrorMessage({}) });
     }
   };
 
@@ -54,7 +59,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     >
       <fieldset disabled={isSubmitting} className="flex min-w-0 flex-col gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="login-email">Email</Label>
+          <Label htmlFor="login-email">{t('login.email')}</Label>
           <Input
             id="login-email"
             type="email"
@@ -72,9 +77,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
         <div className="grid gap-2">
           <div className="flex items-center">
-            <Label htmlFor="login-password">Contraseña</Label>
+            <Label htmlFor="login-password">{t('login.password')}</Label>
             <a href="#" className="ml-auto inline-block text-sm link-underline">
-              ¿Olvidaste tu contraseña?
+              {t('login.forgotPassword')}
             </a>
           </div>
           <Input
@@ -98,7 +103,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         )}
 
         <Button type="submit" className="w-full" loading={isSubmitting}>
-          Iniciar sesión
+          {t('login.submit')}
         </Button>
       </fieldset>
     </form>

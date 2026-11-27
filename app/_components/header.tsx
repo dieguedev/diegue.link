@@ -5,11 +5,14 @@ import { shortNumberFormat } from '@/lib/utils/number-format';
 import { getStargazers } from '@/domain/services/get-stargazers';
 import { AuthModal } from '@/features/auth/components/auth-modal';
 import { headers } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 import { auth } from '@/lib/auth/auth';
 import { UserDropdown } from '@/features/auth/components/user-dropdown';
+import { LocaleSwitcher } from '@/features/locale/components/locale-switcher';
 import { GITHUB_REPO_URL, SITE_NAME } from '@/lib/site';
 
 export async function Header() {
+  const t = await getTranslations('Header');
   const starAmount = await getStargazers();
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -26,6 +29,7 @@ export async function Header() {
           </div>
 
           <div className="flex gap-3 items-center">
+            <LocaleSwitcher />
             <Button
               link
               href={GITHUB_REPO_URL}
@@ -40,7 +44,7 @@ export async function Header() {
               <AuthModal
                 trigger={
                   <Button className="mr-4 md:mr-6">
-                    Log in <LogIn />
+                    {t('logIn')} <LogIn />
                   </Button>
                 }
               />

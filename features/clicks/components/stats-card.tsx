@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import {
   Card,
   CardContent,
@@ -22,6 +23,8 @@ export function StatsCard({
   className,
   children,
 }: StatsCardProps) {
+  const t = useTranslations('Clicks');
+
   return (
     <Card variant="secondary" className={cn('gap-4', className)}>
       <CardHeader>
@@ -35,7 +38,7 @@ export function StatsCard({
       <CardContent>
         {isEmpty ? (
           <p className="py-8 text-center text-sm text-foreground/70">
-            Sin datos todavía.
+            {t('noData')}
           </p>
         ) : (
           children

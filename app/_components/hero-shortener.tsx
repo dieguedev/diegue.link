@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Link as LinkIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { DotLoader } from '@/components/ui/dot-loader';
 import {
   InputGroup,
@@ -13,6 +14,10 @@ import {
 import { AuthModal } from '@/features/auth/components/auth-modal';
 import { createLink } from '@/features/links/actions/create-link';
 import { CopyLinkButton } from '@/features/links/components/copy-link-button';
+import {
+  useLinkErrorMessage,
+  type LinkActionError,
+} from '@/features/links/link-errors';
 import { parseDestination } from '@/domain/links/destination';
 import { shake } from '@/lib/utils/shake';
 
@@ -21,15 +26,17 @@ interface HeroShortenerProps {
 }
 
 export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
+  const t = useTranslations('HeroShortener');
+  const errorMessage = useLinkErrorMessage();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [authOpen, setAuthOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<LinkActionError | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const fail = (message: string) => {
-    setError(message);
+  const fail = (code: LinkActionError) => {
+    setError(code);
     const group = inputRef.current?.closest('[data-slot="input-group"]');
     if (group) shake(group);
   };
@@ -77,7 +84,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
     <div className="flex w-full max-w-xl flex-col gap-3">
       <form onSubmit={handleSubmit} noValidate>
         <label htmlFor="hero-url" className="sr-only">
-          Enlace a acortar
+          {t('label')}
         </label>
         <InputGroup className="max-sm:h-auto max-sm:flex-col sm:h-14">
           <InputGroupInput
@@ -90,7 +97,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            placeholder="Pega aquí tu enlace largo"
+            placeholder={t('placeholder')}
             aria-invalid={!!error}
             aria-describedby={error ? 'hero-url-error' : undefined}
             onChange={() => error && setError(null)}
@@ -111,12 +118,12 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
               <span
                 className={`inline-flex items-center gap-2 ${isPending ? 'invisible' : ''}`}
               >
-                Acortar
+                {t('submit')}
                 <LinkIcon aria-hidden="true" />
               </span>
               {isPending && (
                 <DotLoader
-                  label="Acortando"
+                  label={t('pending')}
                   className="absolute inset-0 justify-center"
                 />
               )}
@@ -129,7 +136,7 @@ export function HeroShortener({ isLoggedIn }: HeroShortenerProps) {
             role="alert"
             className="mt-2 text-left text-sm text-red-700"
           >
-            {error}
+            {errorMessage(error)}
           </p>
         )}
       </form>

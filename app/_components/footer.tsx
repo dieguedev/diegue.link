@@ -1,15 +1,17 @@
 import { ArrowUpRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { GITHUB_REPO_URL, SITE_NAME } from '@/lib/site';
 
 const LINK_CLASS = 'inline-flex min-h-11 items-center';
 
-const LINKS = [
-  { label: 'Cómo funciona', href: '#como-funciona' },
-  { label: 'Preguntas frecuentes', href: '#preguntas' },
-  { label: 'GitHub', href: GITHUB_REPO_URL, external: true },
-];
-
 export function Footer() {
+  const t = useTranslations('Footer');
+  const links = [
+    { label: t('howItWorks'), href: '#como-funciona' },
+    { label: t('faq'), href: '#preguntas' },
+    { label: 'GitHub', href: GITHUB_REPO_URL, external: true },
+  ];
+
   return (
     <footer className="bg-secondary-background">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-12">
@@ -18,13 +20,11 @@ export function Footer() {
             <span className="flex min-h-11 items-center text-xl font-bold">
               {SITE_NAME}
             </span>
-            <p className="max-w-xs text-base">
-              Acortador de enlaces gratuito y de código abierto.
-            </p>
+            <p className="max-w-xs text-base">{t('tagline')}</p>
           </div>
-          <nav aria-label="Pie de página">
+          <nav aria-label={t('navLabel')}>
             <ul className="flex flex-col md:flex-row md:gap-6">
-              {LINKS.map(({ label, href, external }) => (
+              {links.map(({ label, href, external }) => (
                 <li key={href}>
                   <a
                     href={href}
@@ -41,10 +41,7 @@ export function Footer() {
                           aria-hidden="true"
                           className="ml-1 size-4 shrink-0"
                         />
-                        <span className="sr-only">
-                          {' '}
-                          (se abre en una pestaña nueva)
-                        </span>
+                        <span className="sr-only"> {t('newTab')}</span>
                       </>
                     )}
                   </a>
