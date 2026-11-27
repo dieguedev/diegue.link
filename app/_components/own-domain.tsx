@@ -5,7 +5,7 @@ import { HighlightedText } from '@/components/ui/highlighted-text';
 import { SYSTEM_DOMAIN_HOST } from '@/lib/site';
 
 const FRAGMENT_CLASS =
-  'flex min-h-14 items-center rounded-base border-2 border-border bg-background px-3 py-2 font-mono text-sm';
+  'flex min-h-14 items-center rounded-base border-2 border-border bg-secondary-background px-3 py-2 font-mono text-sm';
 
 const ALIAS_CLASS = 'font-bold text-main';
 
