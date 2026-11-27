@@ -47,6 +47,27 @@
       }
     }
   },
+  "OwnDomain": {
+    "badge": "Aviat",
+    "title": "El teu domini, <highlight>els teus àlies</highlight>",
+    "intro": "Aviat podràs connectar el teu domini propi i triar la paraula que vulguis al final de cada enllaç, en lloc d'un àlies generat.",
+    "exampleDomain": "elteudomini.cat",
+    "exampleAlias": "xerrada",
+    "points": {
+      "root": {
+        "title": "L'àlies, a l'arrel",
+        "text": "Enllaços com elteudomini.cat/xerrada, sense prefixos ni rutes d'usuari."
+      },
+      "yours": {
+        "title": "Només per a tu",
+        "text": "Ningú més crea enllaços al teu domini, així que l'àlies que triïs sempre està lliure."
+      },
+      "panel": {
+        "title": "El mateix tauler",
+        "text": "Els teus enllaços de trim.cat i els del teu domini, junts i amb els seus clics."
+      }
+    }
+  },
   "Faq": {
     "title": "Preguntes <highlight>freqüents</highlight>",
     "intro": "No trobes la teva? Obre una issue a <github>GitHub</github> i et responem allà.",
@@ -93,6 +114,7 @@
     "tagline": "Escurçador d'enllaços gratuït i de codi obert.",
     "navLabel": "Peu de pàgina",
     "howItWorks": "Com funciona",
+    "ownDomain": "El teu domini",
     "faq": "Preguntes freqüents",
     "newTab": "(s'obre en una pestanya nova)"
   },

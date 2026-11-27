@@ -47,6 +47,27 @@
       }
     }
   },
+  "OwnDomain": {
+    "badge": "Próximamente",
+    "title": "Tu dominio, <highlight>tus alias</highlight>",
+    "intro": "Pronto podrás conectar tu propio dominio y elegir la palabra que quieras al final de cada enlace, en lugar de un alias generado.",
+    "exampleDomain": "tudominio.com",
+    "exampleAlias": "charla",
+    "points": {
+      "root": {
+        "title": "El alias, en la raíz",
+        "text": "Enlaces como tudominio.com/charla, sin prefijos ni rutas de usuario."
+      },
+      "yours": {
+        "title": "Solo para ti",
+        "text": "Nadie más crea enlaces en tu dominio, así que el alias que elijas siempre está libre."
+      },
+      "panel": {
+        "title": "El mismo panel",
+        "text": "Tus enlaces de trim.cat y los de tu dominio, juntos y con sus clics."
+      }
+    }
+  },
   "Faq": {
     "title": "Preguntas <highlight>frecuentes</highlight>",
     "intro": "¿No encuentras la tuya? Abre una issue en <github>GitHub</github> y te respondemos ahí.",
@@ -93,6 +114,7 @@
     "tagline": "Acortador de enlaces gratuito y de código abierto.",
     "navLabel": "Pie de página",
     "howItWorks": "Cómo funciona",
+    "ownDomain": "Tu dominio",
     "faq": "Preguntas frecuentes",
     "newTab": "(se abre en una pestaña nueva)"
   },

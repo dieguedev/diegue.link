@@ -4,6 +4,7 @@ import { HeroCta } from '@/app/_components/hero-cta';
 import Marquee from '@/components/ui/marquee';
 import StarWithStroke from '@/components/ui/star-with-stroke';
 import { HowItWorks } from '@/app/_components/how-it-works';
+import { OwnDomain } from '@/app/_components/own-domain';
 import { Faq } from '@/app/_components/faq';
 import { ClosingCta } from '@/app/_components/closing-cta';
 import { Footer } from '@/app/_components/footer';
@@ -69,6 +70,7 @@ export default function Home() {
           />
         </section>
         <HowItWorks />
+        <OwnDomain />
         <Faq />
         <ClosingCta />
       </main>
