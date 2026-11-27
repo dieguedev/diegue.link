@@ -6,16 +6,11 @@ import { NextRequest, after } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> },
+  { params }: { params: Promise<{ domain: string; path: string[] }> },
 ) {
-  const { path } = await params;
-  const host = request.headers.get('host');
+  const { domain, path } = await params;
 
-  if (!host) {
-    return new Response('Missing host', { status: 400 });
-  }
-
-  const url = await resolveLink({ host, slug: path.join('/') });
+  const url = await resolveLink({ domain, slug: path.join('/') });
 
   if (!url) {
     return new Response('Not found', { status: 404 });
