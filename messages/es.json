@@ -170,6 +170,7 @@
       "title": "Acorta una URL",
       "description": "Añade la URL a acortar para generar un enlace corto. Puedes añadir un alias personalizado para que sea más descriptivo o más fácil de recordar.",
       "url": "URL a acortar",
+      "domain": "Dominio",
       "alias": "Alias personalizado (opcional)",
       "aliasPlaceholder": "mi-enlace",
       "submit": "Acortar URL",

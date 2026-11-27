@@ -170,6 +170,7 @@
       "title": "Escurça una URL",
       "description": "Afegeix l'URL que vols escurçar per generar un enllaç curt. Pots afegir-hi un àlies personalitzat perquè sigui més descriptiu o més fàcil de recordar.",
       "url": "URL per escurçar",
+      "domain": "Domini",
       "alias": "Àlies personalitzat (opcional)",
       "aliasPlaceholder": "el-meu-enllac",
       "submit": "Escurça l'URL",

@@ -17,9 +17,11 @@ export async function createLink(
   const session = await auth.api.getSession({ headers: headersList });
   if (!session) return { status: 'error', error: 'UNAUTHORIZED' };
 
+  const domainId = formData.get('domainId')?.toString();
   const result = await shorten({
     rawUrl: formData.get('url')?.toString(),
     rawSlug: formData.get('slug')?.toString().trim(),
+    domainId: domainId ? Number(domainId) : undefined,
     userId: session.user.id,
   });
 
