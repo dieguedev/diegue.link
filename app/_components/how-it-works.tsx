@@ -20,9 +20,9 @@ const STEP_FRAGMENTS = {
   ),
   alias: (
     <div className={FRAGMENT_CLASS}>
-      <span className="truncate">{SYSTEM_DOMAIN_HOST}/</span>
-      <span className="shrink-0 border-2 border-border bg-main px-1.5 py-0.5 font-bold">
-        {EXAMPLE_ALIAS}
+      <span className="truncate">
+        {SYSTEM_DOMAIN_HOST}/
+        <span className="font-bold text-main">{EXAMPLE_ALIAS}</span>
       </span>
     </div>
   ),
